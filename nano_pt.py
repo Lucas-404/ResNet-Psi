@@ -149,12 +149,12 @@ MODEL_CONFIG = dict(
 # 800M * 20 = 16B tokens minimo; usamos 20B para margem
 # H100 80GB: batch_size=4, block_size=8192 → 32K tokens/step
 # grad_accum=32 → effective batch = 1M tokens/step
-BATCH_SIZE = 4                   # seqs por step (ajustar se OOM: 2 com grad_ckpt)
-GRAD_ACCUMULATION = 32           # effective batch = 4*32*8192 = 1.05M tokens
+BATCH_SIZE = 8                   # A100 40GB aguenta 8 seqs x 8192 com grad_ckpt
+GRAD_ACCUMULATION = 16           # effective batch = 8*16*8192 = 1.05M tokens
 BLOCK_SIZE = 8192                # contexto
 MAX_TOKENS = 20_000_000_000      # 20B tokens (Chinchilla 800M * 25)
 LEARNING_RATE = 3e-4             # pico LR (escala com sqrt do batch vs 100M)
-WARMUP_STEPS = 2000
+WARMUP_STEPS = 100               # optimizer steps de warmup (~100M tokens)
 WEIGHT_DECAY = 0.1
 MAX_GRAD_NORM = 1.0
 BETAS = (0.9, 0.95)
@@ -910,9 +910,10 @@ def main():
     tokens_per_step = BATCH_SIZE * BLOCK_SIZE
     total_optimizer_steps = MAX_TOKENS // (tokens_per_step * GRAD_ACCUMULATION)
 
+    # WARMUP_STEPS em optimizer steps (nao micro-steps)
     scheduler = get_cosine_schedule_with_warmup(
         optimizer,
-        num_warmup_steps=WARMUP_STEPS // GRAD_ACCUMULATION,
+        num_warmup_steps=WARMUP_STEPS,
         num_training_steps=total_optimizer_steps,
     )
 

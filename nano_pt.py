@@ -777,7 +777,7 @@ def main():
     parser.add_argument("--resume", type=str, default=None,
                         help="Nome do checkpoint para resume (ex: step_5000). "
                              "Use 'latest' para o mais recente.")
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()  # parse_known_args ignora args do Jupyter/Colab
 
     # --------------------------------------------------------------------------
     # Setup

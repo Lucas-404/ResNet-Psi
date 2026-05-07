@@ -152,7 +152,7 @@ MODEL_CONFIG = dict(
 BATCH_SIZE = 8                   # A100 40GB aguenta 8 seqs x 8192 com grad_ckpt
 GRAD_ACCUMULATION = 16           # effective batch = 8*16*8192 = 1.05M tokens
 BLOCK_SIZE = 8192                # contexto
-MAX_TOKENS = 20_000_000_000      # 20B tokens (Chinchilla 800M * 25)
+MAX_TOKENS = 100_000_000         # 100M tokens — smoke test (troca pra 20B no treino real)
 LEARNING_RATE = 3e-4             # pico LR (escala com sqrt do batch vs 100M)
 WARMUP_STEPS = 100               # optimizer steps de warmup (~100M tokens)
 WEIGHT_DECAY = 0.1

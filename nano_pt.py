@@ -136,6 +136,9 @@ MODEL_CONFIG = dict(
     max_position_embeddings=8192,
     rms_norm_eps=1e-5,
     rope_theta=500000.0,         # RoPE theta alto para contexto longo (LLaMA 3 style)
+    rope_scaling={"rope_type": "llama3", "factor": 8.0,
+                  "low_freq_factor": 1.0, "high_freq_factor": 4.0,
+                  "original_max_position_embeddings": 8192},
     hidden_act="silu",
     attention_dropout=0.0,
     use_cache=False,
@@ -372,7 +375,7 @@ class PackedPretrainDataset(IterableDataset):
             streams,
             probabilities=weights,
             seed=self.seed,
-            stopping_strategy="all_exhausted",
+            stopping_strategy="first_exhausted",
         )
 
     @staticmethod
@@ -824,12 +827,22 @@ def main():
     # --------------------------------------------------------------------------
     logger.info("\nCriando modelo LLaMA...")
 
+    # Tenta FA2; cai para sdpa se flash-attn nao estiver instalado
+    try:
+        import flash_attn  # noqa: F401
+        attn_impl = "flash_attention_2"
+        logger.info("Flash Attention 2: disponivel")
+    except ImportError:
+        attn_impl = "sdpa"
+        logger.info("Flash Attention 2: NAO instalada — usando sdpa. "
+                    "Instale com: pip install flash-attn --no-build-isolation")
+
     config = LlamaConfig(
         **MODEL_CONFIG,
         bos_token_id=tokenizer.bos_token_id,
         eos_token_id=tokenizer.eos_token_id,
         pad_token_id=tokenizer.pad_token_id,
-        attn_implementation="sdpa",   # Flash Attention via PyTorch SDPA
+        attn_implementation=attn_impl,
     )
 
     # Cria em BF16 direto — evita custo de conversao float32->bf16 depois
@@ -933,8 +946,8 @@ def main():
     # e load_state_dict(strict=False) falha silenciosamente (loss volta a ~10.5 = random init).
     if not use_grad_ckpt:
         try:
-            model = torch.compile(model)
-            logger.info("torch.compile: ativado (mode=default)")
+            model = torch.compile(model, mode="max-autotune")
+            logger.info("torch.compile: ativado (mode=max-autotune)")
         except Exception as e:
             logger.info(f"torch.compile: falhou ({e}), seguindo sem")
     else:
@@ -979,7 +992,7 @@ def main():
         dataloader = DataLoader(
             dataset,
             batch_size=BATCH_SIZE,
-            num_workers=2,
+            num_workers=0,   # interleave_datasets nao e thread-safe com workers>0
             pin_memory=True,
         )
 

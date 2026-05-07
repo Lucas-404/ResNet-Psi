@@ -791,8 +791,7 @@ def main():
 
     # Hardware
     if not torch.cuda.is_available():
-        logger.info("ERRO: CUDA nao disponivel!")
-        sys.exit(1)
+        raise RuntimeError("CUDA nao disponivel!")
 
     # Verifica BF16 nativo (requer Ampere: A100, H100, RTX 30xx+)
     capability = torch.cuda.get_device_capability()
@@ -815,7 +814,7 @@ def main():
     if not os.path.exists(TOKENIZER_DIR):
         logger.info(f"ERRO: Tokenizer nao encontrado em {TOKENIZER_DIR}")
         logger.info("Execute primeiro: python train_tokenizer.py")
-        sys.exit(1)
+        raise RuntimeError(f"Tokenizer nao encontrado em {TOKENIZER_DIR}")
 
     tokenizer = PreTrainedTokenizerFast.from_pretrained(TOKENIZER_DIR)
     logger.info(f"Tokenizer: vocab_size={tokenizer.vocab_size}, "

@@ -1,0 +1,452 @@
+[
+  {
+    "id": "correcao_001",
+    "category": "correcao_redirecionamento",
+    "question": "Nao era isso que eu quis dizer. Tenta de novo de um jeito mais simples.",
+    "input": ""
+  },
+  {
+    "id": "correcao_002",
+    "category": "correcao_redirecionamento",
+    "question": "Voce entendeu errado. Eu queria uma resposta mais pratica, nao uma explicacao geral.",
+    "input": ""
+  },
+  {
+    "id": "correcao_003",
+    "category": "correcao_redirecionamento",
+    "question": "Tenta de novo, mas agora responde como se estivesse falando comigo em uma conversa normal.",
+    "input": ""
+  },
+  {
+    "id": "correcao_004",
+    "category": "correcao_redirecionamento",
+    "question": "Pode ser mais curto?",
+    "input": ""
+  },
+  {
+    "id": "correcao_005",
+    "category": "correcao_redirecionamento",
+    "question": "Pode explicar melhor?",
+    "input": ""
+  },
+  {
+    "id": "correcao_006",
+    "category": "correcao_redirecionamento",
+    "question": "Agora sim, continua nessa linha.",
+    "input": ""
+  },
+  {
+    "id": "correcao_007",
+    "category": "correcao_redirecionamento",
+    "question": "Isso ficou confuso. Reorganiza a resposta para eu entender melhor.",
+    "input": ""
+  },
+  {
+    "id": "correcao_008",
+    "category": "correcao_redirecionamento",
+    "question": "Voce pulou a parte principal. Volta e responde exatamente o que eu perguntei.",
+    "input": ""
+  },
+  {
+    "id": "correcao_009",
+    "category": "correcao_redirecionamento",
+    "question": "Nao precisa explicar tudo. Me da so o proximo passo.",
+    "input": ""
+  },
+  {
+    "id": "correcao_010",
+    "category": "correcao_redirecionamento",
+    "question": "Isso ficou muito tecnico. Pode traduzir para uma linguagem mais simples?",
+    "input": ""
+  },
+  {
+    "id": "correcao_011",
+    "category": "correcao_redirecionamento",
+    "question": "Isso ficou simples demais. Pode aprofundar um pouco?",
+    "input": ""
+  },
+  {
+    "id": "correcao_012",
+    "category": "correcao_redirecionamento",
+    "question": "Eu nao quero uma lista agora. Responde em texto corrido.",
+    "input": ""
+  },
+  {
+    "id": "correcao_013",
+    "category": "correcao_redirecionamento",
+    "question": "Eu prefiro em lista. Pode reformatar?",
+    "input": ""
+  },
+  {
+    "id": "correcao_014",
+    "category": "correcao_redirecionamento",
+    "question": "Voce esta assumindo coisa demais. Pergunta antes de concluir.",
+    "input": ""
+  },
+  {
+    "id": "correcao_015",
+    "category": "correcao_redirecionamento",
+    "question": "Nao tenho certeza se expliquei bem. Me diga o que voce entendeu ate agora.",
+    "input": ""
+  },
+  {
+    "id": "correcao_016",
+    "category": "correcao_redirecionamento",
+    "question": "Calma, vamos por partes. Primeiro me responde so a primeira parte.",
+    "input": ""
+  },
+  {
+    "id": "correcao_017",
+    "category": "correcao_redirecionamento",
+    "question": "A resposta ficou grande demais. Resume em duas frases.",
+    "input": ""
+  },
+  {
+    "id": "correcao_018",
+    "category": "correcao_redirecionamento",
+    "question": "A resposta ficou seca demais. Pode deixar mais natural?",
+    "input": ""
+  },
+  {
+    "id": "correcao_019",
+    "category": "correcao_redirecionamento",
+    "question": "Nao gostei do tom. Pode responder de um jeito mais amigavel?",
+    "input": ""
+  },
+  {
+    "id": "correcao_020",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder com mais cuidado e sem parecer que tem certeza absoluta?",
+    "input": ""
+  },
+  {
+    "id": "correcao_021",
+    "category": "correcao_redirecionamento",
+    "question": "Isso nao responde minha duvida. Reformula pensando no que eu realmente perguntei.",
+    "input": ""
+  },
+  {
+    "id": "correcao_022",
+    "category": "correcao_redirecionamento",
+    "question": "Voce foi para outro assunto. Volta para o ponto principal.",
+    "input": ""
+  },
+  {
+    "id": "correcao_023",
+    "category": "correcao_redirecionamento",
+    "question": "Nao quero teoria agora. Quero uma sugestao concreta.",
+    "input": ""
+  },
+  {
+    "id": "correcao_024",
+    "category": "correcao_redirecionamento",
+    "question": "Quero entender o motivo. Explica o por que da sua sugestao.",
+    "input": ""
+  },
+  {
+    "id": "correcao_025",
+    "category": "correcao_redirecionamento",
+    "question": "Pode dar um exemplo pequeno?",
+    "input": ""
+  },
+  {
+    "id": "correcao_026",
+    "category": "correcao_redirecionamento",
+    "question": "Pode dar um exemplo mais parecido com o meu caso?",
+    "input": ""
+  },
+  {
+    "id": "correcao_027",
+    "category": "correcao_redirecionamento",
+    "question": "Esse exemplo nao ajudou. Tenta outro mais simples.",
+    "input": ""
+  },
+  {
+    "id": "correcao_028",
+    "category": "correcao_redirecionamento",
+    "question": "Agora explica como se eu fosse iniciante.",
+    "input": ""
+  },
+  {
+    "id": "correcao_029",
+    "category": "correcao_redirecionamento",
+    "question": "Agora explica como se eu ja soubesse o basico.",
+    "input": ""
+  },
+  {
+    "id": "correcao_030",
+    "category": "correcao_redirecionamento",
+    "question": "Pode comparar as duas opcoes e dizer qual faz mais sentido?",
+    "input": ""
+  },
+  {
+    "id": "correcao_031",
+    "category": "correcao_redirecionamento",
+    "question": "Nao decide por mim. Me ajuda a pensar nos criterios.",
+    "input": ""
+  },
+  {
+    "id": "correcao_032",
+    "category": "correcao_redirecionamento",
+    "question": "Pode me fazer uma pergunta antes de responder?",
+    "input": ""
+  },
+  {
+    "id": "correcao_033",
+    "category": "correcao_redirecionamento",
+    "question": "Antes de continuar, confirma se voce entendeu meu objetivo.",
+    "input": ""
+  },
+  {
+    "id": "correcao_034",
+    "category": "correcao_redirecionamento",
+    "question": "O objetivo nao e esse. O objetivo e deixar o modelo mais conversacional.",
+    "input": ""
+  },
+  {
+    "id": "correcao_035",
+    "category": "correcao_redirecionamento",
+    "question": "Nao e para treinar agora. E so para preparar os dados.",
+    "input": ""
+  },
+  {
+    "id": "correcao_036",
+    "category": "correcao_redirecionamento",
+    "question": "Nao e para gerar resposta com o modelo pequeno. E para usar um modelo professor.",
+    "input": ""
+  },
+  {
+    "id": "correcao_037",
+    "category": "correcao_redirecionamento",
+    "question": "Isso e distilacao, nao chat comum. Responde considerando isso.",
+    "input": ""
+  },
+  {
+    "id": "correcao_038",
+    "category": "correcao_redirecionamento",
+    "question": "Pode explicar de novo, mas focando no fluxo completo?",
+    "input": ""
+  },
+  {
+    "id": "correcao_039",
+    "category": "correcao_redirecionamento",
+    "question": "Agora transforma isso em passos simples.",
+    "input": ""
+  },
+  {
+    "id": "correcao_040",
+    "category": "correcao_redirecionamento",
+    "question": "Agora transforma isso em uma decisao pratica.",
+    "input": ""
+  },
+  {
+    "id": "correcao_041",
+    "category": "correcao_redirecionamento",
+    "question": "Acho que voce esta complicando. Qual e a versao minima disso?",
+    "input": ""
+  },
+  {
+    "id": "correcao_042",
+    "category": "correcao_redirecionamento",
+    "question": "Isso parece bom, mas qual e o risco?",
+    "input": ""
+  },
+  {
+    "id": "correcao_043",
+    "category": "correcao_redirecionamento",
+    "question": "Pode apontar o ponto fraco dessa ideia?",
+    "input": ""
+  },
+  {
+    "id": "correcao_044",
+    "category": "correcao_redirecionamento",
+    "question": "Agora me fala o que voce faria primeiro.",
+    "input": ""
+  },
+  {
+    "id": "correcao_045",
+    "category": "correcao_redirecionamento",
+    "question": "Agora me fala o que voce nao faria ainda.",
+    "input": ""
+  },
+  {
+    "id": "correcao_046",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder como se estivesse me orientando em tempo real?",
+    "input": ""
+  },
+  {
+    "id": "correcao_047",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder sem enrolar?",
+    "input": ""
+  },
+  {
+    "id": "correcao_048",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder com um pouco mais de contexto?",
+    "input": ""
+  },
+  {
+    "id": "correcao_049",
+    "category": "correcao_redirecionamento",
+    "question": "Pode deixar a resposta menos robotica?",
+    "input": ""
+  },
+  {
+    "id": "correcao_050",
+    "category": "correcao_redirecionamento",
+    "question": "Pode deixar a resposta menos empolgada e mais objetiva?",
+    "input": ""
+  },
+  {
+    "id": "correcao_051",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder sem tentar agradar demais?",
+    "input": ""
+  },
+  {
+    "id": "correcao_052",
+    "category": "correcao_redirecionamento",
+    "question": "Pode discordar de mim se eu estiver indo pelo caminho errado?",
+    "input": ""
+  },
+  {
+    "id": "correcao_053",
+    "category": "correcao_redirecionamento",
+    "question": "Me corrige se minha ideia estiver errada.",
+    "input": ""
+  },
+  {
+    "id": "correcao_054",
+    "category": "correcao_redirecionamento",
+    "question": "Nao assume que eu quero codigo. Primeiro explica a ideia.",
+    "input": ""
+  },
+  {
+    "id": "correcao_055",
+    "category": "correcao_redirecionamento",
+    "question": "Agora sim pode falar de codigo, mas so o necessario.",
+    "input": ""
+  },
+  {
+    "id": "correcao_056",
+    "category": "correcao_redirecionamento",
+    "question": "Nao quero mexer nos arquivos ainda. So quero entender.",
+    "input": ""
+  },
+  {
+    "id": "correcao_057",
+    "category": "correcao_redirecionamento",
+    "question": "Pode parar e resumir onde estamos?",
+    "input": ""
+  },
+  {
+    "id": "correcao_058",
+    "category": "correcao_redirecionamento",
+    "question": "Pode continuar a partir daqui sem voltar para o comeco?",
+    "input": ""
+  },
+  {
+    "id": "correcao_059",
+    "category": "correcao_redirecionamento",
+    "question": "Agora que voce entendeu, qual e o proximo passo?",
+    "input": ""
+  },
+  {
+    "id": "correcao_060",
+    "category": "correcao_redirecionamento",
+    "question": "Perfeito, mas guarda essa direcao e nao muda de assunto.",
+    "input": ""
+  },
+  {
+    "id": "correcao_061",
+    "category": "correcao_redirecionamento",
+    "question": "Essa resposta ficou boa. Pode fazer outra no mesmo estilo?",
+    "input": ""
+  },
+  {
+    "id": "correcao_062",
+    "category": "correcao_redirecionamento",
+    "question": "Essa resposta ficou ruim. O que voce mudaria nela?",
+    "input": ""
+  },
+  {
+    "id": "correcao_063",
+    "category": "correcao_redirecionamento",
+    "question": "Compare sua resposta anterior com o que eu pedi e ajuste.",
+    "input": ""
+  },
+  {
+    "id": "correcao_064",
+    "category": "correcao_redirecionamento",
+    "question": "Voce respondeu como tutorial. Eu queria uma conversa.",
+    "input": ""
+  },
+  {
+    "id": "correcao_065",
+    "category": "correcao_redirecionamento",
+    "question": "Voce respondeu como conversa, mas eu precisava de uma instrucao clara.",
+    "input": ""
+  },
+  {
+    "id": "correcao_066",
+    "category": "correcao_redirecionamento",
+    "question": "Pode equilibrar conversa natural com instrucao pratica?",
+    "input": ""
+  },
+  {
+    "id": "correcao_067",
+    "category": "correcao_redirecionamento",
+    "question": "Agora reescreve a resposta como se eu fosse usar isso no meu projeto.",
+    "input": ""
+  },
+  {
+    "id": "correcao_068",
+    "category": "correcao_redirecionamento",
+    "question": "Agora reescreve pensando que eu sou iniciante.",
+    "input": ""
+  },
+  {
+    "id": "correcao_069",
+    "category": "correcao_redirecionamento",
+    "question": "Agora reescreve pensando que eu ja sei o contexto.",
+    "input": ""
+  },
+  {
+    "id": "correcao_070",
+    "category": "correcao_redirecionamento",
+    "question": "Pode remover o excesso e manter so o essencial?",
+    "input": ""
+  },
+  {
+    "id": "correcao_071",
+    "category": "correcao_redirecionamento",
+    "question": "Pode acrescentar o que faltou sem refazer tudo?",
+    "input": ""
+  },
+  {
+    "id": "correcao_072",
+    "category": "correcao_redirecionamento",
+    "question": "Pode continuar a resposta anterior a partir do ponto onde parou?",
+    "input": ""
+  },
+  {
+    "id": "correcao_073",
+    "category": "correcao_redirecionamento",
+    "question": "Pode terminar com uma pergunta curta para eu responder?",
+    "input": ""
+  },
+  {
+    "id": "correcao_074",
+    "category": "correcao_redirecionamento",
+    "question": "Nao termina a conversa ainda. Me deixa uma proxima acao clara.",
+    "input": ""
+  },
+  {
+    "id": "correcao_075",
+    "category": "correcao_redirecionamento",
+    "question": "Agora responde de novo, mas sem perder o que eu corrigi.",
+    "input": ""
+  }
+]

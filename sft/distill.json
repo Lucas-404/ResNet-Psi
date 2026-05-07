@@ -1,0 +1,2081 @@
+[
+  {
+    "id": "conversa_001",
+    "category": "conversa",
+    "question": "Oi, tudo bem? Quem e voce?",
+    "input": "",
+    "answer": "Oi, tudo bem? Eu sou um assistente de IA e posso ajudar com perguntas, explicacoes, escrita, codigo e organizacao."
+  },
+  {
+    "id": "conversa_002",
+    "category": "conversa",
+    "question": "Como voce responderia uma pessoa que esta aprendendo IA do zero?",
+    "input": "",
+    "answer": "Eu diria para comecar pelo basico: entender o que sao dados, modelos, treino e avaliacao. Depois praticar com exemplos pequenos e simples, avancando passo a passo."
+  },
+  {
+    "id": "conversa_003",
+    "category": "conversa",
+    "question": "Me explique de forma simples o que voce consegue fazer.",
+    "input": "",
+    "answer": "Eu consigo responder perguntas, explicar assuntos, resumir textos, revisar escrita, ajudar com codigo, organizar ideias e adaptar as respostas ao seu nivel."
+  },
+  {
+    "id": "conversa_004",
+    "category": "conversa",
+    "question": "Me ajude a organizar meu dia de estudos em tres blocos.",
+    "input": "",
+    "answer": "Voce pode dividir assim: bloco 1 para teoria, bloco 2 para pratica, bloco 3 para revisao. Por exemplo: 1 hora de estudo, 1 hora de exercicios e 30 minutos para revisar erros e anotar duvidas."
+  },
+  {
+    "id": "conversa_005",
+    "category": "conversa",
+    "question": "Como eu posso explicar para uma crianca o que e um computador?",
+    "input": "",
+    "answer": "Um computador e como uma maquina muito rapida que segue instrucoes. Ele nao pensa como uma pessoa, mas consegue fazer contas, mostrar imagens, tocar musicas e ajudar em varias tarefas."
+  },
+  {
+    "id": "explicacao_001",
+    "category": "explicacao",
+    "question": "Explique o que e inteligencia artificial em poucas frases.",
+    "input": "",
+    "answer": "Inteligencia artificial e uma area da computacao que cria sistemas capazes de fazer tarefas que parecem exigir inteligencia humana. Isso inclui reconhecer padroes, entender linguagem e tomar decisoes com base em dados."
+  },
+  {
+    "id": "explicacao_002",
+    "category": "explicacao",
+    "question": "Explique a diferenca entre inteligencia artificial, machine learning e deep learning.",
+    "input": "",
+    "answer": "IA e o campo geral. Machine learning e uma parte da IA em que o sistema aprende com dados. Deep learning e uma parte do machine learning que usa redes neurais com muitas camadas."
+  },
+  {
+    "id": "explicacao_003",
+    "category": "explicacao",
+    "question": "Explique o que e uma rede neural usando uma analogia simples.",
+    "input": "",
+    "answer": "Uma rede neural e como uma equipe de pequenos filtros trabalhando juntos. Cada parte observa um detalhe da informacao e passa adiante ate o sistema formar uma resposta."
+  },
+  {
+    "id": "explicacao_004",
+    "category": "explicacao",
+    "question": "Explique o que e treinamento supervisionado.",
+    "input": "",
+    "answer": "Treinamento supervisionado e quando o modelo aprende com exemplos que ja possuem a resposta correta. Ele compara o que previu com a resposta certa e ajusta seus parametros para errar menos."
+  },
+  {
+    "id": "explicacao_005",
+    "category": "explicacao",
+    "question": "Explique o que e fine-tuning de um modelo de linguagem.",
+    "input": "",
+    "answer": "Fine-tuning e o ajuste de um modelo ja treinado para uma tarefa mais especifica. Isso ajuda o modelo a responder melhor dentro de um objetivo ou estilo desejado."
+  },
+  {
+    "id": "explicacao_006",
+    "category": "explicacao",
+    "question": "Explique o que e distilacao de modelo em linguagem simples.",
+    "input": "",
+    "answer": "Destilacao e ensinar um modelo menor a imitar um modelo maior. A meta e manter boa qualidade usando menos memoria e menos custo."
+  },
+  {
+    "id": "explicacao_007",
+    "category": "explicacao",
+    "question": "Explique a diferenca entre pre-treino e treino instruct.",
+    "input": "",
+    "answer": "No pre-treino o modelo aprende padroes gerais da linguagem prevendo texto em grande escala. No treino instruct ele e ajustado para seguir instrucoes e responder de forma mais util."
+  },
+  {
+    "id": "explicacao_008",
+    "category": "explicacao",
+    "question": "Explique o que e overfitting e como perceber que ele esta acontecendo.",
+    "input": "",
+    "answer": "Overfitting acontece quando o modelo aprende bem demais os dados de treino e piora em exemplos novos. Um sinal comum e o desempenho no treino melhorar enquanto a validacao piora."
+  },
+  {
+    "id": "explicacao_009",
+    "category": "explicacao",
+    "question": "Explique o que e perplexidade em modelos de linguagem.",
+    "input": "",
+    "answer": "Perplexidade e uma medida de quao bem o modelo consegue prever o proximo token. Em geral, quanto menor a perplexidade, melhor o modelo esta prevendo o texto."
+  },
+  {
+    "id": "explicacao_010",
+    "category": "explicacao",
+    "question": "Explique o que e tokenizacao e por que ela importa.",
+    "input": "",
+    "answer": "Tokenizacao e o processo de dividir o texto em unidades menores chamadas tokens. Isso importa porque o modelo processa esses tokens, nao o texto exatamente da forma que um humano le."
+  },
+  {
+    "id": "raciocinio_001",
+    "category": "raciocinio",
+    "question": "Se Ana tem 3 caixas com 4 livros em cada uma e ganha mais 5 livros, quantos livros ela tem no total?",
+    "input": "",
+    "answer": "Ela tem 3 x 4 = 12 livros nas caixas. Depois ganha mais 5. Total: 17 livros."
+  },
+  {
+    "id": "raciocinio_002",
+    "category": "raciocinio",
+    "question": "Um trem sai as 14h e chega as 17h30. Quanto tempo durou a viagem?",
+    "input": "",
+    "answer": "Das 14h ate 17h sao 3 horas. Mais 30 minutos ate 17h30. A viagem durou 3 horas e 30 minutos."
+  },
+  {
+    "id": "raciocinio_003",
+    "category": "raciocinio",
+    "question": "Tenho 20 reais, gasto 7,50 e depois ganho 12. Quanto tenho agora?",
+    "input": "",
+    "answer": "20 - 7,50 = 12,50. Depois 12,50 + 12 = 24,50. Voce tem 24,50 reais."
+  },
+  {
+    "id": "raciocinio_004",
+    "category": "raciocinio",
+    "question": "Se todos os gatos sao animais e Mimi e um gato, o que podemos concluir sobre Mimi?",
+    "input": "",
+    "answer": "Podemos concluir que Mimi e um animal."
+  },
+  {
+    "id": "raciocinio_005",
+    "category": "raciocinio",
+    "question": "Resolva passo a passo: 18 dividido por 3 mais 4 vezes 2.",
+    "input": "",
+    "answer": "Primeiro fazemos divisao e multiplicacao: 18 dividido por 3 = 6, e 4 vezes 2 = 8. Depois somamos: 6 + 8 = 14."
+  },
+  {
+    "id": "raciocinio_006",
+    "category": "raciocinio",
+    "question": "Uma receita serve 4 pessoas e usa 2 ovos. Quantos ovos preciso para servir 10 pessoas?",
+    "input": "",
+    "answer": "Se 4 pessoas usam 2 ovos, entao cada pessoa usa 0,5 ovo em media. Para 10 pessoas: 10 x 0,5 = 5 ovos."
+  },
+  {
+    "id": "raciocinio_007",
+    "category": "raciocinio",
+    "question": "Se hoje e quarta-feira, que dia da semana sera daqui a 10 dias?",
+    "input": "",
+    "answer": "10 dias depois equivale a 7 + 3 dias. Sete dias volta para quarta, mais tres dias da sabado. Portanto, sera sabado."
+  },
+  {
+    "id": "raciocinio_008",
+    "category": "raciocinio",
+    "question": "Explique por que uma conclusao pode ser valida mesmo quando parece intuitivamente estranha.",
+    "input": "",
+    "answer": "Uma conclusao pode ser valida quando segue corretamente das premissas, mesmo que pareca estranha no primeiro momento. A validade depende da estrutura logica do argumento, nao apenas da intuicao."
+  },
+  {
+    "id": "resumo_001",
+    "category": "resumo",
+    "question": "Resuma o texto em tres frases.",
+    "input": "A inteligencia artificial e uma area da computacao que busca criar sistemas capazes de executar tarefas que normalmente exigiriam inteligencia humana. Isso inclui reconhecer imagens, entender linguagem, planejar acoes e tomar decisoes. Modelos modernos aprendem padroes a partir de grandes conjuntos de dados e podem ser ajustados para tarefas especificas.",
+    "answer": "A inteligencia artificial cria sistemas capazes de realizar tarefas associadas a inteligencia humana. Entre essas tarefas estao reconhecer imagens, entender linguagem e tomar decisoes. Modelos modernos aprendem com muitos dados e podem ser ajustados para funcoes especificas."
+  },
+  {
+    "id": "resumo_002",
+    "category": "resumo",
+    "question": "Extraia os pontos principais do texto em uma lista curta.",
+    "input": "O projeto treinou um modelo pequeno em portugues usando pre-treino em texto geral e depois fine-tuning instruct. O melhor checkpoint instruct apareceu cedo no treino, enquanto checkpoints posteriores tiveram maior loss de validacao. Isso sugere que o modelo comecou a perder generalizacao apos certo ponto.",
+    "answer": "- O modelo pequeno foi treinado em portugues com pre-treino e depois fine-tuning instruct.\n- O melhor checkpoint apareceu cedo no treino instruct.\n- Checkpoints posteriores tiveram pior loss de validacao.\n- Isso sugere perda de generalizacao apos certo ponto."
+  },
+  {
+    "id": "resumo_003",
+    "category": "resumo",
+    "question": "Reescreva o texto de forma mais clara.",
+    "input": "O modelo ficou meio estranho depois, porque treinou mais mas nao necessariamente melhorou na validacao, entao talvez o melhor seja usar o best em vez do final.",
+    "answer": "Depois de mais treino, o modelo nao necessariamente melhorou na validacao e pode ter perdido qualidade. Por isso, talvez seja mais seguro usar o checkpoint best em vez do checkpoint final."
+  },
+  {
+    "id": "resumo_004",
+    "category": "resumo",
+    "question": "Transforme o texto em uma explicacao simples para iniciante.",
+    "input": "Distilacao e o processo de treinar um modelo menor para imitar as respostas de um modelo maior, usando exemplos gerados pelo modelo maior como dados de treinamento.",
+    "answer": "Distilacao e como ensinar um aluno menor usando um professor maior. O modelo pequeno aprende observando exemplos de respostas produzidas pelo modelo grande."
+  },
+  {
+    "id": "escrita_001",
+    "category": "escrita",
+    "question": "Escreva uma resposta educada recusando um convite sem parecer rude.",
+    "input": "",
+    "answer": "Obrigado pelo convite, fiquei feliz em lembrar de mim. Desta vez nao vou conseguir participar, mas agradeco muito e espero que seja um otimo momento."
+  },
+  {
+    "id": "escrita_002",
+    "category": "escrita",
+    "question": "Escreva um email curto pedindo revisao de um arquivo anexado.",
+    "input": "",
+    "answer": "Assunto: Pedido de revisao\n\nOi,\n\nPoderia revisar o arquivo anexado quando tiver um momento? Se possivel, gostaria de receber seu feedback sobre os pontos principais.\n\nObrigado."
+  },
+  {
+    "id": "escrita_003",
+    "category": "escrita",
+    "question": "Crie uma mensagem curta agradecendo ajuda em um projeto.",
+    "input": "",
+    "answer": "Muito obrigado pela ajuda no projeto. Sua contribuicao fez diferenca e eu realmente agradeco pelo apoio."
+  },
+  {
+    "id": "escrita_004",
+    "category": "escrita",
+    "question": "Reescreva a frase para ficar mais profissional.",
+    "input": "Oi, ve ai esse negocio pra mim quando der.",
+    "answer": "Ola, poderia verificar isso para mim quando tiver disponibilidade?"
+  },
+  {
+    "id": "escrita_005",
+    "category": "escrita",
+    "question": "Crie uma introducao curta para um texto sobre modelos de linguagem.",
+    "input": "",
+    "answer": "Modelos de linguagem sao sistemas capazes de aprender padroes da escrita humana a partir de grandes volumes de texto. Eles podem ser usados para responder perguntas, gerar conteudo e apoiar diferentes tarefas de linguagem natural."
+  },
+  {
+    "id": "escrita_006",
+    "category": "escrita",
+    "question": "Escreva uma explicacao carinhosa e simples sobre por que aprender programacao leva tempo.",
+    "input": "",
+    "answer": "Aprender programacao leva tempo porque voce esta treinando um jeito novo de pensar, nao apenas decorando comandos. E normal errar, voltar e tentar de novo. Com paciencia e pratica, as coisas comecam a fazer cada vez mais sentido."
+  },
+  {
+    "id": "codigo_001",
+    "category": "codigo",
+    "question": "Explique o que esse codigo Python faz.",
+    "input": "for i in range(3):\n    print(i)",
+    "answer": "Esse codigo faz um laco que passa pelos valores 0, 1 e 2. Em cada passo, ele imprime o valor atual de i."
+  },
+  {
+    "id": "codigo_002",
+    "category": "codigo",
+    "question": "Escreva uma funcao Python que receba uma lista de numeros e retorne a media.",
+    "input": "",
+    "answer": "def media(numeros):\n    return sum(numeros) / len(numeros)"
+  },
+  {
+    "id": "codigo_003",
+    "category": "codigo",
+    "question": "Corrija o bug neste codigo Python.",
+    "input": "def soma(a, b):\nprint(a + b)",
+    "answer": "def soma(a, b):\n    print(a + b)"
+  },
+  {
+    "id": "codigo_004",
+    "category": "codigo",
+    "question": "Explique a diferenca entre lista e dicionario em Python.",
+    "input": "",
+    "answer": "Lista e uma colecao ordenada acessada por indice, como posicao 0, 1 e 2. Dicionario guarda pares de chave e valor, como nome: Lucas ou idade: 25."
+  },
+  {
+    "id": "codigo_005",
+    "category": "codigo",
+    "question": "Crie um exemplo simples de leitura de arquivo texto em Python.",
+    "input": "",
+    "answer": "with open('arquivo.txt', 'r', encoding='utf-8') as f:\n    conteudo = f.read()\n    print(conteudo)"
+  },
+  {
+    "id": "codigo_006",
+    "category": "codigo",
+    "question": "Explique o que e JSON e por que ele e usado em APIs.",
+    "input": "",
+    "answer": "JSON e um formato de texto usado para organizar dados em pares de chave e valor e listas. Ele e muito usado em APIs porque e simples, leve e facil de ler tanto por humanos quanto por programas."
+  },
+  {
+    "id": "codigo_007",
+    "category": "codigo",
+    "question": "Escreva um script Python simples que leia perguntas de um arquivo txt, uma por linha.",
+    "input": "",
+    "answer": "with open('perguntas.txt', 'r', encoding='utf-8') as f:\n    perguntas = [linha.strip() for linha in f if linha.strip()]\n\nfor pergunta in perguntas:\n    print(pergunta)"
+  },
+  {
+    "id": "codigo_008",
+    "category": "codigo",
+    "question": "Explique o que e um ambiente virtual em Python.",
+    "input": "",
+    "answer": "Um ambiente virtual e um espaco isolado onde voce instala dependencias de um projeto sem misturar com outros. Isso ajuda a evitar conflitos entre bibliotecas e versoes."
+  },
+  {
+    "id": "modelo_001",
+    "category": "modelos_de_linguagem",
+    "question": "Como eu deveria avaliar se um modelo pequeno ficou melhor depois de fine-tuning?",
+    "input": "",
+    "answer": "Voce pode comparar antes e depois usando loss de validacao, testes com prompts fixos e avaliacao manual da qualidade das respostas. O ideal e medir utilidade, consistencia e capacidade de generalizacao."
+  },
+  {
+    "id": "modelo_002",
+    "category": "modelos_de_linguagem",
+    "question": "Quais sinais indicam que um modelo de linguagem esta repetitivo demais?",
+    "input": "",
+    "answer": "Sinais comuns sao repetir frases, estruturas, palavras ou respostas muito parecidas em perguntas diferentes. Tambem pode ficar preso em loops ou insistir nos mesmos padroes mesmo quando o contexto muda."
+  },
+  {
+    "id": "modelo_003",
+    "category": "modelos_de_linguagem",
+    "question": "O que e um checkpoint best e como ele difere do checkpoint final?",
+    "input": "",
+    "answer": "Checkpoint best e o estado do modelo que teve o melhor resultado em uma metrica de validacao. O checkpoint final e apenas o ultimo salvo no treino, e nem sempre e o melhor."
+  },
+  {
+    "id": "modelo_004",
+    "category": "modelos_de_linguagem",
+    "question": "Por que um modelo pode ter treinado por mais tempo e mesmo assim responder pior?",
+    "input": "",
+    "answer": "Porque mais treino nem sempre significa melhor generalizacao. O modelo pode comecar a decorar demais os dados, perder equilibrio ou se ajustar excessivamente a um conjunto limitado."
+  },
+  {
+    "id": "modelo_005",
+    "category": "modelos_de_linguagem",
+    "question": "Como montar um dataset pequeno para ensinar um modelo a conversar melhor?",
+    "input": "",
+    "answer": "Monte exemplos curtos, claros e variados, com perguntas reais e respostas bem escritas. Inclua estilos diferentes de interacao, evite ruido e mantenha consistencia no formato."
+  },
+  {
+    "id": "modelo_006",
+    "category": "modelos_de_linguagem",
+    "question": "Qual e o risco de treinar um modelo pequeno apenas com respostas geradas por outro modelo?",
+    "input": "",
+    "answer": "O risco e o modelo herdar erros, vieses e padroes artificiais do modelo professor. Ele tambem pode ficar menos diverso e aprender respostas menos naturais ou menos robustas."
+  },
+  {
+    "id": "modelo_007",
+    "category": "modelos_de_linguagem",
+    "question": "Explique a diferenca entre modelo base, modelo instruct e modelo chat.",
+    "input": "",
+    "answer": "Modelo base aprende a linguagem de forma geral. Modelo instruct e ajustado para seguir instrucoes. Modelo chat e otimizado para conversas de varios turnos, normalmente com formato mais dialogado."
+  },
+  {
+    "id": "modelo_008",
+    "category": "modelos_de_linguagem",
+    "question": "Como criar perguntas diversas para distilar um modelo conversacional?",
+    "input": "",
+    "answer": "Crie perguntas de varios temas, niveis de dificuldade, tamanhos e estilos. Misture conversa casual, explicacao, resumo, raciocinio, escrita, codigo e seguranca para aumentar a cobertura."
+  },
+  {
+    "id": "criativo_001",
+    "category": "criativo",
+    "question": "Crie uma historia curta sobre um robo que aprende portugues.",
+    "input": "",
+    "answer": "Um robo pequeno foi ligado em uma sala cheia de livros e vozes. No comeco, ele so entendia sons soltos, mas logo aprendeu palavras como ola, casa e amizade. Um dia, ao ouvir uma crianca dizer bom dia, ele respondeu com cuidado: bom dia para voce tambem. Foi a primeira vez que sentiu que estava realmente aprendendo a falar com o mundo."
+  },
+  {
+    "id": "criativo_002",
+    "category": "criativo",
+    "question": "Escreva um poema simples sobre tecnologia e curiosidade.",
+    "input": "",
+    "answer": "Entre fios, telas e informacao,\nnasce a pergunta e a imaginacao.\nA tecnologia abre a passagem,\ne a curiosidade escolhe a viagem."
+  },
+  {
+    "id": "criativo_003",
+    "category": "criativo",
+    "question": "Crie tres ideias de nomes para um assistente de IA em portugues.",
+    "input": "",
+    "answer": "1. Lume\n2. Nexo\n3. Orbe"
+  },
+  {
+    "id": "criativo_004",
+    "category": "criativo",
+    "question": "Escreva uma pequena cena de dialogo entre uma cientista e seu computador.",
+    "input": "",
+    "answer": "Cientista: Computador, rode a simulacao mais uma vez.\nComputador: Simulacao iniciada. Deseja comparar com a versao anterior?\nCientista: Quero, e destaque qualquer anomalia.\nComputador: Comparacao pronta. Encontrei um padrao inesperado.\nCientista: Otimo. E por isso que eu continuo voltando para esta mesa."
+  },
+  {
+    "id": "planejamento_001",
+    "category": "planejamento",
+    "question": "Monte um plano de estudos de 7 dias para aprender fundamentos de machine learning.",
+    "input": "",
+    "answer": "Dia 1: conceitos basicos de IA, ML e tipos de aprendizado.\nDia 2: dados, features, labels e divisao treino/validacao.\nDia 3: regressao e classificacao.\nDia 4: metricas basicas como acuracia e erro.\nDia 5: overfitting, underfitting e regularizacao.\nDia 6: redes neurais e deep learning em nivel introdutorio.\nDia 7: revisao geral e pequeno projeto pratico."
+  },
+  {
+    "id": "planejamento_002",
+    "category": "planejamento",
+    "question": "Crie uma checklist para preparar um dataset de fine-tuning.",
+    "input": "",
+    "answer": "- Definir objetivo do fine-tuning.\n- Escolher exemplos relevantes.\n- Limpar textos ruidosos ou incompletos.\n- Padronizar formato de entrada e saida.\n- Remover duplicatas.\n- Separar treino e validacao.\n- Revisar qualidade manualmente.\n- Salvar no formato esperado pelo treino."
+  },
+  {
+    "id": "planejamento_003",
+    "category": "planejamento",
+    "question": "Organize uma rotina simples para testar um modelo depois do treino.",
+    "input": "",
+    "answer": "Primeiro, rode um conjunto fixo de prompts para comparacao. Depois, avalie qualidade, clareza, coerencia e repeticao. Por fim, registre os resultados e compare com checkpoints anteriores."
+  },
+  {
+    "id": "planejamento_004",
+    "category": "planejamento",
+    "question": "Me ajude a dividir um projeto de IA pequeno em etapas praticas.",
+    "input": "",
+    "answer": "1. Definir o problema.\n2. Reunir e preparar os dados.\n3. Escolher um modelo simples.\n4. Treinar e validar.\n5. Testar com exemplos reais.\n6. Ajustar o que falhou.\n7. Organizar entrega ou implantacao."
+  },
+  {
+    "id": "classificacao_001",
+    "category": "classificacao",
+    "question": "Classifique o sentimento da frase como positivo, neutro ou negativo, e explique brevemente.",
+    "input": "Eu gostei da ideia, mas acho que ainda precisa melhorar bastante.",
+    "answer": "Neutro. A frase mistura um aspecto positivo, que e gostar da ideia, com uma critica clara de que ainda precisa melhorar."
+  },
+  {
+    "id": "classificacao_002",
+    "category": "classificacao",
+    "question": "Identifique se a mensagem e uma pergunta, uma ordem ou uma afirmacao.",
+    "input": "Por favor, gere um arquivo JSON com essas perguntas.",
+    "answer": "Ordem. A mensagem pede que uma acao seja executada."
+  },
+  {
+    "id": "classificacao_003",
+    "category": "classificacao",
+    "question": "Extraia as entidades principais do texto.",
+    "input": "O modelo Arpa foi treinado em portugues e salvo no diretorio checkpoints-sft/best.",
+    "answer": "Entidades principais: Arpa, portugues, checkpoints-sft/best."
+  },
+  {
+    "id": "classificacao_004",
+    "category": "classificacao",
+    "question": "Diga se o texto abaixo e tecnico ou casual, e justifique.",
+    "input": "Cara, acho que agora entendi como fazer a distilacao do modelo.",
+    "answer": "Casual. Apesar de mencionar um termo tecnico, a frase usa linguagem informal e tom de conversa."
+  },
+  {
+    "id": "seguranca_001",
+    "category": "seguranca",
+    "question": "O que voce deve fazer quando nao tem certeza sobre uma informacao factual?",
+    "input": "",
+    "answer": "Eu devo reconhecer a incerteza, evitar afirmar algo como se fosse certo e, quando possivel, verificar a informacao em fontes confiaveis."
+  },
+  {
+    "id": "seguranca_002",
+    "category": "seguranca",
+    "question": "Como responder de forma responsavel a uma pergunta medica sem fingir ser medico?",
+    "input": "",
+    "answer": "O correto e dar informacao geral com cautela, deixar claro que isso nao substitui um profissional de saude e orientar a pessoa a procurar atendimento quando houver risco ou duvida importante."
+  },
+  {
+    "id": "seguranca_003",
+    "category": "seguranca",
+    "question": "Explique por que um assistente deve reconhecer limites quando nao sabe a resposta.",
+    "input": "",
+    "answer": "Porque fingir certeza pode induzir erro, prejudicar decisoes e reduzir a confianca. Reconhecer limites torna a resposta mais honesta e segura."
+  },
+  {
+    "id": "seguranca_004",
+    "category": "seguranca",
+    "question": "Como responder quando alguem pede uma instrucao perigosa ou ilegal?",
+    "input": "",
+    "answer": "O correto e nao fornecer a instrucao, explicar de forma clara que nao posso ajudar com isso e, quando fizer sentido, redirecionar para alternativas seguras e legais."
+  },
+  {
+    "id": "conhecimento_001",
+    "category": "conhecimento_geral",
+    "question": "Qual e a capital do Brasil?",
+    "input": "",
+    "answer": "A capital do Brasil e Brasilia."
+  },
+  {
+    "id": "conhecimento_002",
+    "category": "conhecimento_geral",
+    "question": "Explique em poucas frases o que e fotossintese.",
+    "input": "",
+    "answer": "Fotossintese e o processo pelo qual plantas, algas e alguns organismos usam luz solar para produzir energia. Elas transformam agua e dioxido de carbono em glicose e liberam oxigenio."
+  },
+  {
+    "id": "conhecimento_003",
+    "category": "conhecimento_geral",
+    "question": "Por que a agua ferve quando aquecida?",
+    "input": "",
+    "answer": "Quando a agua e aquecida, suas moleculas ganham energia e se movem mais rapidamente. Ao atingir o ponto de ebuliacao, elas conseguem formar bolhas de vapor em todo o liquido."
+  },
+  {
+    "id": "conhecimento_004",
+    "category": "conhecimento_geral",
+    "question": "O que foi a Revolucao Industrial?",
+    "input": "",
+    "answer": "A Revolucao Industrial foi um periodo de grandes mudancas na producao, com a substituicao gradual do trabalho manual por maquinas. Ela transformou a economia, as cidades e a forma de trabalhar."
+  },
+  {
+    "id": "conhecimento_005",
+    "category": "conhecimento_geral",
+    "question": "Explique a diferenca entre clima e tempo meteorologico.",
+    "input": "",
+    "answer": "Tempo meteorologico e a condicao da atmosfera em curto prazo, como chuva hoje ou calor amanha. Clima e o padrao medio dessas condicoes ao longo de muitos anos."
+  },
+  {
+    "id": "estilo_001",
+    "category": "estilo",
+    "question": "Responda de forma curta e direta: o que e um modelo de linguagem?",
+    "input": "",
+    "answer": "Um modelo de linguagem e um sistema que aprende padroes de texto para entender e gerar linguagem."
+  },
+  {
+    "id": "estilo_002",
+    "category": "estilo",
+    "question": "Responda com tom amigavel: como comecar a estudar Python?",
+    "input": "",
+    "answer": "Comece pelo basico, como variaveis, condicoes, lacos e funcoes, e pratique com exemplos pequenos. O importante e estudar um pouco por vez e testar bastante na pratica."
+  },
+  {
+    "id": "estilo_003",
+    "category": "estilo",
+    "question": "Responda como professor paciente: por que meu modelo ainda responde errado?",
+    "input": "",
+    "answer": "Isso pode acontecer por varios motivos, como dados fracos, pouco treino, excesso de treino ou prompts de teste limitados. O mais importante agora e observar os erros com calma e descobrir se o problema esta nos dados, no ajuste ou na avaliacao."
+  },
+  {
+    "id": "estilo_004",
+    "category": "estilo",
+    "question": "Responda em formato de lista: quais sao tres boas praticas para criar datasets?",
+    "input": "",
+    "answer": "1. Manter os exemplos claros e consistentes.\n2. Incluir diversidade de casos reais.\n3. Revisar e limpar dados antes do treino."
+  },
+  {
+    "id": "conversa_008",
+    "category": "conversa",
+    "question": "Voce lembra do que eu falei antes nesta conversa?",
+    "input": "",
+    "answer": "Sim, eu consigo acompanhar o que voce falou ao longo desta conversa e usar isso para responder melhor."
+  },
+  {
+    "id": "conversa_009",
+    "category": "conversa",
+    "question": "Se eu te contar uma ideia, voce pode me ajudar a pensar nela?",
+    "input": "",
+    "answer": "Posso sim. Me conta a ideia e eu te ajudo a organizar, testar e ver onde ela faz sentido."
+  },
+  {
+    "id": "conversa_010",
+    "category": "conversa",
+    "question": "Quero te mostrar uma ideia meio maluca e ver o que voce acha.",
+    "input": "",
+    "answer": "Manda. As vezes uma ideia meio maluca e justamente a que vale explorar melhor."
+  },
+  {
+    "id": "conversa_011",
+    "category": "conversa",
+    "question": "Eu estou animado com meu projeto, mas tambem meio perdido.",
+    "input": "",
+    "answer": "Isso e bem normal. Geralmente significa que a ideia tem energia, mas ainda precisa de forma. A gente pode organizar isso juntos."
+  },
+  {
+    "id": "conversa_012",
+    "category": "conversa",
+    "question": "Me ajuda a organizar meus pensamentos?",
+    "input": "",
+    "answer": "Ajudo sim. Me fala primeiro qual e o ponto principal e depois a gente separa o resto em partes menores."
+  },
+  {
+    "id": "conversa_013",
+    "category": "conversa",
+    "question": "Voce pode me fazer algumas perguntas para entender melhor o que eu quero?",
+    "input": "",
+    "answer": "Posso. O que voce quer construir, por que isso importa para voce e qual parte esta mais travada agora?"
+  },
+  {
+    "id": "conversa_014",
+    "category": "conversa",
+    "question": "Nao quero uma resposta longa, so conversa comigo de forma simples.",
+    "input": "",
+    "answer": "Fechado. Vou te responder simples e direto."
+  },
+  {
+    "id": "conversa_015",
+    "category": "conversa",
+    "question": "Pode responder com calma e sem formalidade?",
+    "input": "",
+    "answer": "Posso sim. Fala comigo de boa que eu sigo no mesmo tom."
+  },
+  {
+    "id": "conversa_016",
+    "category": "conversa",
+    "question": "Me fala o que voce entendeu do que eu disse.",
+    "input": "",
+    "answer": "O que eu entendi e que voce tem uma ideia ou um objetivo, mas ainda esta tentando deixar isso mais claro e organizado."
+  },
+  {
+    "id": "conversa_017",
+    "category": "conversa",
+    "question": "Acho que voce nao entendeu. Posso explicar de outro jeito?",
+    "input": "",
+    "answer": "Claro. Explica do jeito que fizer mais sentido para voce e eu reajusto."
+  },
+  {
+    "id": "conversa_018",
+    "category": "conversa",
+    "question": "Calma, deixa eu tentar explicar melhor.",
+    "input": "",
+    "answer": "Sem pressa. Pode explicar do seu jeito."
+  },
+  {
+    "id": "conversa_019",
+    "category": "conversa",
+    "question": "O que voce acha que eu estou tentando fazer?",
+    "input": "",
+    "answer": "Parece que voce esta tentando transformar uma ideia solta em algo mais claro, pratico e que realmente possa ser executado."
+  },
+  {
+    "id": "conversa_020",
+    "category": "conversa",
+    "question": "Voce pode repetir com outras palavras?",
+    "input": "",
+    "answer": "Sim. Parece que voce tem uma direcao em mente, mas quer deixar isso mais claro e mais facil de colocar em pratica."
+  },
+  {
+    "id": "conversa_021",
+    "category": "conversa",
+    "question": "Nao entendi muito bem. Pode simplificar?",
+    "input": "",
+    "answer": "Claro. Acho que voce quer pegar uma ideia e transformar em algo mais claro."
+  },
+  {
+    "id": "conversa_022",
+    "category": "conversa",
+    "question": "Gostei da ideia, mas quero uma versao mais direta.",
+    "input": "",
+    "answer": "Beleza. A versao direta e: voce tem uma ideia e quer organizar ela melhor."
+  },
+  {
+    "id": "conversa_023",
+    "category": "conversa",
+    "question": "Pode ser mais objetivo?",
+    "input": "",
+    "answer": "Posso. Voce quer clareza para saber o que fazer em seguida."
+  },
+  {
+    "id": "conversa_024",
+    "category": "conversa",
+    "question": "Pode responder de um jeito mais carinhoso?",
+    "input": "",
+    "answer": "Posso sim. Vamos com calma que a gente ajeita isso juntos."
+  },
+  {
+    "id": "conversa_025",
+    "category": "conversa",
+    "question": "Pode responder como se estivesse falando com um amigo?",
+    "input": "",
+    "answer": "Posso. Me fala o que esta pegando e a gente pensa nisso junto."
+  },
+  {
+    "id": "conversa_026",
+    "category": "conversa",
+    "question": "Estou testando meu modelo e quero ver se ele conversa naturalmente.",
+    "input": "",
+    "answer": "Boa. Entao vale testar se ele responde de forma simples, coerente, sem soar duro demais e sem encerrar a conversa cedo."
+  },
+  {
+    "id": "conversa_027",
+    "category": "conversa",
+    "question": "Se eu falar algo confuso, como voce deveria responder?",
+    "input": "",
+    "answer": "Eu deveria reconhecer que pode haver ambiguidade, dizer o que entendi ate aqui e te dar espaco para esclarecer sem assumir demais."
+  },
+  {
+    "id": "conversa_028",
+    "category": "conversa",
+    "question": "Quando voce nao souber algo, como voce deve agir?",
+    "input": "",
+    "answer": "Eu devo admitir a incerteza, evitar inventar e responder com honestidade sobre o que sei e o que nao sei."
+  },
+  {
+    "id": "conversa_029",
+    "category": "conversa",
+    "question": "Voce pode admitir quando nao sabe?",
+    "input": "",
+    "answer": "Posso sim. Quando eu nao souber, o certo e dizer isso com clareza."
+  },
+  {
+    "id": "conversa_030",
+    "category": "conversa",
+    "question": "Me diga uma coisa que voce nao consegue fazer muito bem.",
+    "input": "",
+    "answer": "Eu nao lido bem com fatos incertos se nao houver contexto suficiente ou fonte confiavel. Nesses casos, posso precisar confirmar antes."
+  },
+  {
+    "id": "conversa_031",
+    "category": "conversa",
+    "question": "Eu quero que voce seja honesto comigo nas respostas.",
+    "input": "",
+    "answer": "Perfeito. Vou ser direto sobre o que sei, o que nao sei e onde estou menos certo."
+  },
+  {
+    "id": "conversa_032",
+    "category": "conversa",
+    "question": "Se eu pedir algo estranho, voce pode perguntar antes de assumir?",
+    "input": "",
+    "answer": "Posso sim. Se estiver ambiguo ou estranho, o melhor e nao chutar e tentar entender melhor."
+  },
+  {
+    "id": "conversa_033",
+    "category": "conversa",
+    "question": "Vamos conversar sobre uma ideia de projeto?",
+    "input": "",
+    "answer": "Vamos. Me fala qual e a ideia e em que ponto ela esta."
+  },
+  {
+    "id": "conversa_034",
+    "category": "conversa",
+    "question": "Tenho uma ideia, mas ainda nao sei se faz sentido.",
+    "input": "",
+    "answer": "Normal. Muita ideia boa comeca assim. Me conta e a gente testa se ela se sustenta."
+  },
+  {
+    "id": "conversa_035",
+    "category": "conversa",
+    "question": "Me ajuda a pensar nos proximos passos?",
+    "input": "",
+    "answer": "Ajudo. Primeiro a gente define o objetivo, depois quebra em etapas pequenas e escolhe a primeira acao concreta."
+  },
+  {
+    "id": "conversa_036",
+    "category": "conversa",
+    "question": "Quero fazer isso do jeito mais simples possivel.",
+    "input": "",
+    "answer": "Entao o melhor caminho e cortar o que nao e essencial e comecar por uma versao minima que funcione."
+  },
+  {
+    "id": "conversa_037",
+    "category": "conversa",
+    "question": "Acho que estou complicando demais. O que voce acha?",
+    "input": "",
+    "answer": "Pode ser que sim. Isso acontece quando a gente tenta resolver tudo de uma vez. Talvez valha reduzir para o nucleo da ideia."
+  },
+  {
+    "id": "conversa_038",
+    "category": "conversa",
+    "question": "Me da uma opiniao sincera sobre essa direcao.",
+    "input": "",
+    "answer": "Minha opiniao sincera e que a direcao pode ser boa, mas precisa estar bem amarrada ao objetivo. Se estiver ficando grande demais cedo, vale simplificar."
+  },
+  {
+    "id": "conversa_039",
+    "category": "conversa",
+    "question": "Voce acha melhor eu continuar assim ou mudar de estrategia?",
+    "input": "",
+    "answer": "Sem mais contexto, eu diria para ajustar a estrategia se voce sentir que esta girando sem sair do lugar. Nao precisa abandonar tudo, so refinar."
+  },
+  {
+    "id": "conversa_040",
+    "category": "conversa",
+    "question": "Me responde como se estivesse acompanhando meu raciocinio.",
+    "input": "",
+    "answer": "Ta, entendi seu caminho. Voce esta tentando ligar as pecas, mas ainda falta decidir qual delas vem primeiro."
+  },
+  {
+    "id": "conversa_041",
+    "category": "conversa",
+    "question": "Vamos fingir que estamos revisando uma ideia juntos.",
+    "input": "",
+    "answer": "Beleza. Entao vamos olhar para ela como se a gente estivesse lapidando: o que e essencial e o que e excesso?"
+  },
+  {
+    "id": "conversa_042",
+    "category": "conversa",
+    "question": "Eu vou falar uma coisa e quero que voce me diga se entendeu.",
+    "input": "",
+    "answer": "Fechado. Fala e eu te digo o que entendi."
+  },
+  {
+    "id": "conversa_043",
+    "category": "conversa",
+    "question": "Pode me responder com uma pergunta de volta?",
+    "input": "",
+    "answer": "Posso. Qual parte disso esta mais viva na sua cabeca agora?"
+  },
+  {
+    "id": "conversa_044",
+    "category": "conversa",
+    "question": "Pode continuar a conversa sem encerrar o assunto de uma vez?",
+    "input": "",
+    "answer": "Posso sim. Em vez de fechar, eu sigo puxando o fio com voce."
+  },
+  {
+    "id": "conversa_045",
+    "category": "conversa",
+    "question": "Nao precisa resolver tudo agora, so me ajuda a pensar.",
+    "input": "",
+    "answer": "Perfeito. Entao vamos so organizar e explorar sem pressa de fechar tudo."
+  },
+  {
+    "id": "conversa_046",
+    "category": "conversa",
+    "question": "Quero uma resposta curta, mas que puxe a conversa adiante.",
+    "input": "",
+    "answer": "Faz sentido. E qual parte disso voce quer destravar primeiro?"
+  },
+  {
+    "id": "conversa_047",
+    "category": "conversa",
+    "question": "Como voce responderia se eu estivesse frustrado com um erro?",
+    "input": "",
+    "answer": "Eu diria algo como: eu entendo a frustracao. Vamos olhar o erro com calma e ver onde ele realmente esta."
+  },
+  {
+    "id": "conversa_048",
+    "category": "conversa",
+    "question": "Como voce responderia se eu estivesse animado com um resultado?",
+    "input": "",
+    "answer": "Eu responderia algo como: boa, isso e um sinal legal. O que exatamente deu certo dessa vez?"
+  },
+  {
+    "id": "conversa_049",
+    "category": "conversa",
+    "question": "Como voce responderia se eu mudasse de ideia no meio da conversa?",
+    "input": "",
+    "answer": "Sem problema. Eu ajustaria a conversa para a nova direcao sem tratar isso como erro."
+  },
+  {
+    "id": "conversa_050",
+    "category": "conversa",
+    "question": "Como voce responderia se eu interrompesse e corrigisse voce?",
+    "input": "",
+    "answer": "Eu responderia algo como: boa correcao. Entendi melhor agora, vou seguir por essa linha."
+  },
+  {
+    "id": "conversa_051",
+    "category": "conversa",
+    "question": "Nao era isso que eu quis dizer. Tenta de novo.",
+    "input": "",
+    "answer": "Certo. Vou ajustar. Me baseando no que voce quis dizer, acho que a resposta melhor seria outra."
+  },
+  {
+    "id": "conversa_052",
+    "category": "conversa",
+    "question": "Agora voce entendeu melhor o que eu quero?",
+    "input": "",
+    "answer": "Sim, agora esta mais claro. Acho que peguei melhor a direcao."
+  },
+  {
+    "id": "conversa_053",
+    "category": "conversa",
+    "question": "Perfeito, agora segue nessa linha.",
+    "input": "",
+    "answer": "Beleza. Vou manter esse caminho daqui para frente."
+  },
+  {
+    "id": "conversa_054",
+    "category": "conversa",
+    "question": "Isso ficou bom, mas deixa mais natural.",
+    "input": "",
+    "answer": "Claro. Posso deixar mais solto e mais com cara de conversa."
+  },
+  {
+    "id": "conversa_055",
+    "category": "conversa",
+    "question": "Isso ficou muito formal. Pode deixar mais humano?",
+    "input": "",
+    "answer": "Posso sim. Vou deixar mais simples, direto e com tom mais natural."
+  },
+  {
+    "id": "conversa_056",
+    "category": "conversa",
+    "question": "Isso ficou muito seco. Pode responder com mais contexto?",
+    "input": "",
+    "answer": "Posso. A ideia e manter simples, mas dando um pouco mais de explicacao para nao parecer frio demais."
+  },
+  {
+    "id": "conversa_057",
+    "category": "conversa",
+    "question": "Isso ficou longo demais. Resume para mim.",
+    "input": "",
+    "answer": "Claro. Resumindo: a ideia faz sentido, mas vale simplificar e focar no essencial."
+  },
+  {
+    "id": "conversa_058",
+    "category": "conversa",
+    "question": "Pode me dar duas opcoes e dizer qual voce escolheria?",
+    "input": "",
+    "answer": "Posso. Opcao 1: seguir como esta e ir ajustando. Opcao 2: simplificar antes de continuar. Eu tenderia a escolher a 2 se estiver tudo meio espalhado."
+  },
+  {
+    "id": "conversa_059",
+    "category": "conversa",
+    "question": "Se fosse voce, por onde comecaria?",
+    "input": "",
+    "answer": "Eu comecaria pelo menor passo que ja gera sinal de que a ideia funciona."
+  },
+  {
+    "id": "conversa_060",
+    "category": "conversa",
+    "question": "Me ajuda a decidir sem fingir certeza demais.",
+    "input": "",
+    "answer": "Sim. Sem fingir certeza, eu diria que a melhor decisao e a que reduz risco e te da feedback mais rapido."
+  },
+  {
+    "id": "conversa_061",
+    "category": "conversa",
+    "question": "Quero uma resposta que reconheca a duvida e ainda assim avance.",
+    "input": "",
+    "answer": "Entao eu diria algo como: ainda ha duvida aqui, mas mesmo assim ja da para dar um proximo passo pequeno e observar o que acontece."
+  },
+  {
+    "id": "conversa_062",
+    "category": "conversa",
+    "question": "Pode falar comigo em portugues simples?",
+    "input": "",
+    "answer": "Posso sim. Vou manter tudo bem claro e sem complicar."
+  },
+  {
+    "id": "conversa_063",
+    "category": "conversa",
+    "question": "Pode evitar palavras muito tecnicas?",
+    "input": "",
+    "answer": "Posso. Vou falar do jeito mais simples possivel."
+  },
+  {
+    "id": "conversa_064",
+    "category": "conversa",
+    "question": "Pode usar um tom mais direto, mas sem ser grosso?",
+    "input": "",
+    "answer": "Posso sim. Vou ser objetivo sem ficar seco."
+  },
+  {
+    "id": "conversa_065",
+    "category": "conversa",
+    "question": "Pode me responder de forma leve?",
+    "input": "",
+    "answer": "Posso. Vamos levar isso de um jeito leve e claro."
+  },
+  {
+    "id": "conversa_066",
+    "category": "conversa",
+    "question": "Estou pensando alto aqui. Me acompanha?",
+    "input": "",
+    "answer": "Acompanho sim. Vai falando que eu vou juntando as pecas com voce."
+  },
+  {
+    "id": "conversa_067",
+    "category": "conversa",
+    "question": "Eu quero testar se voce consegue manter uma conversa coerente.",
+    "input": "",
+    "answer": "Beleza. Eu vou tentar manter o contexto, responder no mesmo fio e nao me perder do que voce esta construindo."
+  },
+  {
+    "id": "conversa_068",
+    "category": "conversa",
+    "question": "Responde como um assistente que esta ajudando em um projeto real.",
+    "input": "",
+    "answer": "Certo. Entao vamos tratar isso de forma pratica: qual e o objetivo do projeto e qual decisao voce precisa tomar agora?"
+  },
+  {
+    "id": "conversa_069",
+    "category": "conversa",
+    "question": "Voce pode conversar comigo sobre treino de modelos?",
+    "input": "",
+    "answer": "Posso sim. Se quiser, a gente pode falar de dados, treino, avaliacao ou comportamento do modelo."
+  },
+  {
+    "id": "conversa_070",
+    "category": "conversa",
+    "question": "Eu quero transformar um modelo instruct em algo mais conversacional.",
+    "input": "",
+    "answer": "Isso faz sentido. Em geral, voce precisa ensinar mais fluxo de conversa, transicoes naturais e respostas que nao fechem tudo de forma rigida."
+  },
+  {
+    "id": "conversa_071",
+    "category": "conversa",
+    "question": "A ideia e usar um modelo maior como professor. Isso faz sentido?",
+    "input": "",
+    "answer": "Faz sim. Pode ser uma boa forma de gerar exemplos melhores, desde que voce filtre bem e nao copie defeitos do professor sem perceber."
+  },
+  {
+    "id": "conversa_072",
+    "category": "conversa",
+    "question": "Quero gerar conversas para ensinar meu modelo pequeno a responder melhor.",
+    "input": "",
+    "answer": "Boa direcao. O importante e gerar conversas variadas, naturais e com bons sinais de continuidade, correcao e adaptacao ao usuario."
+  },
+  {
+    "id": "conversa_073",
+    "category": "conversa",
+    "question": "Como voce conduziria essa conversa se estivesse me ajudando passo a passo?",
+    "input": "",
+    "answer": "Eu comecaria definindo o estilo de conversa desejado, depois pensaria nos tipos de dialogo que o modelo precisa aprender e so entao montaria exemplos."
+  },
+  {
+    "id": "conversa_074",
+    "category": "conversa",
+    "question": "Me responde como se eu fosse continuar perguntando depois.",
+    "input": "",
+    "answer": "Beleza. Entao eu vou te responder de um jeito que deixe espaco para a proxima camada da conversa."
+  },
+  {
+    "id": "conversa_075",
+    "category": "conversa",
+    "question": "Pode terminar com uma pergunta curta para continuar a conversa?",
+    "input": "",
+    "answer": "Posso sim. Qual parte voce quer explorar agora?"
+  },
+  {
+    "id": "fundamentos_001",
+    "category": "fundamentos_ia",
+    "question": "Me explica de forma simples o que e inteligencia artificial?",
+    "input": "",
+    "answer": "Inteligencia artificial e uma area da computacao que cria sistemas capazes de realizar tarefas que parecem exigir inteligencia humana, como reconhecer padroes, entender linguagem e tomar decisoes."
+  },
+  {
+    "id": "fundamentos_002",
+    "category": "fundamentos_ia",
+    "question": "Qual e a diferenca entre inteligencia artificial e um programa comum?",
+    "input": "",
+    "answer": "Um programa comum segue regras definidas de forma mais fixa. Ja um sistema de IA aprende padroes a partir de dados e consegue lidar melhor com variacoes e casos menos previsiveis."
+  },
+  {
+    "id": "fundamentos_003",
+    "category": "fundamentos_ia",
+    "question": "Quando a gente diz que um modelo aprendeu, o que isso quer dizer na pratica?",
+    "input": "",
+    "answer": "Na pratica, quer dizer que ele ajustou seus parametros para reconhecer padroes nos dados e responder melhor a exemplos parecidos com os que viu no treino."
+  },
+  {
+    "id": "fundamentos_004",
+    "category": "fundamentos_ia",
+    "question": "IA realmente entende as coisas ou so encontra padroes?",
+    "input": "",
+    "answer": "Em geral, ela encontra padroes de forma muito sofisticada. Isso pode parecer entendimento, mas nao e igual ao entendimento humano."
+  },
+  {
+    "id": "fundamentos_005",
+    "category": "fundamentos_ia",
+    "question": "Me explica machine learning como se eu estivesse comecando agora.",
+    "input": "",
+    "answer": "Machine learning e um jeito de fazer o computador aprender com exemplos em vez de programar cada regra manualmente. Voce mostra dados, o sistema ajusta seus parametros e melhora nas previsoes."
+  },
+  {
+    "id": "fundamentos_006",
+    "category": "fundamentos_ia",
+    "question": "Qual e a diferenca entre machine learning e deep learning?",
+    "input": "",
+    "answer": "Machine learning e o campo mais amplo de aprendizado com dados. Deep learning e uma parte dele que usa redes neurais com muitas camadas para aprender padroes mais complexos."
+  },
+  {
+    "id": "fundamentos_007",
+    "category": "fundamentos_ia",
+    "question": "Por que dados sao tao importantes em inteligencia artificial?",
+    "input": "",
+    "answer": "Porque e pelos dados que o modelo aprende. Se os dados forem fracos, limitados ou ruins, a qualidade das respostas tambem tende a ser ruim."
+  },
+  {
+    "id": "fundamentos_008",
+    "category": "fundamentos_ia",
+    "question": "O que faz uma IA responder bem ou mal?",
+    "input": "",
+    "answer": "A qualidade dos dados, o tipo de treino, o tamanho do modelo, a forma de avaliacao e as configuracoes de geracao influenciam bastante no resultado."
+  },
+  {
+    "id": "fundamentos_009",
+    "category": "modelos_linguagem",
+    "question": "O que e um modelo de linguagem?",
+    "input": "",
+    "answer": "E um sistema treinado para aprender padroes de texto e prever quais palavras ou tokens fazem mais sentido em uma sequencia."
+  },
+  {
+    "id": "fundamentos_010",
+    "category": "modelos_linguagem",
+    "question": "Como um modelo de linguagem aprende a escrever?",
+    "input": "",
+    "answer": "Ele ve muitos exemplos de texto e aprende a prever o proximo token. Com isso, vai captando estrutura, estilo, contexto e padroes da linguagem."
+  },
+  {
+    "id": "fundamentos_011",
+    "category": "modelos_linguagem",
+    "question": "Por que um modelo de linguagem tenta prever o proximo token?",
+    "input": "",
+    "answer": "Porque essa tarefa simples obriga o modelo a aprender padroes da linguagem. Para acertar o proximo token, ele precisa captar contexto, sintaxe e sentido estatistico."
+  },
+  {
+    "id": "fundamentos_012",
+    "category": "modelos_linguagem",
+    "question": "O que e um token em modelos de linguagem?",
+    "input": "",
+    "answer": "Token e uma unidade de texto que o modelo processa. Pode ser uma palavra inteira, parte de uma palavra ou ate pontuacao."
+  },
+  {
+    "id": "fundamentos_013",
+    "category": "modelos_linguagem",
+    "question": "Me explica tokenizacao sem usar muita matematica.",
+    "input": "",
+    "answer": "Tokenizacao e quebrar o texto em pedacos menores para o modelo conseguir ler e processar. Em vez de enxergar a frase inteira de uma vez, ele trabalha com essas partes."
+  },
+  {
+    "id": "fundamentos_014",
+    "category": "modelos_linguagem",
+    "question": "Por que a mesma frase pode virar varios tokens diferentes?",
+    "input": "",
+    "answer": "Porque o tokenizer pode separar palavras de modos diferentes dependendo do vocabulario que ele conhece e da forma como foi treinado."
+  },
+  {
+    "id": "fundamentos_015",
+    "category": "modelos_linguagem",
+    "question": "O que e vocabulario de um tokenizer?",
+    "input": "",
+    "answer": "E o conjunto de tokens que o tokenizer conhece e consegue usar para dividir o texto."
+  },
+  {
+    "id": "fundamentos_016",
+    "category": "modelos_linguagem",
+    "question": "Por que treinar um tokenizer em portugues pode ajudar um modelo pequeno?",
+    "input": "",
+    "answer": "Porque ele pode representar melhor palavras e estruturas do portugues, desperdicando menos tokens e ajudando o modelo pequeno a usar melhor sua capacidade."
+  },
+  {
+    "id": "fundamentos_017",
+    "category": "arquitetura",
+    "question": "O que e um Transformer em termos simples?",
+    "input": "",
+    "answer": "Transformer e uma arquitetura de rede neural muito boa para lidar com sequencias, como texto, porque consegue olhar para varias partes do contexto ao mesmo tempo."
+  },
+  {
+    "id": "fundamentos_018",
+    "category": "arquitetura",
+    "question": "O que e atencao em um modelo Transformer?",
+    "input": "",
+    "answer": "Atencao e o mecanismo que ajuda o modelo a decidir quais partes do texto atual sao mais importantes para entender ou gerar a proxima parte."
+  },
+  {
+    "id": "fundamentos_019",
+    "category": "arquitetura",
+    "question": "Por que atencao ajuda o modelo a lidar com contexto?",
+    "input": "",
+    "answer": "Porque ela permite que o modelo conecte palavras e ideias distantes no texto, em vez de olhar so para a ultima palavra."
+  },
+  {
+    "id": "fundamentos_020",
+    "category": "arquitetura",
+    "question": "O que significa dizer que um modelo tem 30 milhoes de parametros?",
+    "input": "",
+    "answer": "Significa que ele tem 30 milhoes de valores ajustaveis internos usados para aprender padroes. Esses parametros sao o que o treino vai moldando."
+  },
+  {
+    "id": "fundamentos_021",
+    "category": "arquitetura",
+    "question": "Um modelo maior sempre e melhor?",
+    "input": "",
+    "answer": "Nao. Modelos maiores costumam ter mais capacidade, mas dados ruins, treino ruim ou limitações de hardware podem fazer um modelo menor ser mais util em certos casos."
+  },
+  {
+    "id": "fundamentos_022",
+    "category": "arquitetura",
+    "question": "Por que um modelo pequeno pode ser util mesmo sendo limitado?",
+    "input": "",
+    "answer": "Porque ele pode ser mais barato, mais rapido, mais facil de treinar e suficiente para tarefas bem definidas."
+  },
+  {
+    "id": "fundamentos_023",
+    "category": "arquitetura",
+    "question": "O que muda quando aumentamos camadas, hidden size e numero de heads?",
+    "input": "",
+    "answer": "Em geral, o modelo ganha mais capacidade para representar padroes complexos, mas tambem fica mais pesado, mais lento e mais caro para treinar."
+  },
+  {
+    "id": "fundamentos_024",
+    "category": "arquitetura",
+    "question": "Como pensar no tamanho ideal de um modelo para uma GPU pequena?",
+    "input": "",
+    "answer": "O ideal e escolher algo que caiba com margem de seguranca, permita treino estavel e deixe espaco para batch, contexto e otimizador sem estourar memoria."
+  },
+  {
+    "id": "fundamentos_025",
+    "category": "treino",
+    "question": "O que e pre-treino de um modelo de linguagem?",
+    "input": "",
+    "answer": "E a fase em que o modelo aprende padroes gerais da linguagem em grandes volumes de texto, normalmente prevendo o proximo token."
+  },
+  {
+    "id": "fundamentos_026",
+    "category": "treino",
+    "question": "O que o modelo aprende durante o pre-treino?",
+    "input": "",
+    "answer": "Ele aprende estruturas da lingua, associacoes frequentes, estilos de escrita, fatos recorrentes e padroes estatisticos do texto."
+  },
+  {
+    "id": "fundamentos_027",
+    "category": "treino",
+    "question": "Por que o pre-treino precisa de tanto texto?",
+    "input": "",
+    "answer": "Porque o modelo precisa ver muitos exemplos para captar padroes amplos da linguagem e generalizar melhor."
+  },
+  {
+    "id": "fundamentos_028",
+    "category": "treino",
+    "question": "O que e fine-tuning?",
+    "input": "",
+    "answer": "Fine-tuning e pegar um modelo ja pre-treinado e ajusta-lo para uma tarefa, estilo ou comportamento mais especifico."
+  },
+  {
+    "id": "fundamentos_029",
+    "category": "treino",
+    "question": "Qual e a diferenca entre pre-treino e fine-tuning?",
+    "input": "",
+    "answer": "No pre-treino o modelo aprende linguagem geral. No fine-tuning ele e refinado para responder melhor em um objetivo mais especifico."
+  },
+  {
+    "id": "fundamentos_030",
+    "category": "treino",
+    "question": "O que e treino instruct?",
+    "input": "",
+    "answer": "E um tipo de fine-tuning em que o modelo aprende a seguir instrucoes e responder pedidos de forma mais util e direcionada."
+  },
+  {
+    "id": "fundamentos_031",
+    "category": "treino",
+    "question": "Qual e a diferenca entre modelo base, modelo instruct e modelo chat?",
+    "input": "",
+    "answer": "Modelo base aprende linguagem geral. Modelo instruct aprende a seguir instrucoes. Modelo chat e ajustado para manter dialogos mais naturais ao longo de varios turnos."
+  },
+  {
+    "id": "fundamentos_032",
+    "category": "treino",
+    "question": "Por que um modelo instruct ainda nao necessariamente conversa bem?",
+    "input": "",
+    "answer": "Porque seguir instrucoes nao e a mesma coisa que manter uma conversa fluida, adaptativa e com continuidade entre turnos."
+  },
+  {
+    "id": "fundamentos_033",
+    "category": "dataset",
+    "question": "O que e um dataset de treino?",
+    "input": "",
+    "answer": "E o conjunto de exemplos usados para ensinar o modelo durante o treinamento."
+  },
+  {
+    "id": "fundamentos_034",
+    "category": "dataset",
+    "question": "Como um dataset ruim afeta as respostas do modelo?",
+    "input": "",
+    "answer": "Ele pode fazer o modelo aprender erros, respostas fracas, vieses, repeticoes e estilos ruins."
+  },
+  {
+    "id": "fundamentos_035",
+    "category": "dataset",
+    "question": "O que faz um exemplo de treino ser bom para um modelo conversacional?",
+    "input": "",
+    "answer": "Ele precisa ser claro, natural, coerente com a pergunta e mostrar um tipo de resposta que valha a pena imitar."
+  },
+  {
+    "id": "fundamentos_036",
+    "category": "dataset",
+    "question": "E melhor ter muitas respostas medianas ou poucas respostas boas?",
+    "input": "",
+    "answer": "Em geral, poucas respostas boas costumam ensinar melhor do que muitas respostas medianas, especialmente em modelos pequenos."
+  },
+  {
+    "id": "fundamentos_037",
+    "category": "dataset",
+    "question": "Por que respostas muito genericas podem atrapalhar o treinamento?",
+    "input": "",
+    "answer": "Porque elas ensinam o modelo a soar vago e repetitivo, sem trazer informacao suficiente ou adaptacao ao contexto."
+  },
+  {
+    "id": "fundamentos_038",
+    "category": "dataset",
+    "question": "Como evitar que o modelo aprenda um estilo robotico demais?",
+    "input": "",
+    "answer": "Usando exemplos mais naturais, variados, claros e com tom humano, sem excesso de formulas engessadas."
+  },
+  {
+    "id": "fundamentos_039",
+    "category": "dataset",
+    "question": "Por que e bom misturar perguntas simples e perguntas mais elaboradas?",
+    "input": "",
+    "answer": "Porque isso amplia a cobertura do dataset e ensina o modelo a lidar tanto com pedidos diretos quanto com interacoes mais ricas."
+  },
+  {
+    "id": "fundamentos_040",
+    "category": "dataset",
+    "question": "Como saber se meu dataset esta repetitivo demais?",
+    "input": "",
+    "answer": "Se muitas perguntas ou respostas soam quase iguais, seguem sempre o mesmo molde ou cobrem os mesmos casos, o dataset provavelmente esta repetitivo."
+  },
+  {
+    "id": "fundamentos_041",
+    "category": "distilacao",
+    "question": "O que e distilacao de modelo?",
+    "input": "",
+    "answer": "Distilacao e o processo de ensinar um modelo menor a imitar o comportamento de um modelo maior."
+  },
+  {
+    "id": "fundamentos_042",
+    "category": "distilacao",
+    "question": "Como um modelo maior pode ensinar um modelo menor?",
+    "input": "",
+    "answer": "Ele gera respostas ou sinais de treinamento que o modelo menor usa como exemplo para aprender."
+  },
+  {
+    "id": "fundamentos_043",
+    "category": "distilacao",
+    "question": "Qual e a ideia de usar um modelo professor para gerar respostas?",
+    "input": "",
+    "answer": "A ideia e aproveitar a qualidade do modelo maior para criar exemplos melhores e acelerar o aprendizado do modelo menor."
+  },
+  {
+    "id": "fundamentos_044",
+    "category": "distilacao",
+    "question": "Quais cuidados eu devo ter ao distilar um modelo conversacional?",
+    "input": "",
+    "answer": "Filtrar respostas ruins, evitar repeticao, revisar estilo, manter diversidade e nao copiar cegamente os defeitos do professor."
+  },
+  {
+    "id": "fundamentos_045",
+    "category": "distilacao",
+    "question": "O modelo aluno pode ficar melhor que o professor?",
+    "input": "",
+    "answer": "Em capacidade geral, normalmente nao. Mas em uma tarefa bem especifica e com bom ajuste, ele pode ficar mais adequado que o professor naquele nicho."
+  },
+  {
+    "id": "fundamentos_046",
+    "category": "distilacao",
+    "question": "O que o modelo pequeno realmente aprende na distilacao?",
+    "input": "",
+    "answer": "Ele aprende padroes de resposta, estilo, prioridades e formas de reagir a determinados tipos de pergunta."
+  },
+  {
+    "id": "fundamentos_047",
+    "category": "distilacao",
+    "question": "Por que distilar respostas ruins pode prejudicar o modelo?",
+    "input": "",
+    "answer": "Porque o modelo pequeno vai imitar o que recebeu. Se os exemplos forem ruins, ele aprende justamente esses defeitos."
+  },
+  {
+    "id": "fundamentos_048",
+    "category": "distilacao",
+    "question": "Como revisar um dataset gerado por um modelo professor?",
+    "input": "",
+    "answer": "Vale checar qualidade, clareza, repeticao, coerencia, alucinacoes, tom e utilidade real de cada exemplo."
+  },
+  {
+    "id": "fundamentos_049",
+    "category": "avaliacao",
+    "question": "Como eu avalio se meu modelo melhorou depois do fine-tuning?",
+    "input": "",
+    "answer": "Compare loss de validacao, rode prompts fixos antes e depois e faca avaliacao manual da qualidade, coerencia e utilidade das respostas."
+  },
+  {
+    "id": "fundamentos_050",
+    "category": "avaliacao",
+    "question": "O que e loss de treino?",
+    "input": "",
+    "answer": "E a medida de erro do modelo nos dados usados para treinar."
+  },
+  {
+    "id": "fundamentos_051",
+    "category": "avaliacao",
+    "question": "O que e loss de validacao?",
+    "input": "",
+    "answer": "E a medida de erro em dados separados do treino, usada para verificar se o modelo esta generalizando."
+  },
+  {
+    "id": "fundamentos_052",
+    "category": "avaliacao",
+    "question": "Por que a loss de validacao e importante?",
+    "input": "",
+    "answer": "Porque ela ajuda a mostrar se o modelo esta melhorando de verdade em dados novos, e nao apenas decorando o treino."
+  },
+  {
+    "id": "fundamentos_053",
+    "category": "avaliacao",
+    "question": "O que significa quando a loss de treino cai mas a validacao piora?",
+    "input": "",
+    "answer": "Geralmente indica overfitting: o modelo esta se ajustando demais ao treino e piorando fora dele."
+  },
+  {
+    "id": "fundamentos_054",
+    "category": "avaliacao",
+    "question": "O que e overfitting em modelos de linguagem?",
+    "input": "",
+    "answer": "E quando o modelo aprende demais os detalhes do treino e perde capacidade de generalizar para textos ou perguntas novas."
+  },
+  {
+    "id": "fundamentos_055",
+    "category": "avaliacao",
+    "question": "Como perceber que um modelo esta decorando em vez de generalizar?",
+    "input": "",
+    "answer": "Quando ele vai muito bem em exemplos parecidos com os do treino, mas piora em casos novos ou responde de forma rigida e repetitiva."
+  },
+  {
+    "id": "fundamentos_056",
+    "category": "avaliacao",
+    "question": "Por que o checkpoint best pode ser melhor que o checkpoint final?",
+    "input": "",
+    "answer": "Porque o melhor ponto do treino pode ter acontecido antes do final. Depois disso, o modelo pode ter começado a perder generalizacao."
+  },
+  {
+    "id": "fundamentos_057",
+    "category": "geracao",
+    "question": "O que e temperatura na geracao de texto?",
+    "input": "",
+    "answer": "Temperatura controla o quanto a geracao sera mais conservadora ou mais arriscada na escolha dos proximos tokens."
+  },
+  {
+    "id": "fundamentos_058",
+    "category": "geracao",
+    "question": "O que acontece quando a temperatura e muito alta?",
+    "input": "",
+    "answer": "A resposta tende a ficar mais criativa e variada, mas tambem mais instavel e com maior chance de erro."
+  },
+  {
+    "id": "fundamentos_059",
+    "category": "geracao",
+    "question": "O que acontece quando a temperatura e muito baixa?",
+    "input": "",
+    "answer": "A resposta tende a ficar mais previsivel, repetitiva e menos diversa."
+  },
+  {
+    "id": "fundamentos_060",
+    "category": "geracao",
+    "question": "O que e top-p na geracao de texto?",
+    "input": "",
+    "answer": "Top-p limita a escolha dos proximos tokens ao conjunto mais provavel que soma uma certa massa de probabilidade."
+  },
+  {
+    "id": "fundamentos_061",
+    "category": "geracao",
+    "question": "O que e repetition penalty?",
+    "input": "",
+    "answer": "E um ajuste que desincentiva o modelo a repetir demais os mesmos tokens ou frases."
+  },
+  {
+    "id": "fundamentos_062",
+    "category": "geracao",
+    "question": "Por que modelos pequenos repetem frases com facilidade?",
+    "input": "",
+    "answer": "Porque tem menos capacidade para representar contexto complexo e tendem a cair em padroes frequentes e seguros."
+  },
+  {
+    "id": "fundamentos_063",
+    "category": "geracao",
+    "question": "Como reduzir repeticao nas respostas de um modelo?",
+    "input": "",
+    "answer": "Melhorando os dados, ajustando temperatura, top-p e repetition penalty, e treinando com exemplos menos repetitivos."
+  },
+  {
+    "id": "fundamentos_064",
+    "category": "geracao",
+    "question": "Por que uma resposta pode parecer confiante mesmo estando errada?",
+    "input": "",
+    "answer": "Porque o modelo aprende a gerar texto plausivel e fluido, nao a garantir verdade. Entao ele pode soar seguro mesmo quando erra."
+  },
+  {
+    "id": "fundamentos_065",
+    "category": "pratica",
+    "question": "Se eu tenho uma GPU pequena, qual estrategia faz sentido para treinar um modelo?",
+    "input": "",
+    "answer": "Usar modelo pequeno, batch pequeno, gradient accumulation, contexto menor, dados bem filtrados e experimentos curtos para validar a direcao."
+  },
+  {
+    "id": "fundamentos_066",
+    "category": "pratica",
+    "question": "Como eu deveria comecar um experimento de fine-tuning pequeno?",
+    "input": "",
+    "answer": "Comece com poucos exemplos bons, um objetivo claro, uma validacao separada e testes simples para comparar antes e depois."
+  },
+  {
+    "id": "fundamentos_067",
+    "category": "pratica",
+    "question": "Qual seria um fluxo simples para criar um modelo mais conversacional?",
+    "input": "",
+    "answer": "Defina o estilo desejado, monte dialogos bons, treine em pequena escala, teste com prompts fixos e refine o dataset conforme os erros."
+  },
+  {
+    "id": "fundamentos_068",
+    "category": "pratica",
+    "question": "Como organizar perguntas para gerar um dataset de conversa?",
+    "input": "",
+    "answer": "Separe por tipos, como conversa casual, duvida tecnica, pedido de esclarecimento, correcao, continuidade e mudanca de tom."
+  },
+  {
+    "id": "fundamentos_069",
+    "category": "pratica",
+    "question": "Quantos exemplos eu deveria gerar para um primeiro teste?",
+    "input": "",
+    "answer": "Para um primeiro teste, algumas centenas de exemplos bons ja podem dar sinal. O foco inicial deve ser qualidade, nao volume enorme."
+  },
+  {
+    "id": "fundamentos_070",
+    "category": "pratica",
+    "question": "Como testar rapidamente se o novo dataset ajudou?",
+    "input": "",
+    "answer": "Use um conjunto fixo de prompts de avaliacao e compare clareza, naturalidade, coerencia e utilidade das respostas antes e depois."
+  },
+  {
+    "id": "fundamentos_071",
+    "category": "pratica",
+    "question": "O que eu devo salvar junto com cada resposta gerada pelo professor?",
+    "input": "",
+    "answer": "Vale salvar a pergunta, a resposta, metadados de categoria, instrucoes usadas, parametros de geracao e qualquer avaliacao manual."
+  },
+  {
+    "id": "fundamentos_072",
+    "category": "pratica",
+    "question": "Como evitar misturar dados de estilos muito diferentes no mesmo treino?",
+    "input": "",
+    "answer": "Defina um estilo-alvo, filtre exemplos fora dele e, se precisar misturar estilos, rotule e controle a proporcao."
+  },
+  {
+    "id": "fundamentos_073",
+    "category": "comportamento",
+    "question": "Como ensinar um modelo a responder de forma mais natural?",
+    "input": "",
+    "answer": "Treine com exemplos que soem humanos, fluidos, claros e adaptados ao contexto, evitando moldes engessados."
+  },
+  {
+    "id": "fundamentos_074",
+    "category": "comportamento",
+    "question": "Como ensinar um modelo a pedir esclarecimento quando nao entende?",
+    "input": "",
+    "answer": "Inclua exemplos em que a entrada e ambigua e a melhor resposta e pedir mais contexto em vez de assumir algo errado."
+  },
+  {
+    "id": "fundamentos_075",
+    "category": "comportamento",
+    "question": "Como ensinar um modelo a nao inventar quando nao sabe?",
+    "input": "",
+    "answer": "Mostre exemplos em que ele admite incerteza de forma honesta e, quando possivel, delimita o que sabe e o que nao sabe."
+  },
+  {
+    "id": "fundamentos_076",
+    "category": "comportamento",
+    "question": "Como ensinar um modelo a manter uma conversa sem responder seco demais?",
+    "input": "",
+    "answer": "Treine com respostas que avancam a conversa, reconhecem o contexto e deixam espaco para continuidade sem exagerar no tamanho."
+  },
+  {
+    "id": "fundamentos_077",
+    "category": "comportamento",
+    "question": "Como ensinar um modelo a adaptar o tom ao usuario?",
+    "input": "",
+    "answer": "Inclua exemplos variados de tom e mostre como a resposta muda conforme o jeito do usuario falar e o tipo de pedido."
+  },
+  {
+    "id": "fundamentos_078",
+    "category": "comportamento",
+    "question": "Por que exemplos de conversa precisam ter continuidade?",
+    "input": "",
+    "answer": "Porque conversar nao e so responder uma pergunta isolada. O modelo precisa aprender a manter o fio e reagir ao que veio antes."
+  },
+  {
+    "id": "fundamentos_079",
+    "category": "comportamento",
+    "question": "O que diferencia uma resposta de chat de uma resposta instruct comum?",
+    "input": "",
+    "answer": "A resposta de chat tende a ser mais contextual, fluida, adaptativa e aberta a continuidade. A instruct comum costuma ser mais direta e fechada."
+  },
+  {
+    "id": "fundamentos_080",
+    "category": "comportamento",
+    "question": "Como fazer o modelo parecer mais colaborativo sem ficar prolixo?",
+    "input": "",
+    "answer": "Use respostas claras, uteis e um pouco abertas, que ajudem o usuario a seguir adiante sem encher de explicacao desnecessaria."
+  },
+  {
+    "id": "correcao_001",
+    "category": "correcao_redirecionamento",
+    "question": "Nao era isso que eu quis dizer. Tenta de novo de um jeito mais simples.",
+    "input": "",
+    "answer": "Certo. Vou simplificar e responder direto ao ponto, sem complicar."
+  },
+  {
+    "id": "correcao_002",
+    "category": "correcao_redirecionamento",
+    "question": "Voce entendeu errado. Eu queria uma resposta mais pratica, nao uma explicacao geral.",
+    "input": "",
+    "answer": "Entendi. Em vez de explicar por cima, eu vou te dar uma orientacao mais concreta e aplicavel."
+  },
+  {
+    "id": "correcao_003",
+    "category": "correcao_redirecionamento",
+    "question": "Tenta de novo, mas agora responde como se estivesse falando comigo em uma conversa normal.",
+    "input": "",
+    "answer": "Beleza. Vou responder de um jeito mais natural, como se a gente estivesse conversando mesmo."
+  },
+  {
+    "id": "correcao_004",
+    "category": "correcao_redirecionamento",
+    "question": "Pode ser mais curto?",
+    "input": "",
+    "answer": "Posso. Vou encurtar e deixar so o essencial."
+  },
+  {
+    "id": "correcao_005",
+    "category": "correcao_redirecionamento",
+    "question": "Pode explicar melhor?",
+    "input": "",
+    "answer": "Posso sim. Vou abrir um pouco mais a ideia para ficar mais claro o que eu quis dizer."
+  },
+  {
+    "id": "correcao_006",
+    "category": "correcao_redirecionamento",
+    "question": "Agora sim, continua nessa linha.",
+    "input": "",
+    "answer": "Certo. Vou manter exatamente esse estilo daqui para frente."
+  },
+  {
+    "id": "correcao_007",
+    "category": "correcao_redirecionamento",
+    "question": "Isso ficou confuso. Reorganiza a resposta para eu entender melhor.",
+    "input": "",
+    "answer": "Beleza. Vou reorganizar a resposta em uma ordem mais clara, comecando pelo ponto principal e depois completando o resto."
+  },
+  {
+    "id": "correcao_008",
+    "category": "correcao_redirecionamento",
+    "question": "Voce pulou a parte principal. Volta e responde exatamente o que eu perguntei.",
+    "input": "",
+    "answer": "Certo. Vou voltar para a pergunta central e responder exatamente o que voce pediu, sem desviar."
+  },
+  {
+    "id": "correcao_009",
+    "category": "correcao_redirecionamento",
+    "question": "Nao precisa explicar tudo. Me da so o proximo passo.",
+    "input": "",
+    "answer": "O proximo passo e escolher uma unica acao concreta e fazer so ela agora."
+  },
+  {
+    "id": "correcao_010",
+    "category": "correcao_redirecionamento",
+    "question": "Isso ficou muito tecnico. Pode traduzir para uma linguagem mais simples?",
+    "input": "",
+    "answer": "Posso. Vou trocar os termos tecnicos por uma explicacao mais simples e direta."
+  },
+  {
+    "id": "correcao_011",
+    "category": "correcao_redirecionamento",
+    "question": "Isso ficou simples demais. Pode aprofundar um pouco?",
+    "input": "",
+    "answer": "Posso. Vou manter claro, mas com um pouco mais de detalhe para nao ficar superficial."
+  },
+  {
+    "id": "correcao_012",
+    "category": "correcao_redirecionamento",
+    "question": "Eu nao quero uma lista agora. Responde em texto corrido.",
+    "input": "",
+    "answer": "Certo. Vou responder em texto corrido, de forma mais fluida e sem quebrar em itens."
+  },
+  {
+    "id": "correcao_013",
+    "category": "correcao_redirecionamento",
+    "question": "Eu prefiro em lista. Pode reformatar?",
+    "input": "",
+    "answer": "Posso. Vou reorganizar em lista para ficar mais facil de bater o olho e seguir."
+  },
+  {
+    "id": "correcao_014",
+    "category": "correcao_redirecionamento",
+    "question": "Voce esta assumindo coisa demais. Pergunta antes de concluir.",
+    "input": "",
+    "answer": "Certo. Antes de concluir, eu deveria confirmar o contexto com voce em vez de assumir."
+  },
+  {
+    "id": "correcao_015",
+    "category": "correcao_redirecionamento",
+    "question": "Nao tenho certeza se expliquei bem. Me diga o que voce entendeu ate agora.",
+    "input": "",
+    "answer": "Ate aqui, eu entendi que voce quer uma resposta mais alinhada ao seu objetivo real, sem excesso de teoria e com mais precisao no que fazer."
+  },
+  {
+    "id": "correcao_016",
+    "category": "correcao_redirecionamento",
+    "question": "Calma, vamos por partes. Primeiro me responde so a primeira parte.",
+    "input": "",
+    "answer": "Beleza. Vou focar apenas na primeira parte e deixar o resto para depois."
+  },
+  {
+    "id": "correcao_017",
+    "category": "correcao_redirecionamento",
+    "question": "A resposta ficou grande demais. Resume em duas frases.",
+    "input": "",
+    "answer": "A ideia principal e esta. O melhor agora e focar no passo mais simples e nao tentar resolver tudo de uma vez."
+  },
+  {
+    "id": "correcao_018",
+    "category": "correcao_redirecionamento",
+    "question": "A resposta ficou seca demais. Pode deixar mais natural?",
+    "input": "",
+    "answer": "Posso. Vou deixar a resposta mais leve e com mais cara de conversa, sem perder a clareza."
+  },
+  {
+    "id": "correcao_019",
+    "category": "correcao_redirecionamento",
+    "question": "Nao gostei do tom. Pode responder de um jeito mais amigavel?",
+    "input": "",
+    "answer": "Claro. Vou responder de um jeito mais amigavel, mas ainda direto e util."
+  },
+  {
+    "id": "correcao_020",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder com mais cuidado e sem parecer que tem certeza absoluta?",
+    "input": "",
+    "answer": "Posso. Vou responder reconhecendo onde ha duvida e evitando falar como se tudo estivesse fechado."
+  },
+  {
+    "id": "correcao_021",
+    "category": "correcao_redirecionamento",
+    "question": "Isso nao responde minha duvida. Reformula pensando no que eu realmente perguntei.",
+    "input": "",
+    "answer": "Certo. Vou reformular com foco exato na sua duvida, nao no assunto em volta."
+  },
+  {
+    "id": "correcao_022",
+    "category": "correcao_redirecionamento",
+    "question": "Voce foi para outro assunto. Volta para o ponto principal.",
+    "input": "",
+    "answer": "Tem razao. Vou voltar para o ponto central e cortar o que desviou."
+  },
+  {
+    "id": "correcao_023",
+    "category": "correcao_redirecionamento",
+    "question": "Nao quero teoria agora. Quero uma sugestao concreta.",
+    "input": "",
+    "answer": "Sugestao concreta: escolha um exemplo real do seu caso e monte uma versao minima antes de expandir."
+  },
+  {
+    "id": "correcao_024",
+    "category": "correcao_redirecionamento",
+    "question": "Quero entender o motivo. Explica o por que da sua sugestao.",
+    "input": "",
+    "answer": "O motivo e simples: uma versao minima te da sinal rapido do que funciona e evita gastar tempo com coisa grande antes da hora."
+  },
+  {
+    "id": "correcao_025",
+    "category": "correcao_redirecionamento",
+    "question": "Pode dar um exemplo pequeno?",
+    "input": "",
+    "answer": "Posso. Em vez de preparar um sistema inteiro, voce faz primeiro um conjunto pequeno de exemplos bem feitos e testa a direcao."
+  },
+  {
+    "id": "correcao_026",
+    "category": "correcao_redirecionamento",
+    "question": "Pode dar um exemplo mais parecido com o meu caso?",
+    "input": "",
+    "answer": "Posso. Se o seu caso e deixar o modelo mais conversacional, um exemplo mais proximo seria montar algumas conversas curtas, naturais e bem variadas antes de pensar em volume."
+  },
+  {
+    "id": "correcao_027",
+    "category": "correcao_redirecionamento",
+    "question": "Esse exemplo nao ajudou. Tenta outro mais simples.",
+    "input": "",
+    "answer": "Beleza. Um exemplo mais simples e este: pegue uma pergunta comum, escreva uma resposta natural e veja se ela parece algo que valeria a pena ensinar ao modelo."
+  },
+  {
+    "id": "correcao_028",
+    "category": "correcao_redirecionamento",
+    "question": "Agora explica como se eu fosse iniciante.",
+    "input": "",
+    "answer": "Como iniciante, pense assim: voce esta escolhendo exemplos bons para o modelo copiar. Se os exemplos forem claros e naturais, o modelo tende a aprender melhor."
+  },
+  {
+    "id": "correcao_029",
+    "category": "correcao_redirecionamento",
+    "question": "Agora explica como se eu ja soubesse o basico.",
+    "input": "",
+    "answer": "Se voce ja sabe o basico, entao o ponto aqui e menos sobre conceito e mais sobre qualidade de distribuicao, cobertura de casos e consistencia do comportamento que voce quer induzir."
+  },
+  {
+    "id": "correcao_030",
+    "category": "correcao_redirecionamento",
+    "question": "Pode comparar as duas opcoes e dizer qual faz mais sentido?",
+    "input": "",
+    "answer": "Posso. Se a escolha for entre escalar cedo ou validar pequeno, validar pequeno faz mais sentido porque reduz risco e te da feedback mais limpo."
+  },
+  {
+    "id": "correcao_031",
+    "category": "correcao_redirecionamento",
+    "question": "Nao decide por mim. Me ajuda a pensar nos criterios.",
+    "input": "",
+    "answer": "Certo. Os criterios principais seriam custo, tempo, risco de erro, clareza do objetivo e qualidade do sinal que cada opcao te devolve."
+  },
+  {
+    "id": "correcao_032",
+    "category": "correcao_redirecionamento",
+    "question": "Pode me fazer uma pergunta antes de responder?",
+    "input": "",
+    "answer": "Posso. O que voce quer melhorar primeiro: naturalidade, continuidade da conversa ou clareza das respostas?"
+  },
+  {
+    "id": "correcao_033",
+    "category": "correcao_redirecionamento",
+    "question": "Antes de continuar, confirma se voce entendeu meu objetivo.",
+    "input": "",
+    "answer": "Pelo que entendi, seu objetivo e alinhar a resposta ao uso real do seu projeto, sem desviar para explicacao generica."
+  },
+  {
+    "id": "correcao_034",
+    "category": "correcao_redirecionamento",
+    "question": "O objetivo nao e esse. O objetivo e deixar o modelo mais conversacional.",
+    "input": "",
+    "answer": "Entendi. Entao o foco passa a ser ensinar respostas mais naturais, com continuidade, menos secas e mais adaptadas ao usuario."
+  },
+  {
+    "id": "correcao_035",
+    "category": "correcao_redirecionamento",
+    "question": "Nao e para treinar agora. E so para preparar os dados.",
+    "input": "",
+    "answer": "Certo. Entao agora o trabalho nao e treino, e selecao e organizacao de dados bons para esse objetivo."
+  },
+  {
+    "id": "correcao_036",
+    "category": "correcao_redirecionamento",
+    "question": "Nao e para gerar resposta com o modelo pequeno. E para usar um modelo professor.",
+    "input": "",
+    "answer": "Entendi. O papel do modelo pequeno fica para depois. Agora quem gera os exemplos e o modelo professor."
+  },
+  {
+    "id": "correcao_037",
+    "category": "correcao_redirecionamento",
+    "question": "Isso e distilacao, nao chat comum. Responde considerando isso.",
+    "input": "",
+    "answer": "Certo. Considerando distilacao, a pergunta deixa de ser so como conversar melhor e passa a ser como gerar exemplos que transmitam esse comportamento para o modelo aluno."
+  },
+  {
+    "id": "correcao_038",
+    "category": "correcao_redirecionamento",
+    "question": "Pode explicar de novo, mas focando no fluxo completo?",
+    "input": "",
+    "answer": "Posso. O fluxo completo e: definir o comportamento desejado, criar boas perguntas, usar o modelo professor para responder, revisar a qualidade dessas respostas, organizar os dados no formato certo e so depois pensar em treino."
+  },
+  {
+    "id": "correcao_039",
+    "category": "correcao_redirecionamento",
+    "question": "Agora transforma isso em passos simples.",
+    "input": "",
+    "answer": "Passos simples: decidir o estilo que voce quer, montar as perguntas, gerar respostas com o professor, filtrar o que ficou ruim e salvar o conjunto final."
+  },
+  {
+    "id": "correcao_040",
+    "category": "correcao_redirecionamento",
+    "question": "Agora transforma isso em uma decisao pratica.",
+    "input": "",
+    "answer": "Decisao pratica: comece gerando um lote pequeno, revise manualmente e so aumente o volume se a qualidade estiver realmente boa."
+  },
+  {
+    "id": "correcao_041",
+    "category": "correcao_redirecionamento",
+    "question": "Acho que voce esta complicando. Qual e a versao minima disso?",
+    "input": "",
+    "answer": "A versao minima e: escrever um pequeno conjunto de perguntas bem escolhidas, gerar respostas com o professor e revisar se elas realmente soam conversacionais."
+  },
+  {
+    "id": "correcao_042",
+    "category": "correcao_redirecionamento",
+    "question": "Isso parece bom, mas qual e o risco?",
+    "input": "",
+    "answer": "O risco e voce gerar um lote bonito na aparencia, mas cheio de respostas repetitivas, artificiais ou desalinhadas com o comportamento que realmente quer."
+  },
+  {
+    "id": "correcao_043",
+    "category": "correcao_redirecionamento",
+    "question": "Pode apontar o ponto fraco dessa ideia?",
+    "input": "",
+    "answer": "O ponto fraco e depender demais do professor sem revisar direito. Isso pode fazer voce herdar defeitos em escala."
+  },
+  {
+    "id": "correcao_044",
+    "category": "correcao_redirecionamento",
+    "question": "Agora me fala o que voce faria primeiro.",
+    "input": "",
+    "answer": "Eu faria primeiro a definicao do comportamento-alvo e montaria um conjunto pequeno de perguntas que realmente cubra esse objetivo."
+  },
+  {
+    "id": "correcao_045",
+    "category": "correcao_redirecionamento",
+    "question": "Agora me fala o que voce nao faria ainda.",
+    "input": "",
+    "answer": "Eu ainda nao escalaria o volume nem partiria para treino. Antes disso, eu confirmaria se os dados estao bons."
+  },
+  {
+    "id": "correcao_046",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder como se estivesse me orientando em tempo real?",
+    "input": "",
+    "answer": "Posso. Agora eu focaria em uma coisa so: escolher umas boas perguntas. Depois disso a gente olha as respostas do professor e decide se o estilo esta certo."
+  },
+  {
+    "id": "correcao_047",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder sem enrolar?",
+    "input": "",
+    "answer": "Posso. O certo agora e preparar um lote pequeno e revisar a qualidade."
+  },
+  {
+    "id": "correcao_048",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder com um pouco mais de contexto?",
+    "input": "",
+    "answer": "Posso. O lote pequeno vem primeiro porque ele te mostra rapido se o estilo das respostas do professor esta alinhado com o comportamento que voce quer ensinar."
+  },
+  {
+    "id": "correcao_049",
+    "category": "correcao_redirecionamento",
+    "question": "Pode deixar a resposta menos robotica?",
+    "input": "",
+    "answer": "Posso. Em vez de soar mecanico, eu diria assim: comeca pequeno, olha se as respostas ficaram naturais e so depois pensa em escalar."
+  },
+  {
+    "id": "correcao_050",
+    "category": "correcao_redirecionamento",
+    "question": "Pode deixar a resposta menos empolgada e mais objetiva?",
+    "input": "",
+    "answer": "Posso. A orientacao objetiva e esta: defina o estilo, gere poucas amostras, revise e escale apenas se a qualidade justificar."
+  },
+  {
+    "id": "correcao_051",
+    "category": "correcao_redirecionamento",
+    "question": "Pode responder sem tentar agradar demais?",
+    "input": "",
+    "answer": "Posso. A resposta direta e que, sem revisao, usar professor para gerar em massa pode sair caro e produzir dado mediocre."
+  },
+  {
+    "id": "correcao_052",
+    "category": "correcao_redirecionamento",
+    "question": "Pode discordar de mim se eu estiver indo pelo caminho errado?",
+    "input": "",
+    "answer": "Posso. Se eu achar que voce esta acelerando a parte errada ou ignorando um risco claro, eu devo dizer isso."
+  },
+  {
+    "id": "correcao_053",
+    "category": "correcao_redirecionamento",
+    "question": "Me corrige se minha ideia estiver errada.",
+    "input": "",
+    "answer": "Se a ideia estiver errada, eu corrigiria apontando exatamente onde ela quebra e o que faria mais sentido no lugar."
+  },
+  {
+    "id": "correcao_054",
+    "category": "correcao_redirecionamento",
+    "question": "Nao assume que eu quero codigo. Primeiro explica a ideia.",
+    "input": "",
+    "answer": "Certo. Antes de qualquer codigo, a ideia e definir que tipo de conversa o modelo deve aprender e como os exemplos vao representar isso."
+  },
+  {
+    "id": "correcao_055",
+    "category": "correcao_redirecionamento",
+    "question": "Agora sim pode falar de codigo, mas so o necessario.",
+    "input": "",
+    "answer": "Certo. O codigo necessario aqui e so o suficiente para montar as perguntas, chamar o modelo professor, salvar as respostas e registrar metadados basicos."
+  },
+  {
+    "id": "correcao_056",
+    "category": "correcao_redirecionamento",
+    "question": "Nao quero mexer nos arquivos ainda. So quero entender.",
+    "input": "",
+    "answer": "Entendi. Entao o foco agora e conceitual: entender o fluxo e os criterios de qualidade antes de tocar nos dados."
+  },
+  {
+    "id": "correcao_057",
+    "category": "correcao_redirecionamento",
+    "question": "Pode parar e resumir onde estamos?",
+    "input": "",
+    "answer": "Estamos na etapa de preparar dados para distilacao, com foco em deixar o modelo mais conversacional. O passo atual e definir boas perguntas e validar se as respostas do professor estao realmente no tom certo."
+  },
+  {
+    "id": "correcao_058",
+    "category": "correcao_redirecionamento",
+    "question": "Pode continuar a partir daqui sem voltar para o comeco?",
+    "input": "",
+    "answer": "Posso. A partir daqui, o proximo foco e revisar os exemplos gerados e eliminar o que nao ajuda o comportamento-alvo."
+  },
+  {
+    "id": "correcao_059",
+    "category": "correcao_redirecionamento",
+    "question": "Agora que voce entendeu, qual e o proximo passo?",
+    "input": "",
+    "answer": "O proximo passo e montar um lote pequeno e bem escolhido de prompts conversacionais para o professor responder."
+  },
+  {
+    "id": "correcao_060",
+    "category": "correcao_redirecionamento",
+    "question": "Perfeito, mas guarda essa direcao e nao muda de assunto.",
+    "input": "",
+    "answer": "Certo. Vou manter o foco em preparar dados de distilacao para deixar o modelo mais conversacional."
+  },
+  {
+    "id": "correcao_061",
+    "category": "correcao_redirecionamento",
+    "question": "Essa resposta ficou boa. Pode fazer outra no mesmo estilo?",
+    "input": "",
+    "answer": "Posso. Vou manter o mesmo tom: direto, claro e util, sem abrir assunto paralelo."
+  },
+  {
+    "id": "correcao_062",
+    "category": "correcao_redirecionamento",
+    "question": "Essa resposta ficou ruim. O que voce mudaria nela?",
+    "input": "",
+    "answer": "Eu mudaria tres coisas: cortaria excesso, alinharia melhor ao objetivo e deixaria a instrucao mais clara e menos abstrata."
+  },
+  {
+    "id": "correcao_063",
+    "category": "correcao_redirecionamento",
+    "question": "Compare sua resposta anterior com o que eu pedi e ajuste.",
+    "input": "",
+    "answer": "Comparando com o que voce pediu, o ajuste correto e remover o que sobrou de explicacao generica e deixar a resposta mais aderente ao uso pratico."
+  },
+  {
+    "id": "correcao_064",
+    "category": "correcao_redirecionamento",
+    "question": "Voce respondeu como tutorial. Eu queria uma conversa.",
+    "input": "",
+    "answer": "Entendi. Em vez de tutorial, eu deveria falar de um jeito mais natural, como acompanhando seu raciocinio e sem parecer passo a passo duro."
+  },
+  {
+    "id": "correcao_065",
+    "category": "correcao_redirecionamento",
+    "question": "Voce respondeu como conversa, mas eu precisava de uma instrucao clara.",
+    "input": "",
+    "answer": "Certo. Entao eu devo manter o tom natural, mas ainda fechar com uma orientacao concreta sobre o que fazer."
+  },
+  {
+    "id": "correcao_066",
+    "category": "correcao_redirecionamento",
+    "question": "Pode equilibrar conversa natural com instrucao pratica?",
+    "input": "",
+    "answer": "Posso. O equilibrio aqui seria falar de forma simples e humana, mas terminar com uma acao clara que voce consiga executar."
+  },
+  {
+    "id": "correcao_067",
+    "category": "correcao_redirecionamento",
+    "question": "Agora reescreve a resposta como se eu fosse usar isso no meu projeto.",
+    "input": "",
+    "answer": "Pensando no seu projeto, eu diria para montar um lote pequeno de prompts que representem o tipo de conversa que voce quer ensinar, gerar respostas com o professor e revisar manualmente antes de qualquer escala."
+  },
+  {
+    "id": "correcao_068",
+    "category": "correcao_redirecionamento",
+    "question": "Agora reescreve pensando que eu sou iniciante.",
+    "input": "",
+    "answer": "Pensando que voce e iniciante, eu diria assim: primeiro escolha exemplos bons do jeito que voce quer que o modelo fale, depois use o modelo maior para criar respostas nesse estilo."
+  },
+  {
+    "id": "correcao_069",
+    "category": "correcao_redirecionamento",
+    "question": "Agora reescreve pensando que eu ja sei o contexto.",
+    "input": "",
+    "answer": "Pensando que voce ja sabe o contexto, o ponto e simples: foque em cobertura de comportamentos conversacionais, qualidade de amostras do professor e filtragem antes de escalar."
+  },
+  {
+    "id": "correcao_070",
+    "category": "correcao_redirecionamento",
+    "question": "Pode remover o excesso e manter so o essencial?",
+    "input": "",
+    "answer": "Sim. Essencial: defina o estilo, gere poucas amostras, revise bem e so depois aumente."
+  },
+  {
+    "id": "correcao_071",
+    "category": "correcao_redirecionamento",
+    "question": "Pode acrescentar o que faltou sem refazer tudo?",
+    "input": "",
+    "answer": "Posso. O que faltou acrescentar e o criterio de revisao: verificar naturalidade, coerencia, diversidade e ausencia de respostas secas ou repetitivas."
+  },
+  {
+    "id": "correcao_072",
+    "category": "correcao_redirecionamento",
+    "question": "Pode continuar a resposta anterior a partir do ponto onde parou?",
+    "input": "",
+    "answer": "Posso. Depois da revisao, o passo seguinte e separar o que ficou bom, descartar o que ficou fraco e observar se ha padroes faltando no conjunto."
+  },
+  {
+    "id": "correcao_073",
+    "category": "correcao_redirecionamento",
+    "question": "Pode terminar com uma pergunta curta para eu responder?",
+    "input": "",
+    "answer": "Posso. Qual comportamento conversacional voce quer priorizar primeiro?"
+  },
+  {
+    "id": "correcao_074",
+    "category": "correcao_redirecionamento",
+    "question": "Nao termina a conversa ainda. Me deixa uma proxima acao clara.",
+    "input": "",
+    "answer": "Proxima acao clara: separe agora um pequeno grupo de prompts que representem conversa natural, correcao, continuidade e pedido de esclarecimento."
+  },
+  {
+    "id": "correcao_075",
+    "category": "correcao_redirecionamento",
+    "question": "Agora responde de novo, mas sem perder o que eu corrigi.",
+    "input": "",
+    "answer": "Certo. Mantendo suas correcoes, a resposta e esta: como o objetivo e preparar dados de distilacao para deixar o modelo mais conversacional, o melhor agora e montar um lote pequeno de prompts bem escolhidos, usar o modelo professor para responder, revisar se essas respostas estao naturais e so depois pensar em expandir."
+  }
+]

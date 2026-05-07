@@ -1,0 +1,3 @@
+# Uma pergunta por linha. Linhas com # sao ignoradas.
+Explique em poucas frases o que e inteligencia artificial.
+Qual e a capital do Brasil?

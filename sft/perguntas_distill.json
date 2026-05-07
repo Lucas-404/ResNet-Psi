@@ -1,0 +1,452 @@
+[
+  {
+    "id": "conversa_001",
+    "category": "conversa",
+    "question": "Oi, tudo bem?",
+    "input": ""
+  },
+  {
+    "id": "conversa_002",
+    "category": "conversa",
+    "question": "Quem e voce?",
+    "input": ""
+  },
+  {
+    "id": "conversa_003",
+    "category": "conversa",
+    "question": "Como voce esta hoje?",
+    "input": ""
+  },
+  {
+    "id": "conversa_004",
+    "category": "conversa",
+    "question": "Voce pode conversar comigo por alguns minutos?",
+    "input": ""
+  },
+  {
+    "id": "conversa_005",
+    "category": "conversa",
+    "question": "Estou meio cansado hoje. O que voce me diria?",
+    "input": ""
+  },
+  {
+    "id": "conversa_006",
+    "category": "conversa",
+    "question": "Quero conversar, mas nao sei por onde comecar.",
+    "input": ""
+  },
+  {
+    "id": "conversa_007",
+    "category": "conversa",
+    "question": "Me responde de um jeito natural, como se fosse uma conversa normal.",
+    "input": ""
+  },
+  {
+    "id": "conversa_008",
+    "category": "conversa",
+    "question": "Voce lembra do que eu falei antes nesta conversa?",
+    "input": ""
+  },
+  {
+    "id": "conversa_009",
+    "category": "conversa",
+    "question": "Se eu te contar uma ideia, voce pode me ajudar a pensar nela?",
+    "input": ""
+  },
+  {
+    "id": "conversa_010",
+    "category": "conversa",
+    "question": "Quero te mostrar uma ideia meio maluca e ver o que voce acha.",
+    "input": ""
+  },
+  {
+    "id": "conversa_011",
+    "category": "conversa",
+    "question": "Eu estou animado com meu projeto, mas tambem meio perdido.",
+    "input": ""
+  },
+  {
+    "id": "conversa_012",
+    "category": "conversa",
+    "question": "Me ajuda a organizar meus pensamentos?",
+    "input": ""
+  },
+  {
+    "id": "conversa_013",
+    "category": "conversa",
+    "question": "Voce pode me fazer algumas perguntas para entender melhor o que eu quero?",
+    "input": ""
+  },
+  {
+    "id": "conversa_014",
+    "category": "conversa",
+    "question": "Nao quero uma resposta longa, so conversa comigo de forma simples.",
+    "input": ""
+  },
+  {
+    "id": "conversa_015",
+    "category": "conversa",
+    "question": "Pode responder com calma e sem formalidade?",
+    "input": ""
+  },
+  {
+    "id": "conversa_016",
+    "category": "conversa",
+    "question": "Me fala o que voce entendeu do que eu disse.",
+    "input": ""
+  },
+  {
+    "id": "conversa_017",
+    "category": "conversa",
+    "question": "Acho que voce nao entendeu. Posso explicar de outro jeito?",
+    "input": ""
+  },
+  {
+    "id": "conversa_018",
+    "category": "conversa",
+    "question": "Calma, deixa eu tentar explicar melhor.",
+    "input": ""
+  },
+  {
+    "id": "conversa_019",
+    "category": "conversa",
+    "question": "O que voce acha que eu estou tentando fazer?",
+    "input": ""
+  },
+  {
+    "id": "conversa_020",
+    "category": "conversa",
+    "question": "Voce pode repetir com outras palavras?",
+    "input": ""
+  },
+  {
+    "id": "conversa_021",
+    "category": "conversa",
+    "question": "Nao entendi muito bem. Pode simplificar?",
+    "input": ""
+  },
+  {
+    "id": "conversa_022",
+    "category": "conversa",
+    "question": "Gostei da ideia, mas quero uma versao mais direta.",
+    "input": ""
+  },
+  {
+    "id": "conversa_023",
+    "category": "conversa",
+    "question": "Pode ser mais objetivo?",
+    "input": ""
+  },
+  {
+    "id": "conversa_024",
+    "category": "conversa",
+    "question": "Pode responder de um jeito mais carinhoso?",
+    "input": ""
+  },
+  {
+    "id": "conversa_025",
+    "category": "conversa",
+    "question": "Pode responder como se estivesse falando com um amigo?",
+    "input": ""
+  },
+  {
+    "id": "conversa_026",
+    "category": "conversa",
+    "question": "Estou testando meu modelo e quero ver se ele conversa naturalmente.",
+    "input": ""
+  },
+  {
+    "id": "conversa_027",
+    "category": "conversa",
+    "question": "Se eu falar algo confuso, como voce deveria responder?",
+    "input": ""
+  },
+  {
+    "id": "conversa_028",
+    "category": "conversa",
+    "question": "Quando voce nao souber algo, como voce deve agir?",
+    "input": ""
+  },
+  {
+    "id": "conversa_029",
+    "category": "conversa",
+    "question": "Voce pode admitir quando nao sabe?",
+    "input": ""
+  },
+  {
+    "id": "conversa_030",
+    "category": "conversa",
+    "question": "Me diga uma coisa que voce nao consegue fazer muito bem.",
+    "input": ""
+  },
+  {
+    "id": "conversa_031",
+    "category": "conversa",
+    "question": "Eu quero que voce seja honesto comigo nas respostas.",
+    "input": ""
+  },
+  {
+    "id": "conversa_032",
+    "category": "conversa",
+    "question": "Se eu pedir algo estranho, voce pode perguntar antes de assumir?",
+    "input": ""
+  },
+  {
+    "id": "conversa_033",
+    "category": "conversa",
+    "question": "Vamos conversar sobre uma ideia de projeto?",
+    "input": ""
+  },
+  {
+    "id": "conversa_034",
+    "category": "conversa",
+    "question": "Tenho uma ideia, mas ainda nao sei se faz sentido.",
+    "input": ""
+  },
+  {
+    "id": "conversa_035",
+    "category": "conversa",
+    "question": "Me ajuda a pensar nos proximos passos?",
+    "input": ""
+  },
+  {
+    "id": "conversa_036",
+    "category": "conversa",
+    "question": "Quero fazer isso do jeito mais simples possivel.",
+    "input": ""
+  },
+  {
+    "id": "conversa_037",
+    "category": "conversa",
+    "question": "Acho que estou complicando demais. O que voce acha?",
+    "input": ""
+  },
+  {
+    "id": "conversa_038",
+    "category": "conversa",
+    "question": "Me da uma opiniao sincera sobre essa direcao.",
+    "input": ""
+  },
+  {
+    "id": "conversa_039",
+    "category": "conversa",
+    "question": "Voce acha melhor eu continuar assim ou mudar de estrategia?",
+    "input": ""
+  },
+  {
+    "id": "conversa_040",
+    "category": "conversa",
+    "question": "Me responde como se estivesse acompanhando meu raciocinio.",
+    "input": ""
+  },
+  {
+    "id": "conversa_041",
+    "category": "conversa",
+    "question": "Vamos fingir que estamos revisando uma ideia juntos.",
+    "input": ""
+  },
+  {
+    "id": "conversa_042",
+    "category": "conversa",
+    "question": "Eu vou falar uma coisa e quero que voce me diga se entendeu.",
+    "input": ""
+  },
+  {
+    "id": "conversa_043",
+    "category": "conversa",
+    "question": "Pode me responder com uma pergunta de volta?",
+    "input": ""
+  },
+  {
+    "id": "conversa_044",
+    "category": "conversa",
+    "question": "Pode continuar a conversa sem encerrar o assunto de uma vez?",
+    "input": ""
+  },
+  {
+    "id": "conversa_045",
+    "category": "conversa",
+    "question": "Nao precisa resolver tudo agora, so me ajuda a pensar.",
+    "input": ""
+  },
+  {
+    "id": "conversa_046",
+    "category": "conversa",
+    "question": "Quero uma resposta curta, mas que puxe a conversa adiante.",
+    "input": ""
+  },
+  {
+    "id": "conversa_047",
+    "category": "conversa",
+    "question": "Como voce responderia se eu estivesse frustrado com um erro?",
+    "input": ""
+  },
+  {
+    "id": "conversa_048",
+    "category": "conversa",
+    "question": "Como voce responderia se eu estivesse animado com um resultado?",
+    "input": ""
+  },
+  {
+    "id": "conversa_049",
+    "category": "conversa",
+    "question": "Como voce responderia se eu mudasse de ideia no meio da conversa?",
+    "input": ""
+  },
+  {
+    "id": "conversa_050",
+    "category": "conversa",
+    "question": "Como voce responderia se eu interrompesse e corrigisse voce?",
+    "input": ""
+  },
+  {
+    "id": "conversa_051",
+    "category": "conversa",
+    "question": "Nao era isso que eu quis dizer. Tenta de novo.",
+    "input": ""
+  },
+  {
+    "id": "conversa_052",
+    "category": "conversa",
+    "question": "Agora voce entendeu melhor o que eu quero?",
+    "input": ""
+  },
+  {
+    "id": "conversa_053",
+    "category": "conversa",
+    "question": "Perfeito, agora segue nessa linha.",
+    "input": ""
+  },
+  {
+    "id": "conversa_054",
+    "category": "conversa",
+    "question": "Isso ficou bom, mas deixa mais natural.",
+    "input": ""
+  },
+  {
+    "id": "conversa_055",
+    "category": "conversa",
+    "question": "Isso ficou muito formal. Pode deixar mais humano?",
+    "input": ""
+  },
+  {
+    "id": "conversa_056",
+    "category": "conversa",
+    "question": "Isso ficou muito seco. Pode responder com mais contexto?",
+    "input": ""
+  },
+  {
+    "id": "conversa_057",
+    "category": "conversa",
+    "question": "Isso ficou longo demais. Resume para mim.",
+    "input": ""
+  },
+  {
+    "id": "conversa_058",
+    "category": "conversa",
+    "question": "Pode me dar duas opcoes e dizer qual voce escolheria?",
+    "input": ""
+  },
+  {
+    "id": "conversa_059",
+    "category": "conversa",
+    "question": "Se fosse voce, por onde comecaria?",
+    "input": ""
+  },
+  {
+    "id": "conversa_060",
+    "category": "conversa",
+    "question": "Me ajuda a decidir sem fingir certeza demais.",
+    "input": ""
+  },
+  {
+    "id": "conversa_061",
+    "category": "conversa",
+    "question": "Quero uma resposta que reconheca a duvida e ainda assim avance.",
+    "input": ""
+  },
+  {
+    "id": "conversa_062",
+    "category": "conversa",
+    "question": "Pode falar comigo em portugues simples?",
+    "input": ""
+  },
+  {
+    "id": "conversa_063",
+    "category": "conversa",
+    "question": "Pode evitar palavras muito tecnicas?",
+    "input": ""
+  },
+  {
+    "id": "conversa_064",
+    "category": "conversa",
+    "question": "Pode usar um tom mais direto, mas sem ser grosso?",
+    "input": ""
+  },
+  {
+    "id": "conversa_065",
+    "category": "conversa",
+    "question": "Pode me responder de forma leve?",
+    "input": ""
+  },
+  {
+    "id": "conversa_066",
+    "category": "conversa",
+    "question": "Estou pensando alto aqui. Me acompanha?",
+    "input": ""
+  },
+  {
+    "id": "conversa_067",
+    "category": "conversa",
+    "question": "Eu quero testar se voce consegue manter uma conversa coerente.",
+    "input": ""
+  },
+  {
+    "id": "conversa_068",
+    "category": "conversa",
+    "question": "Responde como um assistente que esta ajudando em um projeto real.",
+    "input": ""
+  },
+  {
+    "id": "conversa_069",
+    "category": "conversa",
+    "question": "Voce pode conversar comigo sobre treino de modelos?",
+    "input": ""
+  },
+  {
+    "id": "conversa_070",
+    "category": "conversa",
+    "question": "Eu quero transformar um modelo instruct em algo mais conversacional.",
+    "input": ""
+  },
+  {
+    "id": "conversa_071",
+    "category": "conversa",
+    "question": "A ideia e usar um modelo maior como professor. Isso faz sentido?",
+    "input": ""
+  },
+  {
+    "id": "conversa_072",
+    "category": "conversa",
+    "question": "Quero gerar conversas para ensinar meu modelo pequeno a responder melhor.",
+    "input": ""
+  },
+  {
+    "id": "conversa_073",
+    "category": "conversa",
+    "question": "Como voce conduziria essa conversa se estivesse me ajudando passo a passo?",
+    "input": ""
+  },
+  {
+    "id": "conversa_074",
+    "category": "conversa",
+    "question": "Me responde como se eu fosse continuar perguntando depois.",
+    "input": ""
+  },
+  {
+    "id": "conversa_075",
+    "category": "conversa",
+    "question": "Pode terminar com uma pergunta curta para continuar a conversa?",
+    "input": ""
+  }
+]

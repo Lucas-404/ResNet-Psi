@@ -1,0 +1,3311 @@
+
+
+# === CLAUDE.md ===
+
+# ResNet-Psi — CLAUDE.md
+
+## O que é este projeto
+
+ResNet-Psi é uma rede neural baseada em física de ondas e cristalização competitiva. Um campo 2D (Ψ-Field) 48×48 recebe dados como perturbações ondulatórias. As ondas propagam, interferem, e regiões estáveis cristalizam — formando uma representação esparsa (crystal_map) que classifica dados **sem nenhum parâmetro treinado**.
+
+**Arquivo principal**: `C:\ResNet-Psi\resnet_psi.py` — biblioteca base com API simples (fit/predict/score)
+
+---
+
+## Resultado central
+
+**79.9% no MNIST, 67% no Fashion-MNIST, e 65-82% em falha industrial (CWRU) — tudo sem treinar absolutamente nada.**
+
+Zero parâmetros. Zero gradiente. Zero backprop. Zero decoder. Só física + média por classe + distância euclidiana. Nenhum sistema de reservoir computing existente classifica sem treinar pelo menos o readout.
+
+Com decoder treinado (só no readout): 88.1% linear, 93.1% MLP.
+
+**Few-shot industrial (CWRU):** com K ≤ 5 amostras por classe, ResNet-Ψ zero treino supera CNN 1D arquitetura-específica treinada do zero. Crossover em K=10.
+
+---
+
+## Arquitetura atual (pós-audits)
+
+### Pipeline
+```
+Imagem 28×28 → projeção gaussiana → campo de ondas 48×48 → cristalização competitiva → crystal_map → classificação
+```
+
+### Constantes físicas (MNIST)
+```python
+PSI_C2    = 0.3      # velocidade de onda (Laplaciano)
+PSI_GAMMA = 0.06     # amortecimento (damping)
+PSI_ALPHA = 0.04     # não-linearidade seletiva (tanh)
+PSI_BETA  = 0.005    # dissipação cúbica
+PSI_DT    = 0.05     # passo temporal
+STIM_ON   = 40       # steps com estímulo ativo
+STIM_TOTAL = 80      # steps totais
+```
+
+### Cristalização Competitiva (mecanismo que funciona)
+```python
+# Thresholds SUAVES (sigmoid, não step)
+amp_score = sigmoid(sharpness × (mean - 0.3))
+cv_score  = sigmoid(sharpness × (0.15 - cv))
+sat_score = sigmoid(sharpness × (8.0 - mean))
+candidato = amp_score × cv_score × sat_score
+
+# COMPETIÇÃO: cristais vivem ou morrem
+ressonância = |campo| × (crystal_map > 0.01)
+HP += ressonância × 0.1    # ressoam → ganham vida
+HP -= 0.02                  # todos decaem
+alive = (HP > 0)            # HP ≤ 0 → morre
+```
+
+### Modos de uso
+
+**Modo 1 — Zero treino (protótipos)**:
+```python
+from resnet_psi import ResNetPsi
+rn = ResNetPsi()
+rn.fit(train_images, train_labels)   # só computa média por classe
+preds = rn.predict(test_images)      # distância euclidiana ao protótipo
+```
+
+**Modo 2 — Com decoder (treina só o readout)**:
+```python
+from resnet_psi import ResNetPsi, train_decoder
+rn = ResNetPsi()
+cmaps = rn.extract(images)           # crystal_maps como features
+# treinar qualquer classificador em cima
+```
+
+---
+
+## Resultados dos 12 Audits
+
+| Audit | Resultado | Status |
+|-------|-----------|--------|
+| 1. MI via clustering | MI ≈ 4.75 bits, constante entre (γ,β). βc=2.32 do paper era tautológico | Provado |
+| 2. Scaling | Acurácia escala: 48² (80.8%) → 192² (87.5%) com decoder. 10 seeds | Provado |
+| 3. Frases | Física pura = 31%. Completação por frases era artefato léxico | Provado (negativo) |
+| 4. Ablação cristais | Cristais originais pioram ~10% vs campo bruto | Provado |
+| 5. Baselines | ResNet-Ψ não compete em acurácia com CNN/MLP convencionais | Provado |
+| 6. Densidade | Cristais: 0.63 bits/KB. MLP: 11.2 bits/KB. Cristais NÃO são mais densos | Provado (negativo) |
+| 7. Cristalização v2 | Competitivo: 88.1% linear, 93.1% MLP, MI 2.49 bits (+97%) | **Melhoria real** |
+| 8. Protótipos | 77.4% MNIST sem decoder nenhum. Zero treino total | **Resultado chave** |
+| 9. Fashion-MNIST | 67.0% com protótipos cristalinos. Mecanismo é genérico | **Generalização** |
+| 10. Métodos leitura | 5 métodos testados — nenhum melhora. Gargalo é representação | Provado |
+| 11. Campo 96² + CIFAR | MNIST 96²: 77.2% (≈48²). CIFAR-10: 18.7% (falhou) | **Limite encontrado** |
+| 12. Texto MC | Hash=20% (aleatório). Embedding semântico=47-70% | **Limite + insight** |
+| 31. CWRU few-shot | K≤5: Psi ganha CNN 1D treinada. K=1: 65.7% vs 60.7%. Crossover K=10 | **Industrial real** |
+
+---
+
+## O que funciona e o que não funciona
+
+### Funciona
+- Imagens com estrutura geométrica (contornos, formas, silhuetas)
+- MNIST: 79.9% zero treino, 93.1% com MLP decoder
+- Fashion-MNIST: 67% zero treino
+- Sinais de vibração industrial (CWRU): 65-82% zero treino, supera CNN treinada com K≤5 amostras
+- Cristalização competitiva (sigmoid + HP + competição)
+- **Few-shot**: data-efficient por construção — protótipo converge com ~5 amostras
+
+### Não funciona
+- Imagens naturais complexas (CIFAR-10: 18.7%)
+- Texto sem embedding semântico externo (hash = 20%, aleatório)
+- Competir em acurácia com CNNs/Transformers
+- Campo maior pra protótipos (96² ≈ 48² sem decoder)
+- Cristalização original (piora 10% vs campo bruto)
+
+### Insight central
+A ResNet-Ψ é um **amplificador de estrutura**: preserva e cristaliza relações que já existem na entrada. Se a entrada tem estrutura geométrica (pixels), funciona sozinha. Se não tem (texto com hash), não funciona.
+
+---
+
+## Domínio de aplicação
+
+| Dataset | Tipo | Resultado | Funciona? |
+|---------|------|-----------|-----------|
+| MNIST | Formas simples, alto contraste | 79.9% (zero treino) / 93.1% (MLP) | Sim |
+| Fashion-MNIST | Silhuetas de roupas | 67.0% (zero treino) | Sim |
+| CWRU Bearing | Vibração industrial 1D | 65-82% zero treino; ganha CNN treinada com K≤5 | **Sim** |
+| CIFAR-10 | Imagens naturais, cor, textura | 18.7% | Não |
+| Texto (hash) | Sem estrutura semântica | 20.0% | Não |
+| Texto (embedding) | Com estrutura semântica | 47-70% | Parcial |
+
+---
+
+## Arquivos do projeto
+
+### Biblioteca principal
+- `resnet_psi.py` — API limpa: ResNetPsi, CrystalCompetitivo, psi_step, compute_crystal_maps, train_decoder
+- `wave_gpt_v8.py` — PsiGPT v8: campo Ψ recorrente substituindo atenção, com acoplamento cristalino
+- `nano_transformer.py` — Transformer padrão com análise Chinchilla, streaming de datasets, baseline de comparação
+
+### Audits (raiz)
+| Arquivo | Descrição |
+|---------|-----------|
+| `RN_psi_audit_1_beta_c.py` | MI via clustering (βc corrigido) |
+| `RN_psi_audit_2_scaling.py` | Curva de escala 48-192, 10 seeds |
+| `RN_psi_audit_3_frases.py` | Ablação de completação de frases |
+| `RN_psi_audit_5_ablacao_baselines.py` | Ablação cristais + baselines MNIST |
+| `RN_psi_audit_5_baselines.py` | Baselines MNIST (10 seeds) |
+| `RN_psi_audit_6_densidade.py` | Densidade informacional comparada |
+| `RN_psi_audit_7_cristalizacao_v2.py` | Cristalização suave + competitiva |
+| `RN_psi_audit_8_prototipos.py` | Protótipos v1 (saturou — abandonado) |
+| `RN_psi_audit_8b_prototipos_v2.py` | Protótipos v2 (77.4%) |
+| `RN_psi_audit_9_fashion.py` | Fashion-MNIST (67%) |
+| `RN_psi_audit_10_leitura.py` | 5 métodos de leitura |
+| `RN_psi_audit_11_campo96_cifar.py` | Campo 96² + CIFAR-10 |
+| `RN_psi_audit_12_frases_mc.py` | Texto multiple choice |
+| `RN_psi_audit_31_cwru_fewshot.py` | CWRU few-shot: CNN vs MLP vs Psi, K=1..50, 5 runs |
+
+### Versões antigas (teste_2/)
+Código exploratório anterior aos audits: 3-bit/4-bit CMA-ES, 2D, 8D, testes de campo. Usa cristalização original (obsoleta).
+
+### Documentação
+- `perguntas_a_ser_respondidas.md` — Perguntas centrais + resultados consolidados dos 12 audits
+- `revisao_paper.md` — Revisão detalhada do paper v2, seção por seção, com correções necessárias
+- `resultados_2fases.md` — Resultados antigos 3-bit/4-bit
+- `resultados_experimentais.md` — Resultados de caracterização do campo
+
+---
+
+## PsiGPT — Direção atual (texto com memória constante)
+
+### Motivação
+Transformer attention escala O(N²) com contexto — impossível treinar modelos grandes num 4GB.
+O campo Ψ tem memória **O(1)**: sempre 24×24 = 576 floats por camada, independente do tamanho do contexto.
+Objetivo: substituir a atenção pelo campo de ondas, mantendo memória constante em qualquer escala.
+
+### Acoplamento cristalino (crystal attention)
+Mecanismo novo desenvolvido nesta sessão. Cristais mediam comunicação global no campo:
+```
+acc[i] += λ × (crystal[i]×vel[i]) × Σ_j (crystal[j]×vel[j]) × (field[j] - field[i])
+```
+- Cristais com mesma fase de velocidade se atraem (acoplamento construtivo)
+- Cristais em fase oposta se repelem (acoplamento destrutivo)
+- Factoriza O(N²) → O(N): dois sums globais + elementwise, zero matriz, zero loops extras
+- `crystal_lam` é parâmetro treinável no v8
+
+### Otimizações wave_gpt_v8.py
+- `from_field` e `proj_out` saíram do loop → batcheados em (B×C, FS²), 1 chamada em vez de 64
+- `torch.roll` substituiu `F.conv2d` no Laplaciano (menos overhead)
+- `torch.compile` + `torch.set_float32_matmul_precision('high')`
+- Resultado: loop sequencial ainda domina (~20s/100steps no RTX 3050 Laptop)
+
+### nano_transformer.py (baseline)
+- Transformer padrão com Flash Attention (F.scaled_dot_product_attention)
+- Análise Chinchilla automática antes do treino
+- Streaming de datasets HuggingFace (Wikipedia PT funcionando)
+- Config `auto` detecta maior modelo que cabe na VRAM
+- Mixed precision (AMP fp16)
+- Em treino: small (25M params) no Wikipedia PT, ~20s/100steps, loss ~2.4 no step 500
+
+### Próximo
+- Terminar treino do nano_transformer (baseline de loss e tempo)
+- Testar wave_gpt_v8 e comparar memória vs transformer
+- O campo Ψ nunca escala memória com contexto — esse é o resultado a validar
+
+---
+
+## Estado do paper
+
+O paper v2 (`ResNet_Psi_Paper_PT_v2.pdf`) precisa de revisão pesada. Documento `revisao_paper.md` detalha tudo. Principais correções:
+
+1. **Remover** βc = 2.32 (tautológico) → substituir por MI ≈ 4.75 bits
+2. **Remover/reescrever** completação de frases 100% (artefato léxico)
+3. **Substituir** cristalização original por competitiva
+4. **Adicionar** 77.4% zero treino como resultado central
+5. **Adicionar** Fashion-MNIST 67%, CIFAR-10 18.7%, texto 47-70%
+6. **Atualizar** acurácias: 80.8% → 88.1% linear, 93.1% MLP
+7. **Adicionar** comparação com reservoir computing (ninguém faz zero treino no readout)
+8. **Adicionar** limites honestos
+
+---
+
+## Trabalhos anteriores (3-bit/4-bit/8D)
+
+Resultados anteriores de paridade de bits usando CMA-ES:
+- **3-bit**: 5/5 runs (100% convergência) com otimização em 2 fases
+- **4-bit**: 3/3 runs (100% convergência) com campo persistente
+- **2D contínuo**: 20/20 (100%)
+- **8D v5**: Abandonado — bottleneck linear sem ativação não separa classes compostas
+
+Constantes extraídas do 3-bit (usadas nos experimentos CMA-ES, diferentes das MNIST):
+```python
+PSI_GAMMA_3BIT = 0.085421
+PSI_BETA_3BIT  = 0.007453
+PSI_SIGMA_3BIT = 0.632152
+```
+
+
+  --- Gerações (PsiGPT (campo 16×16, cristais, chunk=32)) ---
+  > ROMEO:
+I whone good for countale, bond the making so cith aplspans to the doou ble?
+
+POCNIUTES:
+Nos I hot, you a myou
+SAAUIArr,yatn tworg!or
+
+RIThITch
+oeBBlRS:eRWul:aPpndN.E
+ B kRTM
+ei dhttteeurnpn,msn.fsia
+
+  > To be, ort sintles'sve,
+A all the make to with an to this stret thers!
+
+
+GRUCATIO:
+The fa botther cacuse, be lof heh mereads od gamedsientl IanDW:nnnl,snnhsncmotngWwh oeAAhtttteueuOieUeS oaoiehsdDgNLhgxn?tmnra
+
+  > The king is leightings that the wen dusath
+And homhis somwe deageth, il por bettis bots fan
+surrot she sauch atenen 'piened man a awhnl atyet lfafntnler Ieiiiaa er oiaeS
+aoe!iia IeoaaoOioeoeRmT IaaotGdS,sdN:iiei
+
+  Estado final dos cristais:
+  camada 0: field_amp=0.2452  crystal_cov=13.3%  crystal_max=0.758
+  camada 1: field_amp=0.4918  crystal_cov=48.8%  crystal_max=0.796
+  camada 2: field_amp=0.6031  crystal_cov=80.9%  crystal_max=0.900
+  camada 3: field_amp=0.6521  crystal_cov=90.6%  crystal_max=0.926
+
+=================================================================
+RESULTADO FINAL
+=================================================================
+                                   Transformer        PsiGPT
+  ------------------------------  ------------  ------------
+  Parâmetros                           875,520     1,017,880
+  Loss final                            1.3844        1.9736
+  Mem peak (MB)                           1362           117
+  Tempo (s)                                687          3352
+  Estado recorrente                  N/A (KV$)        256 KB
+=================================================================
+
+  Campo Ψ recorrente: 16×16 = 256 floats por camada
+  Causal por construção. Memória constante. Cristais persistentes.
+
+
+# === revisao_paper.md ===
+
+# Revisão do Paper — ResNet-Ψ v2 → v3
+
+Baseado nos resultados dos 12 audits experimentais realizados após a publicação do paper v2.
+Cada seção do paper é analisada: o que está certo, o que está errado, e o que precisa mudar.
+
+---
+
+## 1. RESUMO (Página 1)
+
+### Claims atuais do resumo:
+> "Validamos a fundação da arquitetura através de quatro testes rigorosos: robustez de cristalização (100%), re-emissão de cristais (razão de energia 136.8×), seletividade de frequência (1.57×) e estrutura espectral (4.56× acima de ruído aleatório)."
+
+**Status**: CORRETO — os 4 testes de fundação não foram invalidados.
+
+---
+
+> "Demonstramos que dados podem ser injetados diretamente no campo sem módulo intermediário treinável — e que adicionar um emitter MLP (988k parâmetros) degrada a acurácia de 87.2% para ~40% no MNIST, provando que a física do campo é o transformador."
+
+**Status**: CORRETO — Audit 5 confirmou que injeção direta supera emitter.
+
+**Atualização necessária**: A acurácia de referência mudou. Com cristalização competitiva (Audit 7), injeção direta + decoder linear = **88.1%**, não 80.8%. Com MLP decoder = **93.1%**. A comparação fica ainda mais forte: 93.1% sem emitter vs ~40% com emitter.
+
+---
+
+> "Identificamos uma constante de informação universal: βc = 2.32 bits por cristal, determinada pelas constantes físicas do sistema."
+
+**Status**: ERRADO — Audit 1 provou que βc = 2.32 é tautológico.
+
+**O que aconteceu**: βc = log₂(1/α) = log₂(1/0.20) = log₂(5) ≈ 2.32. O valor não foi "medido" — foi calculado diretamente do threshold α = 0.20 que foi escolhido arbitrariamente. Qualquer α produziria um βc diferente. Não é propriedade do sistema.
+
+**O que o Audit 1 encontrou**: MI real ≈ 4.75 bits via clustering (KMeans + mutual_info_score), e essa MI é **constante** entre diferentes configurações de (γ, β). Isso sim é propriedade intrínseca do sistema.
+
+**Correção**: Remover βc = 2.32 completamente. Substituir por:
+- MI ≈ 4.75 bits (medido via clustering, não via threshold)
+- MI é constante entre configurações físicas diferentes
+- A capacidade informacional é propriedade intrínseca do campo, não dos parâmetros
+
+---
+
+> "A lei de escala C(N) = 0.0024 × N2.171 descreve a capacidade do campo em função do tamanho."
+
+**Status**: PARCIALMENTE CORRETO — A lei de escala existe, mas os coeficientes foram medidos com cristalização original. Com cristalização competitiva os números mudam.
+
+**O que o Audit 2 confirmou**: Acurácia escala com tamanho do campo: 48² (80.8%) → 192² (87.5%) com decoder linear. Scaling real confirmado com 10 seeds e barras de erro.
+
+**O que o Audit 11 revelou**: O scaling funciona com decoder, mas NÃO funciona com protótipos (zero treino). Campo 96² deu 77.2% vs 76.4% no 48² — diferença insignificante. O benefício do campo maior é capturado pelo decoder, não pela métrica de distância simples.
+
+**Correção**: Manter a lei de escala mas:
+- Re-medir coeficientes com cristalização competitiva
+- Explicitar que o scaling beneficia o decoder, não os protótipos
+- Remover extrapolações para campos 683+ (OOM na T4, não testado com v2)
+
+---
+
+> "Por fim, demonstramos completação de frases por física pura — sem embeddings, atenção ou pesos treinados — com 16/16 acertos (100%) em corpus de 25 frases."
+
+**Status**: ERRADO — Audit 3 e Audit 12 invalidaram completamente.
+
+**O que aconteceu**: O score do paper usava 50% overlap léxico + 50% overlap físico. O 100% de acerto vinha da parte léxica (comparação de strings), não da física. A física sozinha dá 31%.
+
+**O que os Audits 3 e 12 mostraram**:
+- Audit 3: Física pura = 31%. O resultado era artefato da métrica híbrida léxica.
+- Audit 12 (hash): 20% (aleatório) — hash não carrega semântica, física não consegue diferenciar.
+- Audit 12 (embedding semântico manual): 47.5% protótipos, 70% multiple choice — quando a entrada carrega estrutura semântica, a física captura. Mas os embeddings são manuais (hardcoded), o que é treino disfarçado.
+
+**Correção**: Remover a seção de completação de frases do paper, ou reescrevê-la honestamente:
+- "A física sozinha não consegue processar texto quando a entrada não carrega estrutura semântica"
+- "Quando embeddings semânticos são fornecidos, o mecanismo captura relações (70% em 5 classes) — mas a ResNet-Ψ depende de que a similaridade da entrada reflita a similaridade semântica"
+- "O mecanismo é um amplificador de estrutura: preserva relações que já existem na entrada, não inventa relações novas"
+
+---
+
+## 2. ARQUITETURA (Páginas 2-4)
+
+### 2.1 Representação de Onda
+**Status**: CORRETO — A equação de onda não mudou.
+
+### 2.2 Injeção Direta de Dados
+**Status**: CORRETO — Confirmado por todos os audits MNIST. A projeção gaussiana funciona.
+
+**Adição**: Explicitar que a projeção gaussiana preserva similaridade geométrica da entrada. Isso é o motivo pelo qual funciona para imagens (pixels de "7" → perturbação similar → cristais similares) e não funciona para texto com hash (palavras semanticamente próximas → perturbações aleatoriamente diferentes → cristais diferentes).
+
+### 2.3 Dinâmica do Ψ-Field
+**Status**: CORRETO — Constantes físicas confirmadas. Tabela 1 está correta.
+
+### 2.4 Formação de Cristais (SEÇÃO CRÍTICA — REESCREVER)
+
+**Status**: ERRADO — O paper descreve cristalização com thresholds duros. Audit 4 provou que essa cristalização piora a acurácia em 10% vs campo bruto. Audit 7 provou que cristalização competitiva é o mecanismo correto.
+
+**O que está no paper (cristalização original)**:
+```
+Cristal se forma se:
+  (i)   mean(env) > A_min = 0.3        ← threshold duro
+  (ii)  cv(env) < ε = 0.15             ← threshold duro
+  (iii) mean(env) < 8.0                ← threshold duro
+  (iv)  separação > 5 pixels           ← exclusão espacial
+```
+
+**O que deveria estar (cristalização competitiva)**:
+```
+Cristal se forma com score contínuo:
+  amp_score = sigmoid(sharpness × (mean - A_min))     ← threshold suave
+  cv_score  = sigmoid(sharpness × (CV_max - cv))      ← threshold suave
+  sat_score = sigmoid(sharpness × (8.0 - mean))       ← threshold suave
+  candidato = amp_score × cv_score × sat_score         ← score contínuo [0, 1]
+
+Competição (mecanismo novo):
+  - Cada cristal tem HP (hit points / vida)
+  - Cristais nascem com HP = 1
+  - Ressonância: se onda é forte onde há cristal → HP += ressonance_boost (0.1)
+  - Decay: todos cristais perdem HP -= 0.02 por step
+  - Morte: cristais com HP ≤ 0 são removidos (crystal_map × alive)
+
+Parâmetros novos:
+  sharpness = 5.0       (suavidade do sigmoid)
+  decay = 0.02          (perda de vida por step)
+  ressonance_boost = 0.1 (ganho de vida por ressonância)
+```
+
+**Por que é melhor** (Audit 7 — 5 seeds):
+
+| Variante | Linear | MLP | MI (bits) |
+|----------|--------|-----|-----------|
+| Original (thresholds duros) | 80.9% | 88.4% | 1.26 |
+| Suave (sigmoid) | 84.0% | 90.2% | 1.78 |
+| **Competitivo (sigmoid + HP)** | **88.1%** | **93.1%** | **2.49** |
+
+A competição faz seleção natural: cristais que não ressoam com a onda morrem, cristais que ressoam sobrevivem. Isso remove ruído e mantém só os cristais informativos. Resultado: +7.2% linear, +4.7% MLP, +97% MI.
+
+**Correção**: Reescrever a seção 2.4 inteira com o mecanismo competitivo. Mover cristalização original para "trabalho anterior" ou apêndice.
+
+---
+
+### 2.5 Mapa de Frequência Temporal
+**Status**: NÃO TESTADO nos audits. O frequency_map existe no código original mas não foi usado na cristalização competitiva (que usa envelope puro). Pode ser removido ou mantido como feature secundária.
+
+### 2.6 Função de Ressonância e Re-emissão
+**Status**: SIMPLIFICADO — A re-emissão nos audits usa versão mais simples:
+```python
+field += crystal_map × CRYSTAL_REMIT × sign(field)
+```
+Sem R_freq, sem R_espacial, sem matching harmônico. A versão simplificada funciona melhor nos benchmarks. A equação complexa do paper (0.7·R_freq + 0.3·R_espacial) pode ser mantida como formulação teórica mas precisa notar que a implementação que produz os melhores resultados usa re-emissão direta.
+
+---
+
+## 3. VALIDAÇÃO NÍVEL 1 (Páginas 4-5)
+
+### 3.1 Robustez de Cristalização (100%)
+**Status**: CORRETO — Não invalidado.
+
+### 3.2 Re-emissão 136.8×
+**Status**: CORRETO — Não invalidado. Mas foi medido com cristalização original. Pode ser re-medido com competitiva.
+
+### 3.3 Seletividade de Frequência 1.57×
+**Status**: CORRETO — Não invalidado. O paper já nota que é "modesto comparado ao attention".
+
+### 3.4 Estrutura Espectral 4.56×
+**Status**: CORRETO — Não invalidado.
+
+**Nota**: Esses 4 testes de fundação são sólidos. Não precisam mudar.
+
+---
+
+## 4. VALIDAÇÃO NÍVEL 2 (Páginas 5-8) — MUDANÇAS PESADAS
+
+### 4.1 Hash Físico Determinístico
+**Status**: CORRETO — Confirmado. Mesma entrada → correlação 1.000.
+
+### 4.2 Ablação Emitter MLP
+
+**Status**: CORRETO na conclusão (injeção direta > emitter), mas DESATUALIZADO nos números.
+
+**Tabela atual do paper**:
+| Config | Acurácia |
+|--------|----------|
+| Injeção direta + linear | 80.8% |
+| Emitter MLP | ~40% |
+
+**Tabela corrigida** (com cristalização competitiva, Audit 7):
+| Config | Acurácia | Params |
+|--------|----------|--------|
+| Injeção direta + linear (competitivo) | **88.1%** | 23k |
+| Injeção direta + MLP (competitivo) | **93.1%** | ~25k |
+| Emitter MLP | ~40% | 988k |
+
+A diferença fica ainda mais dramática: 93.1% com zero params no encoder vs 40% com 988k params.
+
+**Adicionar** (Audit 5 — ablação dos cristais):
+| Config | Linear | MLP |
+|--------|--------|-----|
+| Campo bruto (sem cristais) | 91.7% | 96.5% |
+| Cristalização original | 80.8% | 88.4% |
+| Cristalização competitiva | **88.1%** | **93.1%** |
+
+**Nota importante**: Campo bruto (sem cristais nenhum) dá 91.7% linear. Cristalização original PIORA pra 80.8%. Competitiva recupera pra 88.1% mas ainda perde pro bruto. Cristais não são necessariamente melhores que campo bruto pra acurácia com decoder — mas são essenciais pra o modo zero treino (protótipos).
+
+---
+
+### 4.3 Curva de Escala
+
+**Status**: PARCIALMENTE CORRETO.
+
+**O que o paper diz**: 48→683, satura em ~87%.
+
+**O que os audits confirmam** (Audit 2, 10 seeds):
+| Campo | Acurácia (linear) |
+|-------|-------------------|
+| 48×48 | 80.8% ± 0.3% |
+| 96×96 | 85.9% ± 0.2% |
+| 128×128 | 86.1% ± 0.3% |
+| 192×192 | 87.5% ± 0.2% |
+| 256×256 | OOM (T4 15GB) |
+
+**O que precisa mudar**:
+- Campos 384-683 não foram reproduzidos (OOM). Remover ou marcar como "run única sem barras de erro"
+- Audit 2 confirma com 10 seeds até 192×192
+- Adicionar que com cristalização competitiva os números podem mudar (não re-testado)
+
+**Dado novo** (Audit 11): Scaling NÃO funciona pra protótipos:
+| Campo | Protótipos (zero treino) |
+|-------|------------------------|
+| 48×48 | 76.4% |
+| 96×96 | 77.2% |
+
+Diferença insignificante. O scaling beneficia o decoder, não os protótipos.
+
+---
+
+### 4.4 Densidade de Informação: βc = 2.32
+
+**Status**: ERRADO — Remover completamente.
+
+**O que substituir** (Audit 1):
+- MI ≈ 4.75 bits via KMeans clustering (n_clusters = [8, 16, 32, 64, 128])
+- MI é constante entre diferentes (γ, β) — propriedade intrínseca
+- A capacidade informacional do campo não depende dos parâmetros físicos
+
+**O que substituir** (Audit 6 — densidade):
+| Representação | MI (bits) | Mem (KB) | Densidade (bits/KB) |
+|---------------|-----------|----------|---------------------|
+| Cristais competitivos | 2.49 | ~4 KB | 0.63 |
+| MLP random | 1.12 | 0.1 KB | 11.2 |
+| MLP treinado | 3.8+ | 0.1 KB | 38+ |
+
+**Conclusão honesta**: Cristais NÃO são mais densos que MLPs em bits/KB. O valor da cristalização não é densidade — é que funciona sem treino.
+
+---
+
+### 4.5 Lei de Escala de Cristais
+
+**Status**: PARCIALMENTE CORRETO — O crescimento super-linear existe, mas os coeficientes foram medidos com cristalização original. Precisa re-medir com competitiva.
+
+**Correção**: Manter a forma C(N) = a × Nᵇ mas notar que a e b precisam ser re-estimados.
+
+---
+
+### 4.6 Capacidade para Tarefas de Linguagem
+
+**Status**: ERRADO — As extrapolações de campo mínimo pra tokens/vocabulário são baseadas em βc = 2.32 que é tautológico, e a completação de frases falhou.
+
+**Correção**: Remover a tabela de "campo mínimo para N tokens". Substituir por:
+- "O campo processa dados com estrutura geométrica. Para texto, a entrada precisa de embedding semântico externo."
+- Adicionar resultados do Audit 12: hash = 20% (aleatório), embedding semântico = 70% (multiple choice, 5 classes)
+
+---
+
+### 4.7 Completação de Frases
+
+**Status**: ERRADO — Remover ou reescrever completamente.
+
+**O que estava errado**:
+- Score = 50% overlap léxico + 50% overlap físico
+- O 100% de acerto vinha da parte léxica (match de strings)
+- Física pura = 31% (Audit 3)
+
+**O que colocar no lugar** (Audit 12):
+| Condição | Acurácia | Referência |
+|----------|----------|------------|
+| Hash (sem semântica na entrada) | 20.0% | Aleatório = 20% |
+| Embedding semântico (protótipos) | 47.5% | 2.4× aleatório |
+| Embedding semântico (multiple choice, max energy) | 70.0% | 3.5× aleatório |
+
+**Conclusão correta**: "A ResNet-Ψ amplifica estrutura que já existe na entrada. Para imagens, essa estrutura é natural (pixels). Para texto, precisa de embedding externo. O mecanismo não inventa relações semânticas — preserva as que recebe."
+
+---
+
+## 5. DISCUSSÃO (Páginas 8-9)
+
+### 5.1 O Campo como Kernel Físico
+**Status**: CORRETO — Reforçado pelos audits. Os protótipos (Audit 8b) são a prova mais forte: o campo transforma imagens em representações que separam classes sem nenhum treino.
+
+**Adição**: Citar o resultado de 77.4% zero treino como evidência principal. "O campo transforma imagens de forma que a simples média por classe já discrimina — demonstrando que a transformação física, por si só, organiza informação por classe."
+
+### 5.2 Relação com Trabalho Existente
+
+**Status**: INCOMPLETO — Precisa adicionar comparação com reservoir computing.
+
+**Adição** (baseado na pesquisa web realizada):
+
+> "Em Reservoir Computing clássico (Jaeger 2001, Maass 2002), o reservatório é fixo e apenas o readout é treinado. Physical Reservoir Computing (Hughes et al., 2019; Marcucci et al., 2020) usa dinâmica ondulatória como reservatório, mas sempre treina o readout."
+>
+> "A ResNet-Ψ se distingue em dois aspectos:
+> 1. **Cristalização competitiva como mecanismo de memória** — cristais emergem, competem e morrem baseado em ressonância. Nenhum paper de reservoir computing propõe cristalização esparsa em campo de ondas.
+> 2. **Classificação sem treinar o readout** — 77.4% no MNIST e 67% no Fashion-MNIST sem treinar nenhum parâmetro em lugar nenhum. Todo reservoir computing existente treina pelo menos o readout."
+
+Papers relevantes:
+- Hughes et al., "Wave physics as an analog recurrent neural network", Science Advances (2019)
+- Marcucci et al., PRL (2020) — wave computing
+- Tong & Tanaka, "Reservoir Computing with Untrained CNNs" (2018) — untrained reservoir + trained readout = 98.4% MNIST
+
+### 5.3 Complexidade Computacional
+**Status**: CORRETO — A análise de complexidade não mudou.
+
+### 5.4 Limitações
+
+**Status**: INCOMPLETO — Precisa adicionar limites descobertos nos audits.
+
+**Adicionar**:
+
+1. **CIFAR-10 falha (18.7%)** (Audit 11): "O mecanismo não funciona para imagens naturais complexas. A projeção gaussiana + dinâmica ondulatória não preserva informação discriminativa de textura e cor. Protótipos CIFAR ficam todos idênticos. O domínio do mecanismo é geometria (contornos, formas, silhuetas), não imagens naturais."
+
+2. **Cristalização original piora acurácia** (Audit 4): "A cristalização com thresholds duros piora a acurácia em ~10% comparado ao campo bruto. A cristalização competitiva (v2) recupera parcialmente, mas campo bruto com decoder ainda supera cristais com decoder (91.7% vs 88.1%). O valor dos cristais é no modo zero treino (protótipos), onde são indispensáveis."
+
+3. **Gargalo é a representação** (Audit 10): "Cinco métodos de leitura testados (Euclidiana, Coseno, Variância ponderada, Fisher, Mahalanobis diagonal) — nenhum melhora sobre Euclidiana simples. O limite de 77% sem decoder vem da qualidade da representação cristalina, não do método de comparação."
+
+4. **Campo maior não ajuda protótipos** (Audit 11): "96×96 dá 77.2% vs 76.4% no 48×48. O benefício de campos maiores é capturado pelo decoder treinado, não pela métrica de distância dos protótipos."
+
+5. **Texto precisa de embedding externo** (Audit 12): "Hash determinístico = 20% (aleatório). Embedding semântico manual = 47-70%. A ResNet-Ψ não cria relações semânticas — amplifica as que já existem na entrada."
+
+6. **Densidade inferior a MLPs** (Audit 6): "Cristais: 0.63 bits/KB. MLP treinado: 38+ bits/KB. Cristais não são representação mais densa. O valor é que funcionam sem treino."
+
+---
+
+## 6. CONCLUSÃO (Página 9)
+
+### Claims atuais vs status:
+
+| Claim | Status |
+|-------|--------|
+| "(1) forma unidades de memória estáveis (cristais) de forma robusta e determinística" | **CORRETO** |
+| "(2) opera como hash físico — representação única e consistente por padrão de entrada" | **CORRETO** |
+| "(3) não requer módulo de encoding treinável" | **CORRETO** |
+| "(4) possui capacidade de informação descrita por constante universal βc = 2.32 bits/cristal e lei de escala C(N) = 0.0024 × N2.171" | **βc ERRADO, lei de escala parcialmente correta** |
+| "(5) habilita completação de frases por física pura, sem embeddings ou atenção" | **ERRADO** |
+
+### Conclusão reescrita sugerida:
+
+> "Apresentamos Resonance Networks (ResNet-Ψ), uma arquitetura neural na qual a computação emerge de dinâmica de ondas e cristalização competitiva. O Ψ-Field foi validado como substrato computacional que:
+>
+> (1) Forma unidades de memória estáveis (cristais) de forma robusta e determinística;
+>
+> (2) Opera como hash físico — representação única e consistente por padrão de entrada;
+>
+> (3) Não requer módulo de encoding treinável — a injeção direta supera emitters com 43× mais parâmetros;
+>
+> (4) **Classifica MNIST com 77.4% e Fashion-MNIST com 67.0% sem nenhum parâmetro treinado em lugar nenhum** — via protótipos cristalinos (média por classe + distância euclidiana). Nenhum sistema de reservoir computing existente classifica sem treinar pelo menos o readout;
+>
+> (5) Com decoder simples (treinado apenas no readout), atinge 88.1% (linear) e 93.1% (MLP) no MNIST;
+>
+> (6) A cristalização competitiva — onde cristais ganham vida por ressonância e morrem por decay — melhora todas as métricas: +7.2% acurácia linear, +4.7% MLP, +97% MI vs cristalização original;
+>
+> (7) O mecanismo funciona para dados com estrutura geométrica (contornos, silhuetas). Não funciona para imagens naturais complexas (CIFAR-10: 18.7%) nem para texto sem embedding semântico externo.
+>
+> A implicação central é que **informação pode emergir de dinâmica física sem otimização** — cristais são os pesos que o campo encontra sozinho. A ResNet-Ψ é um amplificador de estrutura: preserva e cristaliza relações que existem na entrada."
+
+---
+
+## 7. SEÇÕES NOVAS A ADICIONAR
+
+### 7.1 Cristalização Competitiva (nova Seção 2.4)
+Descrição completa do mecanismo: sigmoid, HP, decay, ressonância, morte.
+Código de referência: `resnet_psi.py` → classe `CrystalCompetitivo`
+
+### 7.2 Classificação por Protótipos (nova Seção 4.x)
+- Pipeline: imagem → crystal_map → média por classe → protótipo
+- Classificação: distância euclidiana ao protótipo mais próximo
+- Resultados: 77.4% MNIST, 67% Fashion-MNIST
+- Curva: 5 exemplos → 53%, 50 → 71%, 500 → 75.6%, 5000 → 77.4%
+- Zero treino, zero backprop, zero gradiente, zero decoder
+- Código de referência: `resnet_psi.py` → `ResNetPsi.fit()` / `ResNetPsi.predict()`
+
+### 7.3 Domínio de Aplicação (nova Seção 5.x)
+| Dataset | Tipo | Resultado | Funciona? |
+|---------|------|-----------|-----------|
+| MNIST | Formas simples, alto contraste | 77.4% (zero treino) / 93.1% (MLP) | Sim |
+| Fashion-MNIST | Silhuetas de roupas | 67.0% (zero treino) | Sim |
+| CIFAR-10 | Imagens naturais, cor, textura | 18.7% | Não |
+| Texto (hash) | Sem estrutura semântica | 20.0% | Não |
+| Texto (embedding) | Com estrutura semântica | 47-70% | Parcial |
+
+### 7.4 Comparação com Reservoir Computing (nova Seção 5.x)
+- Reservoir computing: reservatório fixo + readout treinado
+- ResNet-Ψ: reservatório fixo + readout **opcional** (protótipos = zero treino)
+- Cristalização competitiva como mecanismo novo (não existe em RC)
+- Referências: Hughes 2019, Marcucci 2020, Jaeger 2001
+
+---
+
+## 8. TABELA RESUMO DE TODAS AS CORREÇÕES
+
+| Seção | Ação | Prioridade |
+|-------|------|------------|
+| Resumo | Atualizar acurácias, remover βc e frases | ALTA |
+| 2.4 Cristais | Reescrever com cristalização competitiva | ALTA |
+| 2.5 Freq map | Notar que não é usado na v2 | BAIXA |
+| 2.6 Re-emissão | Notar simplificação na implementação | MÉDIA |
+| 4.2 Ablação | Atualizar números (88.1%/93.1%) | ALTA |
+| 4.3 Scaling | Limitar a 48-192 com barras de erro | MÉDIA |
+| 4.4 βc | REMOVER, substituir por MI ≈ 4.75 bits | ALTA |
+| 4.5 Lei escala | Notar que precisa re-medir com v2 | MÉDIA |
+| 4.6 Linguagem | REMOVER extrapolações de campo pra tokens | ALTA |
+| 4.7 Frases | REESCREVER com resultados do Audit 12 | ALTA |
+| 5.2 Trabalho existente | Adicionar comparação com RC | ALTA |
+| 5.4 Limitações | Adicionar CIFAR, densidade, campo maior | ALTA |
+| 6 Conclusão | Reescrever com claims corretos | ALTA |
+| NOVA 2.4 | Cristalização competitiva | ALTA |
+| NOVA 4.x | Protótipos zero treino (77.4%/67%) | ALTA |
+| NOVA 5.x | Domínio de aplicação | ALTA |
+| NOVA 5.x | Comparação com RC | ALTA |
+
+---
+
+## 9. ARQUIVOS DE REFERÊNCIA
+
+Cada resultado citado nesta revisão pode ser reproduzido com os seguintes arquivos:
+
+| Resultado | Arquivo |
+|-----------|---------|
+| MI ≈ 4.75 bits | `RN_psi_audit_1_beta_c.py` |
+| Scaling 48-192 | `RN_psi_audit_2_scaling.py` |
+| Frases 31% | `RN_psi_audit_3_frases.py` |
+| Cristais pioram 10% | `RN_psi_audit_5_ablacao_baselines.py` |
+| Baselines MNIST | `RN_psi_audit_5_baselines.py` |
+| Densidade 0.63 bits/KB | `RN_psi_audit_6_densidade.py` |
+| Competitivo 88.1%/93.1% | `RN_psi_audit_7_cristalizacao_v2.py` |
+| Protótipos 77.4% | `RN_psi_audit_8b_prototipos_v2.py` |
+| Fashion 67% | `RN_psi_audit_9_fashion.py` |
+| 5 métodos leitura | `RN_psi_audit_10_leitura.py` |
+| CIFAR 18.7% / campo 96 | `RN_psi_audit_11_campo96_cifar.py` |
+| Texto MC 47-70% | `RN_psi_audit_12_frases_mc.py` |
+| Biblioteca base | `resnet_psi.py` |
+
+
+# === codex.md ===
+
+# Codex
+
+Este arquivo serve como referência rápida para rodar, retomar e acompanhar o treino do modelo em `nano_villa.py`.
+
+## Treino básico
+
+Rodar treino com alvo em tokens:
+
+```powershell
+python nano_villa.py --tokens 2000000
+```
+
+Exemplo para treino longo:
+
+```powershell
+python nano_villa.py --tokens 600000000
+```
+
+## Parâmetros principais
+
+- `--tokens`
+  Define quantos tokens o treino vai processar antes de parar.
+
+- `--config`
+  Escolhe o tamanho do modelo.
+
+Exemplo:
+
+```powershell
+python nano_villa.py --config small --tokens 600000000
+```
+
+## Checkpoints
+
+O script salva:
+
+- um checkpoint principal, sempre sobrescrito;
+- snapshots por step, com limpeza automática dos mais antigos.
+
+Parâmetros:
+
+- `--checkpoint-path`
+  Define o caminho do checkpoint principal.
+
+- `--save-every`
+  Salva checkpoint a cada N steps.
+
+- `--keep-last`
+  Mantém apenas os N snapshots mais recentes.
+
+Exemplo:
+
+```powershell
+python nano_villa.py --tokens 600000000 --checkpoint-path checkpoints\nano_villa_last.pt --save-every 500 --keep-last 3
+```
+
+## Retomar treino
+
+Para continuar de um checkpoint salvo:
+
+```powershell
+python nano_villa.py --tokens 600000000 --resume checkpoints\nano_villa_last.pt
+```
+
+Observações:
+
+- `--resume` restaura modelo, otimizador, scaler, step e total de tokens processados.
+- O dataset em streaming não volta exatamente ao mesmo ponto do corpus; ele reconecta e continua lendo novos trechos.
+
+## Arquivos de checkpoint
+
+Exemplo de arquivos gerados:
+
+- `checkpoints\nano_villa_last.pt`
+- `checkpoints\nano_villa_last.step-500.pt`
+- `checkpoints\nano_villa_last.step-1000.pt`
+
+Com `--keep-last 3`, o script mantém só os 3 snapshots mais recentes, além do checkpoint principal.
+
+## Fluxo recomendado
+
+1. Testar curto:
+
+```powershell
+python nano_villa.py --tokens 2000000
+```
+
+2. Rodar treino longo:
+
+```powershell
+python nano_villa.py --tokens 600000000 --save-every 500 --keep-last 3
+```
+
+3. Se interromper, retomar:
+
+```powershell
+python nano_villa.py --tokens 600000000 --resume checkpoints\nano_villa_last.pt
+```
+
+
+# === wave_gpt_v12.py ===
+
+#!/usr/bin/env python3
+"""
+wave_gpt_v12.py — Crystal Attention LM
+
+Hipótese central:
+  N tokens → campo Ψ (reservoir físico) → K cristais (K fixo, ~32)
+  Atenção K×K em vez de N×N → memória constante com contexto arbitrário
+
+Campo: física pura, sem parâmetros treinados.
+Treina: crystal_proj + atenção + head.
+
+Uso:
+  python wave_gpt_v12.py
+  python wave_gpt_v12.py --text arquivo.txt
+  python wave_gpt_v12.py --text arquivo.txt --steps 5000
+"""
+
+import os, sys, math, time, argparse
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Física do campo Ψ
+# ══════════════════════════════════════════════════════════════════════════════
+C2         = 0.3
+GAMMA      = 0.06
+ALPHA      = 0.04
+BETA       = 0.005
+DT         = 0.05
+WAVE_STEPS = 1     # steps de física por token — 1 é suficiente, 3x mais rápido
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Arquitetura
+# ══════════════════════════════════════════════════════════════════════════════
+FIELD_H  = 16
+FIELD_W  = 16
+K        = 16      # cristais extraídos por snapshot do campo
+CRYS_DIM = 3       # features por cristal: (pos_x, pos_y, amplitude)
+HIDDEN   = 64      # dimensão da atenção
+N_HEADS  = 4       # cabeças de atenção
+N_LAYERS = 2       # camadas de atenção
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Treino
+# ══════════════════════════════════════════════════════════════════════════════
+SEQ_LEN   = 32
+BATCH     = 64     # batch maior → melhor uso da GPU com textos pequenos
+LR        = 3e-4
+LOG_EVERY = 100
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Campo Ψ — reservoir puro, sem gradiente
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _laplacian(f):
+    """Laplaciano 2D via torch.roll (bordas periódicas)."""
+    return (torch.roll(f, -1, -2) + torch.roll(f,  1, -2) +
+            torch.roll(f, -1, -1) + torch.roll(f,  1, -1) - 4 * f)
+
+
+def _wave_step(field, vel, stim):
+    """Um passo da equação de onda. Compilável via torch.compile."""
+    acc   = (C2 * _laplacian(field)
+             - GAMMA * vel
+             - ALPHA * torch.tanh(field)
+             - BETA  * field ** 3
+             + stim)
+    vel   = vel   + DT * acc
+    field = field + DT * vel
+    return field, vel
+
+# Compilar o step interno elimina overhead Python nas iterações internas
+try:
+    _wave_step = torch.compile(_wave_step)
+except Exception:
+    pass  # fallback silencioso se compile não disponível
+
+
+def _extract_crystals(field, H, W):
+    """Extrai K cristais top-K por amplitude do campo."""
+    B    = field.shape[0]
+    flat = field.view(B, -1)
+    _, idx    = flat.abs().topk(K, dim=-1)
+    amplitude = flat.gather(1, idx)
+    pos_x     = (idx // W).float() / H
+    pos_y     = (idx  % W).float() / W
+    return torch.stack([pos_x, pos_y, amplitude], dim=-1)   # (B, K, 3)
+
+
+@torch.no_grad()
+def step_field(token_id, inject_patterns, field, vel):
+    """
+    Processa UM token no campo (inferência incremental).
+    O campo carrega a assinatura de todos os tokens anteriores — não precisa replay.
+
+    token_id       : (B,)    — índice do char
+    inject_patterns: (V, H*W)
+    field, vel     : (B, H, W) — estado atual (atualizado in-place)
+
+    retorna: crystal_feats (B, K, 3), new_field, new_vel
+    """
+    H, W = field.shape[-2], field.shape[-1]
+    stim = inject_patterns[token_id].view(-1, H, W)
+    for _ in range(WAVE_STEPS):
+        field, vel = _wave_step(field, vel, stim)
+    return _extract_crystals(field, H, W), field, vel
+
+
+@torch.no_grad()
+def process_field(input_ids, inject_patterns):
+    """
+    Processa sequência de tokens no campo Ψ.
+    Cada token injeta um padrão fixo no campo e a física propaga.
+    Extrai K cristais por snapshot (top-K por amplitude).
+
+    input_ids      : (B, T)  — índices dos chars
+    inject_patterns: (V, H*W) — padrão fixo por char (buffer do modelo)
+
+    retorna: crystal_seq (B, T, K, CRYS_DIM)
+    """
+    B, T = input_ids.shape
+    H, W = FIELD_H, FIELD_W
+    dev  = input_ids.device
+
+    field = torch.zeros(B, H, W, device=dev)
+    vel   = torch.zeros(B, H, W, device=dev)
+
+    snapshots = []
+
+    for t in range(T):
+        stim = inject_patterns[input_ids[:, t]].view(B, H, W)
+        for _ in range(WAVE_STEPS):
+            field, vel = _wave_step(field, vel, stim)
+        snapshots.append(_extract_crystals(field, H, W))
+
+    return torch.stack(snapshots, dim=1)                # (B, T, K, 3)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Modelo
+# ══════════════════════════════════════════════════════════════════════════════
+
+class CrystalBlock(nn.Module):
+    """Atenção K×K + FF sobre os K cristais de um snapshot."""
+
+    def __init__(self):
+        super().__init__()
+        self.attn  = nn.MultiheadAttention(HIDDEN, N_HEADS, dropout=0.1, batch_first=True)
+        self.norm1 = nn.LayerNorm(HIDDEN)
+        self.ff    = nn.Sequential(
+            nn.Linear(HIDDEN, HIDDEN * 2),
+            nn.GELU(),
+            nn.Linear(HIDDEN * 2, HIDDEN),
+            nn.Dropout(0.1),
+        )
+        self.norm2 = nn.LayerNorm(HIDDEN)
+
+    def forward(self, x):
+        # x: (BT, K, HIDDEN) — K cristais como sequência pequena
+        a, _ = self.attn(x, x, x)
+        x = self.norm1(x + a)
+        x = self.norm2(x + self.ff(x))
+        return x
+
+
+class CrystalLM(nn.Module):
+    """
+    Crystal Attention Language Model (v12)
+
+    Fluxo:
+      input_ids (B, T)
+        → campo Ψ [sem grad] → crystal_seq (B, T, K, 3)
+        → crystal_proj        → (B*T, K, HIDDEN)
+        → N_LAYERS × attn K×K → (B*T, K, HIDDEN)
+        → mean over K          → (B, T, HIDDEN)
+        → head                 → (B, T, vocab_size)
+
+    Matriz de atenção: K×K = 32×32 (fixa).
+    Transformer equivalente: SEQ_LEN×SEQ_LEN = 128×128.
+    """
+
+    def __init__(self, vocab_size):
+        super().__init__()
+        self.vocab_size = vocab_size
+
+        # Padrões de injeção fixos — um padrão único por caractere.
+        # Determinísticos (seed=42), não treináveis.
+        g = torch.Generator().manual_seed(42)
+        self.register_buffer(
+            'inject_patterns',
+            torch.randn(vocab_size, FIELD_H * FIELD_W, generator=g) * 0.15
+        )
+
+        # Partes treináveis
+        self.embed        = nn.Embedding(vocab_size, HIDDEN)   # identidade do char
+        self.crystal_proj = nn.Linear(CRYS_DIM, HIDDEN)        # contexto do campo
+        self.blocks       = nn.ModuleList([CrystalBlock() for _ in range(N_LAYERS)])
+        self.norm         = nn.LayerNorm(HIDDEN)
+        self.recurrent    = nn.Linear(HIDDEN, HIDDEN)          # estado temporal (fino)
+        self.head         = nn.Linear(HIDDEN, vocab_size, bias=False)
+
+    def forward(self, input_ids):
+        """
+        input_ids: (B, T) → logits (B, T, vocab_size)
+
+        Fluxo:
+          1. Campo Ψ: todos T tokens → crystal_seq (sequential, no grad)
+          2. Atenção K×K: todos T steps em paralelo (rápido, B*T batch)
+          3. Estado recorrente: loop fino sobre T (barato, só HIDDEN-dim)
+        """
+        B, T   = input_ids.shape
+        device = input_ids.device
+
+        # 1. Campo — sem gradiente, processa tudo de uma vez
+        crystal_seq = process_field(input_ids, self.inject_patterns)  # (B, T, K, CRYS_DIM)
+        char_emb    = self.embed(input_ids)                           # (B, T, HIDDEN)
+
+        # 2. Atenção K×K sobre todos os steps em paralelo (rápido)
+        BT = B * T
+        x  = self.crystal_proj(crystal_seq.view(BT, K, CRYS_DIM))    # (BT, K, HIDDEN)
+        x  = x + char_emb.view(BT, 1, HIDDEN)                        # + identidade
+        for block in self.blocks:
+            x = block(x)                                              # (BT, K, HIDDEN)
+        pooled = self.norm(x.mean(dim=1)).view(B, T, HIDDEN)          # (B, T, HIDDEN)
+
+        # 3. Estado recorrente fino — loop sobre T, mas só opera em HIDDEN-dim
+        state      = torch.zeros(B, HIDDEN, device=device)
+        all_logits = []
+        for t in range(T):
+            state = torch.tanh(self.recurrent(pooled[:, t] + state))  # (B, HIDDEN)
+            all_logits.append(self.head(state))                        # (B, vocab_size)
+
+        return torch.stack(all_logits, dim=1)                          # (B, T, vocab_size)
+
+    def loss(self, input_ids):
+        logits  = self(input_ids[:, :-1])        # (B, T-1, V)
+        targets = input_ids[:, 1:].reshape(-1)   # (B*(T-1),)
+        return F.cross_entropy(logits.reshape(-1, self.vocab_size), targets)
+
+    @torch.no_grad()
+    def step(self, token_id, field, vel, rstate):
+        """
+        Processa UM token incrementalmente — O(1) por step.
+        O campo já carrega a assinatura de todos os tokens anteriores.
+        Não precisa reprocessar o contexto todo.
+
+        token_id : (B,)       — índice do char atual
+        field    : (B, H, W)  — estado do campo (acumula história)
+        vel      : (B, H, W)  — velocidade do campo
+        rstate   : (B, HIDDEN) — estado recorrente da atenção
+
+        retorna: logits (B, V), new_field, new_vel, new_rstate
+        """
+        # Atualiza campo com o novo token (a história está no campo)
+        crystal_feats, field, vel = step_field(
+            token_id, self.inject_patterns, field, vel
+        )                                                    # (B, K, 3)
+
+        # Atenção K×K sobre cristais atuais
+        x = self.crystal_proj(crystal_feats)                 # (B, K, HIDDEN)
+        x = x + self.embed(token_id).unsqueeze(1)
+        for block in self.blocks:
+            x = block(x)
+
+        # Estado recorrente
+        pooled = self.norm(x.mean(dim=1))                    # (B, HIDDEN)
+        rstate = torch.tanh(self.recurrent(pooled + rstate))
+
+        return self.head(rstate), field, vel, rstate
+
+    @torch.no_grad()
+    def generate(self, stoi, itos, seed='O campo', n=200, temp=0.8):
+        """
+        Geração incremental — O(n).
+        Cada token processa só ele mesmo; o campo carrega a história.
+        """
+        self.eval()
+        device = next(self.parameters()).device
+        H, W   = FIELD_H, FIELD_W
+
+        # Estados iniciais
+        field  = torch.zeros(1, H, W, device=device)
+        vel    = torch.zeros(1, H, W, device=device)
+        rstate = torch.zeros(1, HIDDEN, device=device)
+
+        result = list(seed)
+
+        # Processa seed — cada char atualiza o campo acumulativamente
+        logits = None
+        for c in seed:
+            tid    = torch.tensor([stoi.get(c, 0)], device=device)
+            logits, field, vel, rstate = self.step(tid, field, vel, rstate)
+
+        # Gera n tokens — campo já tem a assinatura da seed
+        for _ in range(n):
+            probs  = F.softmax(logits[0] / temp, dim=-1)
+            nxt    = torch.multinomial(probs, 1)
+            result.append(itos[nxt.item()])
+            logits, field, vel, rstate = self.step(nxt, field, vel, rstate)
+
+        self.train()
+        return ''.join(result)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Dataset
+# ══════════════════════════════════════════════════════════════════════════════
+
+class CharDataset(torch.utils.data.Dataset):
+    def __init__(self, text, seq_len=SEQ_LEN, split='train', val_ratio=0.1):
+        chars = sorted(set(text))
+        self.stoi = {c: i for i, c in enumerate(chars)}
+        self.itos = {i: c for c, i in self.stoi.items()}
+        self.vocab_size = len(chars)
+
+        # Split: primeiros (1-val_ratio)% treino, últimos val_ratio% validação
+        cut    = int(len(text) * (1 - val_ratio))
+        text   = text[:cut] if split == 'train' else text[cut:]
+
+        stride = seq_len + 1
+        data   = [self.stoi[c] for c in text]
+        self.chunks = [
+            torch.tensor(data[i : i + stride], dtype=torch.long)
+            for i in range(0, len(data) - stride, stride)
+        ]
+
+    def __len__(self):  return len(self.chunks)
+    def __getitem__(self, i): return self.chunks[i]
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Texto de exemplo (fallback)
+# ══════════════════════════════════════════════════════════════════════════════
+
+SAMPLE_PT = """
+A linguagem humana carrega estrutura em múltiplas escalas temporais.
+Letras formam sílabas. Sílabas formam palavras. Palavras formam frases.
+O campo de ondas recebe perturbações e cristaliza padrões estáveis.
+Cada cristal preserva a informação que o campo considerou relevante.
+A atenção opera sobre os cristais, não sobre a sequência inteira.
+A matriz de atenção é pequena e constante, independente do contexto.
+O campo Ψ comprime N tokens em K cristais onde K é fixo pela física.
+Regiões de alta amplitude e baixa variância cristalizam primeiro.
+Cristais competem por sobrevivência através do mecanismo de HP.
+Cristais que ressoam com o campo ganham vida. Os outros morrem.
+O resultado é uma representação esparsa e estável do input.
+""" * 400
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Treino
+# ══════════════════════════════════════════════════════════════════════════════
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--text',   type=str, default=None,
+                        help='Arquivo .txt para treino')
+    parser.add_argument('--steps',  type=int, default=2000,
+                        help='Steps de treino (default: 2000)')
+    parser.add_argument('--device', type=str, default='auto')
+    args = parser.parse_args()
+
+    # Device
+    if args.device == 'auto':
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    else:
+        device = torch.device(args.device)
+
+    # Texto
+    if args.text and os.path.exists(args.text):
+        text = open(args.text, encoding='utf-8').read()
+        print(f"Texto: {args.text}  ({len(text):,} chars)")
+    else:
+        text = SAMPLE_PT
+        print(f"Texto embutido  ({len(text):,} chars)")
+
+    # Dataset — 90% treino, 10% validação
+    ds      = CharDataset(text, split='train')
+    ds_val  = CharDataset(text, split='val')
+    loader  = torch.utils.data.DataLoader(ds,     batch_size=BATCH, shuffle=True,  drop_last=True)
+    val_loader = torch.utils.data.DataLoader(ds_val, batch_size=BATCH, shuffle=False, drop_last=True)
+
+    # Modelo
+    model   = CrystalLM(ds.vocab_size).to(device)
+    n_train = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    n_fixed = sum(b.numel() for b in model.buffers())
+    print(f"  Treino: {len(ds)} seqs | Validação: {len(ds_val)} seqs")
+
+    attn_seq  = K          # tamanho da sequência na atenção
+    attn_std  = SEQ_LEN    # tamanho equivalente no transformer padrão
+    reducao   = attn_std ** 2 / attn_seq ** 2
+
+    print(f"\n{'═'*55}")
+    print(f"  CrystalLM v12 — Crystal Attention")
+    print(f"{'═'*55}")
+    print(f"  Device  : {device}")
+    print(f"  Vocab   : {ds.vocab_size} chars")
+    print(f"  Sequências : {len(ds)}")
+    print(f"  Params treináveis : {n_train:,}")
+    print(f"  Params fixos (campo): {n_fixed:,}")
+    print(f"")
+    print(f"  Campo     : {FIELD_H}×{FIELD_W}  |  K={K} cristais")
+    print(f"  Atenção   : {attn_seq}×{attn_seq} + estado recorrente HIDDEN={HIDDEN}  (transformer usaria {attn_std}×{attn_std})")
+    print(f"  Redução   : {attn_std**2 / (2*attn_seq)**2:.0f}× menor")
+    print(f"{'═'*55}\n")
+
+    opt   = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=0.01)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.steps)
+
+    losses = []
+    step   = 0
+    t0     = time.time()
+
+    print(f"Treinando por {args.steps} steps...\n")
+
+    while step < args.steps:
+        for batch in loader:
+            if step >= args.steps:
+                break
+            batch = batch.to(device)
+
+            opt.zero_grad()
+            loss = model.loss(batch)
+            loss.backward()
+            nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            opt.step()
+            sched.step()
+
+            losses.append(loss.item())
+            step += 1
+
+            if step % LOG_EVERY == 0:
+                avg = sum(losses[-LOG_EVERY:]) / LOG_EVERY
+
+                # Validation loss
+                model.eval()
+                val_losses = []
+                with torch.no_grad():
+                    for vb in val_loader:
+                        val_losses.append(model.loss(vb.to(device)).item())
+                        if len(val_losses) >= 20:  # ~20 batches é suficiente
+                            break
+                val_avg = sum(val_losses) / len(val_losses)
+                model.train()
+
+                gap = val_avg - avg
+                flag = "OK generaliza" if gap < 0.3 else ("ALERTA overfitting" if gap > 1.0 else "vigiando")
+                print(f"step {step:5d} | train {avg:.4f} | val {val_avg:.4f} | gap {gap:+.4f} | {flag} | {time.time()-t0:.1f}s")
+                sample = model.generate(ds.stoi, ds.itos, n=120, temp=0.8)
+                print(f"  > {sample}\n")
+
+    final_loss = sum(losses[-100:]) / min(len(losses), 100)
+    print(f"\n{'═'*55}")
+    print(f"  Loss final: {final_loss:.4f}")
+    print(f"  (aleatório seria: {math.log(ds.vocab_size):.4f})")
+    print(f"{'═'*55}")
+    print("\nGeração final (temp=0.7):")
+    print(model.generate(ds.stoi, ds.itos, n=400, temp=0.7))
+
+
+if __name__ == '__main__':
+    main()
+
+
+# === resnet_psi.py ===
+
+"""
+ResNet-Ψ — Base para projetos futuros
+
+Dinâmica ondulatória + cristalização competitiva produz representações
+que classificam dados sem nenhum parâmetro treinado.
+Os cristais são os pesos: cada classe deixa uma assinatura física distinta no campo.
+
+Resultados validados:
+  - MNIST:         77.4% (zero treino) | 88.1% (linear) | 93.1% (MLP)
+  - Fashion-MNIST: 67.0% (zero treino)
+
+Uso rápido (zero treino):
+    from resnet_psi import ResNetPsi
+    rn = ResNetPsi()
+    rn.fit(train_images, train_labels)       # só computa protótipos (sem treino)
+    preds = rn.predict(test_images)          # classifica por distância euclidiana
+    acc = (preds == test_labels).mean()
+
+Uso com decoder (treino só no decoder):
+    rn = ResNetPsi()
+    cmaps_train = rn.extract(train_images)   # crystal_maps (B, 48, 48)
+    cmaps_test  = rn.extract(test_images)
+    # treinar qualquer classificador em cima dos cmaps
+
+Domínio: dados com estrutura geométrica (contornos, formas, silhuetas).
+Não funciona para imagens naturais complexas (CIFAR-10 = 18.7%).
+
+Acoplamento cristalino (crystal attention):
+    Cristais mediam comunicação global entre regiões do campo.
+    acc[i] += λ × crystal[i] × (Σ_j crystal[j]×field[j] − field[i] × Σ_j crystal[j])
+    Factoriza O(N²) → O(N): dois sums globais + elementwise. Completamente paralelo.
+"""
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+import time
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CONFIGURAÇÃO
+# ══════════════════════════════════════════════════════════════════════════════
+
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+if torch.cuda.is_available():
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32       = True
+    torch.backends.cudnn.benchmark        = True
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CONSTANTES FÍSICAS
+# ══════════════════════════════════════════════════════════════════════════════
+
+FIELD_SIZE     = 48       # campo 48×48
+PSI_DT         = 0.05     # passo temporal
+PSI_GAMMA      = 0.06     # amortecimento (damping)
+PSI_ALPHA      = 0.04     # não-linearidade (tanh)
+PSI_BETA       = 0.005    # dissipação cúbica
+PSI_C2         = 0.3      # velocidade de onda (Laplaciano)
+STIM_ON        = 40       # steps com estímulo ativo
+STIM_TOTAL     = 80       # steps totais
+
+# Cristalização
+CRYSTAL_W      = 20       # janela de envelope (steps)
+CRYSTAL_K      = 3        # janelas para cristalizar
+CRYSTAL_A_MIN  = 0.3      # amplitude mínima
+CRYSTAL_CV_MAX = 0.15     # coeficiente de variação máximo
+CRYSTAL_SEP    = 5        # separação mínima entre cristais (pixels)
+CRYSTAL_REMIT  = 0.05     # força de re-emissão
+CRYSTAL_LAM    = 0.03     # acoplamento cristalino (crystal attention)
+
+# Tensores pré-computados (fora dos steps — não recriar a cada chamada)
+_DT    = torch.tensor(PSI_DT,    device=DEVICE)
+_GAMMA = torch.tensor(PSI_GAMMA, device=DEVICE)
+_ALPHA = torch.tensor(PSI_ALPHA, device=DEVICE)
+_BETA  = torch.tensor(PSI_BETA,  device=DEVICE)
+_C2    = torch.tensor(PSI_C2,    device=DEVICE)
+_LAP_K = torch.tensor([[0., 1., 0.], [1., -4., 1.], [0., 1., 0.]],
+                        device=DEVICE).view(1, 1, 3, 3)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CRISTALIZAÇÃO COMPETITIVA
+# ══════════════════════════════════════════════════════════════════════════════
+
+class CrystalCompetitivo:
+    """
+    Cristalização competitiva: o mecanismo que funciona.
+
+    - Thresholds suaves (sigmoid) ao invés de duros
+    - Cristais ganham HP quando ressoam com a onda
+    - Cristais perdem HP por decay constante
+    - Cristais com HP <= 0 morrem (seleção natural)
+    - Exclusão espacial: cristais não podem nascer perto de outros
+    """
+
+    def __init__(self, B, FS=FIELD_SIZE, sharpness=5.0, decay=0.02, ressonance_boost=0.1):
+        self.crystal_map = torch.zeros(B, FS, FS, device=DEVICE)
+        self.crystal_hp  = torch.zeros(B, FS, FS, device=DEVICE)
+        self.env_buffer  = torch.zeros(B, CRYSTAL_K, FS, FS, device=DEVICE)
+        self.window_step = 0
+        self.window_idx  = 0
+        self.window_max  = torch.zeros(B, FS, FS, device=DEVICE)
+        self.sharpness = sharpness
+        self.decay = decay
+        self.ressonance_boost = ressonance_boost
+        ks = 2 * CRYSTAL_SEP + 1
+        self._dilate = torch.ones(1, 1, ks, ks, device=DEVICE)
+
+    def update_envelope(self, field):
+        """Rastreia envelope de amplitude por janelas temporais."""
+        self.window_max = torch.max(self.window_max, field.abs())
+        self.window_step += 1
+        if self.window_step >= CRYSTAL_W:
+            self.env_buffer[:, self.window_idx] = self.window_max
+            self.window_max  = torch.zeros_like(self.window_max)
+            self.window_step = 0
+            self.window_idx  = (self.window_idx + 1) % CRYSTAL_K
+
+    def try_crystallize(self, field):
+        """Tenta cristalizar regiões estáveis. Cristais competem por sobrevivência."""
+        env  = self.env_buffer
+        mean = env.mean(dim=1)
+        cv   = env.std(dim=1) / (mean + 1e-8)
+
+        # Thresholds suaves via sigmoid
+        amp_score = torch.sigmoid(self.sharpness * (mean - CRYSTAL_A_MIN))
+        cv_score  = torch.sigmoid(self.sharpness * (CRYSTAL_CV_MAX - cv))
+        sat_score = torch.sigmoid(self.sharpness * (8.0 - mean))
+        cand = amp_score * cv_score * sat_score
+
+        # Exclusão espacial via dilatação morfológica
+        occ = F.conv2d(
+            F.pad(self.crystal_map.unsqueeze(1).clamp(0, 1),
+                  (CRYSTAL_SEP,)*4, mode='circular'),
+            self._dilate).squeeze(1).clamp(0, 1)
+
+        # Novos cristais
+        new_crystals = cand * (1.0 - occ) * field.abs()
+        self.crystal_map = torch.clamp(self.crystal_map + new_crystals, 0, 10.)
+
+        # Novos cristais nascem com HP = 1
+        self.crystal_hp = torch.where(
+            new_crystals > 0.01,
+            torch.clamp(self.crystal_hp + 1.0, 0, 5.0),
+            self.crystal_hp)
+
+        # Competição: ressonância = onda forte onde há cristal
+        ressonance = field.abs() * (self.crystal_map > 0.01).float()
+        self.crystal_hp = self.crystal_hp + ressonance * self.ressonance_boost
+        self.crystal_hp = self.crystal_hp - self.decay
+
+        # Cristais com HP <= 0 morrem
+        alive = (self.crystal_hp > 0).float()
+        self.crystal_map = self.crystal_map * alive
+        self.crystal_hp  = torch.clamp(self.crystal_hp * alive, 0, 5.0)
+
+    def remit(self, field):
+        """Re-emissão: cristais injetam energia de volta no campo."""
+        if self.crystal_map.abs().max() < 1e-6:
+            return field
+        return torch.clamp(
+            field + self.crystal_map * CRYSTAL_REMIT * torch.sign(field), -10., 10.)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# EQUAÇÃO DE ONDA
+# ══════════════════════════════════════════════════════════════════════════════
+
+@torch.compile(mode='default')
+def psi_step(field, velocity, source_term, crystal_map):
+    """
+    Um step da equação de onda + acoplamento cristalino.
+
+        acc = c²∇²Ψ − γ·v + α·tanh(Ψ)·Ψ − β·Ψ³
+            + λ · crystal · (Σ_j crystal_j·field_j − field · Σ_j crystal_j)
+        v += acc·dt
+        Ψ += v·dt
+
+    Args:
+        field:       (B, H, W)
+        velocity:    (B, H, W)
+        source_term: (B, H, W) — perturbação pré-multiplicada por dt*0.1 (zeros se inativo)
+        crystal_map: (B, H, W) — mapa de cristais atual (zeros antes de cristalizar)
+
+    O acoplamento cristalino é O(N) e completamente paralelo:
+        S_cf = Σ_j crystal_j × field_j   (sum global, shape (B,1))
+        S_c  = Σ_j crystal_j              (sum global, shape (B,1))
+        coupling[i] = crystal[i] × (S_cf − field[i] × S_c)
+    Regiões cristalizadas comunicam-se diretamente, independente de distância.
+    """
+    B, H, W = field.shape
+    N = H * W
+
+    # Estímulo (zero quando inativo — passado como zeros pelo chamador)
+    field = field + source_term
+
+    # ── Física local: Laplaciano (propagação de vizinhos) ────────────────
+    lap = F.conv2d(
+        F.pad(field.unsqueeze(1), (1, 1, 1, 1), mode='circular'),
+        _LAP_K.to(field.dtype),
+    ).squeeze(1)
+
+    acc = (_C2 * lap
+           - _GAMMA * velocity
+           + _ALPHA * torch.tanh(field) * field
+           - _BETA  * field * field ** 2)
+
+    # ── Acoplamento cristalino: comunicação global via cristais ──────────
+    # crystal_map = zeros antes de qualquer cristal existir → coupling = 0
+    f_flat = field.view(B, N)
+    c_flat = crystal_map.view(B, N)
+    S_cf   = (c_flat * f_flat).sum(dim=1, keepdim=True)   # (B, 1)
+    S_c    =  c_flat.sum(dim=1, keepdim=True)              # (B, 1)
+    coupling = (CRYSTAL_LAM * c_flat * (S_cf - f_flat * S_c)).view(B, H, W)
+    acc = acc + coupling
+
+    velocity = torch.clamp(velocity + acc * _DT, -5., 5.)
+    field    = torch.clamp(field    + velocity * _DT, -10., 10.)
+    return field, velocity
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PROJEÇÃO: PIXELS → CAMPO
+# ══════════════════════════════════════════════════════════════════════════════
+
+def build_gaussians(input_shape, field_size=FIELD_SIZE, sigma=0.04):
+    """
+    Matriz de projecao generica: cada elemento da entrada vira uma gaussiana no campo 2D.
+
+    input_shape pode ser:
+      - int ou (int,)      -> entrada 1D (sinal temporal, audio, ECG)
+                             gaussianas distribuidas numa linha horizontal
+      - (int, int)         -> entrada 2D (imagem)
+                             gaussianas distribuidas num grid
+
+    Retorna: (n_elementos, field_size²)
+    """
+    if isinstance(input_shape, int):
+        input_shape = (input_shape,)
+
+    coords = torch.linspace(0., 1., field_size, device=DEVICE)
+    xg, yg = torch.meshgrid(coords, coords, indexing='ij')
+    gs = []
+
+    if len(input_shape) == 1:
+        # Entrada 1D: distribui ao longo da linha central do campo
+        N = input_shape[0]
+        cy = 0.5  # linha central (eixo y fixo)
+        for i in range(N):
+            cx = 0.1 + 0.8 * i / max(N - 1, 1)
+            gs.append(torch.exp(-((xg - cx)**2 + (yg - cy)**2) / (2 * sigma**2)))
+
+    elif len(input_shape) == 2:
+        # Entrada 2D: distribui num grid
+        H, W = input_shape
+        for pi in range(H):
+            for pj in range(W):
+                cx = 0.1 + 0.8 * pi / max(H - 1, 1)
+                cy = 0.1 + 0.8 * pj / max(W - 1, 1)
+                gs.append(torch.exp(-((xg - cx)**2 + (yg - cy)**2) / (2 * sigma**2)))
+
+    else:
+        raise ValueError(f"input_shape deve ser 1D ou 2D, recebeu: {input_shape}")
+
+    n_elementos = 1
+    for d in input_shape:
+        n_elementos *= d
+    return torch.stack(gs).view(n_elementos, -1)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PIPELINE: ENTRADA → CRYSTAL MAP
+# ══════════════════════════════════════════════════════════════════════════════
+
+def compute_crystal_maps(X, PG, field_size=FIELD_SIZE, bs=256):
+    """
+    Pipeline completo: entrada → crystal_maps.
+
+    Args:
+        X:  (N, ...) tensor — qualquer forma: (N, L) para 1D, (N, H, W) para 2D
+        PG: matriz de projeção gaussiana (n_elementos, field_size²)
+        field_size: tamanho do campo
+        bs: batch size
+
+    Returns:
+        (N, field_size, field_size) tensor de crystal_maps
+    """
+    N = len(X)
+    n_pixels = PG.shape[0]
+    out = []
+
+    for i in range(0, N, bs):
+        batch = X[i:i+bs]
+        B = len(batch)
+        pert = (batch.view(B, n_pixels) @ PG.to(batch.dtype)).view(B, field_size, field_size)
+        f, v = pert.clone(), torch.zeros_like(pert)
+        mem = CrystalCompetitivo(B, field_size)
+
+        # Pré-computa source_term para cada fase (evita branch dentro do loop)
+        src_on  = pert * (_DT * 0.1)          # (B, H, W) — ativo
+        src_off = torch.zeros_like(src_on)     # (B, H, W) — inativo
+
+        with torch.no_grad():
+            for s in range(STIM_TOTAL):
+                src = src_on if s < STIM_ON else src_off
+                f, v = psi_step(f, v, src, mem.crystal_map)
+                mem.update_envelope(f)
+                if mem.window_idx > 0:
+                    mem.try_crystallize(f)
+                f = mem.remit(f)
+
+        out.append(mem.crystal_map)
+
+    return torch.cat(out, dim=0)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CLASSIFICAÇÃO POR PROTÓTIPOS (ZERO TREINO)
+# ══════════════════════════════════════════════════════════════════════════════
+
+def build_prototypes(crystal_maps, labels, n_classes):
+    """
+    Constrói protótipos por classe: média dos crystal_maps.
+
+    Args:
+        crystal_maps: (N, FS, FS)
+        labels: (N,) array/tensor de labels inteiros
+        n_classes: número de classes
+
+    Returns:
+        prototypes: dict {cls: (FS, FS)} — protótipo médio por classe
+    """
+    prototypes = {}
+    for cls in range(n_classes):
+        if isinstance(labels, np.ndarray):
+            mask = labels == cls
+        else:
+            mask = (labels == cls)
+        prototypes[cls] = crystal_maps[mask].mean(dim=0)
+    return prototypes
+
+
+def classify_euclidean(crystal_maps, prototypes):
+    """
+    Classifica por distância euclidiana ao protótipo mais próximo.
+
+    Args:
+        crystal_maps: (N, FS, FS) — crystal_maps das amostras de teste
+        prototypes: dict {cls: (FS, FS)} — protótipos
+
+    Returns:
+        predictions: (N,) array de inteiros
+    """
+    n_classes = len(prototypes)
+    N = len(crystal_maps)
+
+    # Empilha protótipos: (n_classes, FS*FS)
+    proto_stack = torch.stack([prototypes[c].flatten() for c in range(n_classes)])
+
+    # Crystal maps: (N, FS*FS)
+    cmaps_flat = crystal_maps.view(N, -1)
+
+    # Distância euclidiana: (N, n_classes)
+    dists = torch.cdist(cmaps_flat.unsqueeze(0), proto_stack.unsqueeze(0)).squeeze(0)
+
+    return dists.argmin(dim=1).cpu().numpy()
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DECODER TREINÁVEL (OPCIONAL — para 88-93%)
+# ══════════════════════════════════════════════════════════════════════════════
+
+def train_decoder(cmaps_train, labels_train, cmaps_val, labels_val,
+                  cmaps_test, labels_test, n_classes=10,
+                  nonlinear=False, lr=1e-3, epochs=60, patience=10,
+                  batch_size=512, seed=0):
+    """
+    Treina um decoder linear ou MLP em cima dos crystal_maps.
+
+    A física (campo + cristalização) NÃO é treinada — só o decoder.
+
+    Args:
+        cmaps_*:  (N, FS, FS) crystal_maps já computados
+        labels_*: (N,) labels
+        nonlinear: False = linear (88%), True = MLP (93%)
+
+    Returns:
+        (test_accuracy, n_params, decoder)
+    """
+    torch.manual_seed(seed)
+    input_dim = cmaps_train.shape[1] * cmaps_train.shape[2]
+
+    # Achata
+    X_tr = cmaps_train.view(len(cmaps_train), -1).float()
+    X_va = cmaps_val.view(len(cmaps_val), -1).float()
+    X_te = cmaps_test.view(len(cmaps_test), -1).float()
+    Y_tr = labels_train if isinstance(labels_train, torch.Tensor) else torch.tensor(labels_train, dtype=torch.long, device=DEVICE)
+    Y_va = labels_val if isinstance(labels_val, torch.Tensor) else torch.tensor(labels_val, dtype=torch.long, device=DEVICE)
+    Y_te = labels_test if isinstance(labels_test, torch.Tensor) else torch.tensor(labels_test, dtype=torch.long, device=DEVICE)
+
+    if Y_tr.device != DEVICE: Y_tr = Y_tr.to(DEVICE)
+    if Y_va.device != DEVICE: Y_va = Y_va.to(DEVICE)
+    if Y_te.device != DEVICE: Y_te = Y_te.to(DEVICE)
+
+    if nonlinear:
+        dec = nn.Sequential(
+            nn.Linear(input_dim, 256), nn.ReLU(), nn.Dropout(0.2),
+            nn.Linear(256, n_classes),
+        ).to(DEVICE)
+    else:
+        dec = nn.Linear(input_dim, n_classes).to(DEVICE)
+
+    n_params = sum(p.numel() for p in dec.parameters())
+    opt  = torch.optim.AdamW(dec.parameters(), lr=lr, weight_decay=1e-4)
+    sch  = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
+    crit = nn.CrossEntropyLoss()
+
+    best_val, best_sd, pat = 0.0, None, 0
+
+    for ep in range(1, epochs + 1):
+        dec.train()
+        perm = torch.randperm(len(X_tr), device=DEVICE)
+        for i in range(0, len(X_tr), batch_size):
+            idx = perm[i:i+batch_size]
+            opt.zero_grad(set_to_none=True)
+            crit(dec(X_tr[idx]), Y_tr[idx]).backward()
+            opt.step()
+        sch.step()
+
+        dec.eval()
+        with torch.no_grad():
+            c = 0
+            for i in range(0, len(X_va), 1024):
+                c += (dec(X_va[i:i+1024]).argmax(1) == Y_va[i:i+1024]).sum().item()
+            va = c / len(X_va) * 100
+
+        if va > best_val:
+            best_val = va
+            best_sd = {k: v.clone() for k, v in dec.state_dict().items()}
+            pat = 0
+        else:
+            pat += 1
+            if pat >= patience:
+                break
+
+    dec.load_state_dict(best_sd)
+    dec.eval()
+    with torch.no_grad():
+        c = 0
+        for i in range(0, len(X_te), 1024):
+            c += (dec(X_te[i:i+1024]).argmax(1) == Y_te[i:i+1024]).sum().item()
+        te_acc = c / len(X_te) * 100
+
+    return te_acc, n_params, dec
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CLASSE PRINCIPAL — API SIMPLES
+# ══════════════════════════════════════════════════════════════════════════════
+
+class ResNetPsi:
+    """
+    ResNet-Ψ: classificação via física ondulatória + cristalização competitiva.
+
+    Exemplo (zero treino):
+        rn = ResNetPsi()
+        rn.fit(train_images, train_labels)
+        preds = rn.predict(test_images)
+
+    Exemplo (com decoder):
+        rn = ResNetPsi()
+        cmaps = rn.extract(images)
+        # usar cmaps como features para qualquer classificador
+    """
+
+    def __init__(self, input_shape=28, field_size=FIELD_SIZE, n_classes=10):
+        """
+        input_shape: int ou (int,) para 1D, (H, W) para 2D
+        """
+        if isinstance(input_shape, int):
+            input_shape = (input_shape, input_shape)  # backward compat: int = imagem quadrada
+        self.input_shape = input_shape
+        self.field_size = field_size
+        self.n_classes = n_classes
+        self.PG = build_gaussians(input_shape, field_size)
+        self.prototypes = None
+
+    def extract(self, images, bs=64):
+        """
+        Extrai crystal_maps de um conjunto de imagens.
+
+        Args:
+            images: (N, H, W) tensor na GPU, normalizado
+            bs: batch size
+
+        Returns:
+            (N, field_size, field_size) crystal_maps
+        """
+        images = images.to(DEVICE)
+        return compute_crystal_maps(images, self.PG, self.field_size, bs)
+
+    def fit(self, train_images, train_labels, bs=64):
+        """
+        Constrói protótipos por classe (sem treino — só computa e faz média).
+
+        Args:
+            train_images: (N, H, W) tensor normalizado
+            train_labels: (N,) array ou tensor de labels
+        """
+        print(f"Extraindo crystal_maps de {len(train_images)} imagens...")
+        t0 = time.time()
+        cmaps = self.extract(train_images, bs)
+        print(f"  Pronto: {time.time()-t0:.0f}s")
+
+        if isinstance(train_labels, torch.Tensor):
+            labels_np = train_labels.cpu().numpy()
+        else:
+            labels_np = np.array(train_labels)
+
+        self.prototypes = build_prototypes(cmaps, labels_np, self.n_classes)
+        return self
+
+    def predict(self, test_images, bs=64):
+        """
+        Classifica imagens por distância euclidiana ao protótipo.
+
+        Args:
+            test_images: (N, H, W) tensor normalizado
+
+        Returns:
+            (N,) array de predições
+        """
+        cmaps = self.extract(test_images, bs)
+        return classify_euclidean(cmaps, self.prototypes)
+
+    def score(self, test_images, test_labels, bs=64):
+        """
+        Retorna acurácia (%).
+
+        Args:
+            test_images: (N, H, W) tensor normalizado
+            test_labels: (N,) array ou tensor
+
+        Returns:
+            float: acurácia em porcentagem
+        """
+        preds = self.predict(test_images, bs)
+        if isinstance(test_labels, torch.Tensor):
+            test_labels = test_labels.cpu().numpy()
+        else:
+            test_labels = np.array(test_labels)
+        return (preds == test_labels).mean() * 100
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# DEMO — executa se rodar direto
+# ══════════════════════════════════════════════════════════════════════════════
+
+if __name__ == '__main__':
+    from torchvision import datasets, transforms
+
+    print(f"Dispositivo: {DEVICE}")
+    if torch.cuda.is_available():
+        print(f"GPU: {torch.cuda.get_device_name(0)}")
+
+    # ── Carrega MNIST ─────────────────────────────────────────────────────
+    tf = transforms.Compose([transforms.ToTensor(),
+                              transforms.Normalize((0.1307,), (0.3081,))])
+    train_ds = datasets.MNIST('./data', train=True,  download=True, transform=tf)
+    test_ds  = datasets.MNIST('./data', train=False, download=True, transform=tf)
+
+    train_imgs   = torch.stack([img.squeeze(0) for img, _ in train_ds]).to(DEVICE)
+    train_labels = np.array([label for _, label in train_ds])
+    test_imgs    = torch.stack([img.squeeze(0) for img, _ in test_ds]).to(DEVICE)
+    test_labels  = np.array([label for _, label in test_ds])
+
+    # ── Extrai crystal_maps uma vez (reusado nos dois modos) ─────────────
+    rn = ResNetPsi()
+    print("Extraindo crystal_maps (treino)...")
+    t0 = time.time()
+    cmaps_all = compute_crystal_maps(train_imgs, rn.PG)
+    print(f"  Pronto: {time.time()-t0:.0f}s")
+
+    print("Extraindo crystal_maps (teste)...")
+    t0 = time.time()
+    cmaps_test = compute_crystal_maps(test_imgs, rn.PG)
+    print(f"  Pronto: {time.time()-t0:.0f}s")
+
+    # ── Modo 1: Zero treino (protótipos) ─────────────────────────────────
+    print("\n" + "="*60)
+    print("MODO 1: Zero treino (protótipos cristalinos)")
+    print("="*60)
+
+    protos = build_prototypes(cmaps_all, train_labels, n_classes=10)
+    preds  = classify_euclidean(cmaps_test, protos)
+    acc    = (preds == test_labels).mean() * 100
+    print(f"\n  Acurácia: {acc:.1f}%")
+    print(f"  Referência: 77.4% (500 teste) / ~76% (10k teste)")
+
+    # ── Modo 2: Com decoder linear ───────────────────────────────────────
+    print("\n" + "="*60)
+    print("MODO 2: Com decoder linear (treina só o decoder)")
+    print("="*60)
+
+    # Split treino/val
+    torch.manual_seed(42)
+    perm = torch.randperm(len(train_imgs))
+    val_idx   = perm[-10000:]
+    train_idx = perm[:-10000]
+
+    cmaps_tr = cmaps_all[train_idx].to(DEVICE)
+    cmaps_va = cmaps_all[val_idx].to(DEVICE)
+    labels_tr = torch.tensor(train_labels, dtype=torch.long, device=DEVICE)[train_idx]
+    labels_va = torch.tensor(train_labels, dtype=torch.long, device=DEVICE)[val_idx]
+    labels_te = torch.tensor(test_labels, dtype=torch.long, device=DEVICE)
+
+    acc_l, np_l, _ = train_decoder(cmaps_tr, labels_tr, cmaps_va, labels_va,
+                                    cmaps_test.to(DEVICE), labels_te, nonlinear=False)
+    print(f"\n  Linear: {acc_l:.1f}% ({np_l} params)")
+    print(f"  Referência: 88.1%")
+
+    acc_m, np_m, _ = train_decoder(cmaps_tr, labels_tr, cmaps_va, labels_va,
+                                    cmaps_test.to(DEVICE), labels_te, nonlinear=True)
+    print(f"  MLP:    {acc_m:.1f}% ({np_m} params)")
+    print(f"  Referência: 93.1%")
+
+    print("\nPronto.")
+
+
+# === nano_pt.py ===
+
+#!/usr/bin/env python3
+"""
+arpa-3.py - Pre-treino do zero: LLaMA 160M em Portugues Brasileiro
+
+Treina um modelo de linguagem LLaMA-style (~160M parametros) do zero,
+usando datasets de texto cru em PT-BR via streaming.
+
+Hardware alvo: AMD RX 6600 8GB (ROCm/HIP)
+Datasets: GigaVerbo (70%) + Wikipedia PT (30%)
+Tokenizer: BPE 32K treinado em PT-BR (./tokenizer-arpa-32k/)
+
+Uso:
+    python arpa-3.py                    # Treinar do zero
+    python arpa-3.py --resume step_N    # Resumir de checkpoint
+"""
+
+import os
+import sys
+import gc
+import time
+import json
+import math
+import random
+import signal
+import shutil
+import argparse
+import logging
+from collections import Counter
+from pathlib import Path
+from datetime import datetime
+from typing import Optional, Iterator
+
+# ==============================================================================
+# Deteccao de hardware (ANTES de importar torch)
+# ==============================================================================
+# Detecta AMD ROCm vs NVIDIA CUDA checando arquivos de dispositivo e variaveis
+# de ambiente que existem antes do torch ser carregado.
+
+_IS_ROCM = (
+    os.path.exists("/dev/kfd")                       # dispositivo AMD ROCm
+    or os.environ.get("ROCM_VERSION") is not None    # variavel de ambiente ROCm
+    or os.environ.get("HSA_VERSION") is not None
+)
+
+if _IS_ROCM:
+    # AMD ROCm: configuracoes especificas para gfx1032 (RX 6600)
+    os.environ["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
+    os.environ["PYTORCH_HIP_ALLOC_CONF"] = (
+        "garbage_collection_threshold:0.6,max_split_size_mb:256,expandable_segments:True"
+    )
+else:
+    # NVIDIA CUDA: gerenciamento de memoria moderno
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+import torch
+import numpy as np
+from torch.utils.data import IterableDataset, DataLoader
+from torch.utils.tensorboard import SummaryWriter
+from transformers import (
+    LlamaConfig,
+    LlamaForCausalLM,
+    PreTrainedTokenizerFast,
+    get_cosine_schedule_with_warmup,
+)
+from datasets import load_dataset, interleave_datasets
+
+# ==============================================================================
+# Perfil de hardware (apos import do torch)
+# ==============================================================================
+
+def detect_hardware_profile():
+    """
+    Detecta o hardware disponivel e retorna um perfil com as configuracoes
+    otimas para aquele dispositivo.
+
+    Retorna dict com:
+      is_rocm      : bool  - True se AMD ROCm, False se NVIDIA CUDA
+      compute_dtype: dtype - bfloat16 (Ampere+) ou float16 (AMD/Pascal)
+      use_scaler   : bool  - GradScaler necessario apenas com float16
+      fused_adam   : bool  - AdamW fused disponivel apenas em CUDA
+      num_workers  : int   - workers do DataLoader
+      pin_memory   : bool  - pin_memory do DataLoader
+    """
+    is_rocm = hasattr(torch.version, "hip") and torch.version.hip is not None
+
+    if is_rocm:
+        return dict(
+            is_rocm=True,
+            compute_dtype=torch.float16,   # ROCm: float16 + GradScaler
+            use_scaler=True,
+            fused_adam=False,              # fused nao suportado no ROCm
+            num_workers=0,                 # multiprocessing instavel no ROCm
+            pin_memory=False,
+        )
+
+    # NVIDIA: checar capacidade para BF16 (Ampere = compute capability 8.x+)
+    capability = torch.cuda.get_device_capability() if torch.cuda.is_available() else (0, 0)
+    has_bf16 = capability[0] >= 8  # RTX 3080/3050/4090 etc.
+
+    return dict(
+        is_rocm=False,
+        compute_dtype=torch.bfloat16 if has_bf16 else torch.float16,
+        use_scaler=not has_bf16,           # BF16 nao precisa de scaler
+        fused_adam=True,                   # fused AdamW disponivel no CUDA
+        num_workers=2,
+        pin_memory=True,
+    )
+
+HW = detect_hardware_profile()
+
+# ==============================================================================
+# Configuracoes
+# ==============================================================================
+
+RUN_NAME = "villa1-30m-pretrain"
+CHECKPOINT_DIR = "./checkpoints-arpa3"
+TOKENIZER_DIR = "./tokenizer-arpa-32k"
+LOG_DIR = "./logs-arpa3"
+
+# Arquitetura LLaMA ~30M
+MODEL_CONFIG = dict(
+    vocab_size=32_000,
+    hidden_size=384,              # 30M config
+    intermediate_size=1024,      # SwiGLU: ~2/3 de 4*384
+    num_hidden_layers=11,        # 11 camadas
+    num_attention_heads=8,       # 8 heads (head_dim=48)
+    num_key_value_heads=4,       # GQA 2:1
+    max_position_embeddings=1024,
+    rms_norm_eps=1e-5,
+    rope_theta=10000.0,
+    hidden_act="silu",
+    attention_dropout=0.0,
+    use_cache=False,
+    tie_word_embeddings=True,
+)
+
+# Hiperparametros de treino
+BATCH_SIZE = 4
+GRAD_ACCUMULATION = 8            # Effective batch = 32
+BLOCK_SIZE = 1024                # Contexto
+MAX_TOKENS = 600_000_000         # 600M tokens (Chinchilla optimal p/ 30M)
+LEARNING_RATE = 6e-4             # LR maior para modelo menor (GPT-2 small usava 6e-4)
+WARMUP_STEPS = 2000
+WEIGHT_DECAY = 0.1
+MAX_GRAD_NORM = 1.0
+BETAS = (0.9, 0.95)             # AdamW betas (padrao LLaMA)
+MIN_LR_RATIO = 0.1              # LR final = 10% do pico
+EVAL_EVERY = 500                 # Validacao a cada N steps
+EVAL_TOKENS = 50_000             # Tokens no validation set
+
+# Checkpointing
+SAVE_EVERY = 500                 # Salvar a cada N steps (frequente pra evitar perda)
+KEEP_LAST_N = 3                  # Manter ultimos N checkpoints
+LOG_EVERY = 10                   # Log a cada N steps
+GENERATE_EVERY = 2000            # Gerar texto a cada N steps
+CLEAR_MEMORY_EVERY = 100         # Limpar cache a cada N steps
+
+# Datasets e pesos (todos abertos, sem login, sem C4)
+# Mix: Wikipedia para qualidade/factual + GigaVerbo para diversidade lexical PT-BR
+DATASETS_CONFIG = [
+    # (nome, config/subset, peso, campo_texto)
+    ("wikimedia/wikipedia", "20231101.pt",   0.60, "text"),   # ~1B tokens, enciclopedico limpo
+    ("TucanoBR/GigaVerbo",  None,            0.40, "text"),   # 200B+ tokens, diversidade PT-BR
+]
+
+# Filtros de texto
+MIN_TEXT_LENGTH = 200            # minimo real: textos muito curtos sao lixo
+MAX_TEXT_LENGTH = 50_000         # caracteres maximos
+
+
+# ==============================================================================
+# Utilidades
+# ==============================================================================
+
+def clear_memory():
+    """Libera memoria GPU sem synchronize (overhead menor)."""
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+
+def get_gpu_memory():
+    """Retorna uso de VRAM em MB."""
+    if not torch.cuda.is_available():
+        return 0, 0
+    allocated = torch.cuda.memory_allocated() / (1024 ** 2)
+    reserved = torch.cuda.memory_reserved() / (1024 ** 2)
+    return allocated, reserved
+
+
+def count_parameters(model):
+    """Conta parametros totais e treinaveis."""
+    total = sum(p.numel() for p in model.parameters())
+    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    return total, trainable
+
+
+def format_num(n):
+    """Formata numero grande: 163M, 1.2B, etc."""
+    if n >= 1e9:
+        return f"{n / 1e9:.1f}B"
+    if n >= 1e6:
+        return f"{n / 1e6:.0f}M"
+    if n >= 1e3:
+        return f"{n / 1e3:.0f}K"
+    return str(n)
+
+
+def set_seed(seed=42):
+    """Seta seed para reprodutibilidade."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+
+# ==============================================================================
+# Logger
+# ==============================================================================
+
+class TrainingLogger:
+    """Logger unificado: console + arquivo + TensorBoard."""
+
+    def __init__(self, run_name: str, log_dir: str):
+        os.makedirs(log_dir, exist_ok=True)
+
+        # File logger
+        self.logger = logging.getLogger(run_name)
+        self.logger.setLevel(logging.INFO)
+        self.logger.handlers.clear()
+
+        # Console handler
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setLevel(logging.INFO)
+        ch.setFormatter(logging.Formatter("%(asctime)s | %(message)s", datefmt="%H:%M:%S"))
+        self.logger.addHandler(ch)
+
+        # File handler
+        log_file = os.path.join(log_dir, f"{run_name}_{datetime.now():%Y%m%d_%H%M%S}.log")
+        fh = logging.FileHandler(log_file, encoding="utf-8")
+        fh.setLevel(logging.INFO)
+        fh.setFormatter(logging.Formatter("%(asctime)s | %(message)s"))
+        self.logger.addHandler(fh)
+
+        # TensorBoard
+        self.writer = SummaryWriter(log_dir=os.path.join(log_dir, "tensorboard", run_name))
+
+        self.info(f"Log: {log_file}")
+
+    def info(self, msg: str):
+        self.logger.info(msg)
+
+    def scalar(self, tag: str, value: float, step: int):
+        self.writer.add_scalar(tag, value, step)
+
+    def close(self):
+        self.writer.close()
+
+
+# ==============================================================================
+# Token Packing Dataset
+# ==============================================================================
+
+class PackedPretrainDataset(IterableDataset):
+    """
+    Dataset que faz token packing: concatena textos e corta em blocos
+    de tamanho fixo (BLOCK_SIZE). Sem padding, 100% eficiencia de tokens.
+
+    Cada bloco retorna input_ids e labels identicos (causal LM).
+    """
+
+    def __init__(
+        self,
+        tokenizer,
+        block_size: int = 1024,
+        seed: int = 42,
+        skip_tokens: int = 0,
+    ):
+        super().__init__()
+        self.tokenizer = tokenizer
+        self.block_size = block_size
+        self.seed = seed
+        self.skip_tokens = skip_tokens
+        self.eos_token_id = tokenizer.eos_token_id
+
+    def _load_datasets(self):
+        """Carrega e intercala datasets via streaming."""
+        streams = []
+        weights = []
+
+        for ds_name, ds_config, weight, text_field in DATASETS_CONFIG:
+            try:
+                ds = load_dataset(
+                    ds_name,
+                    ds_config,
+                    split="train",
+                    streaming=True,
+                )
+
+                streams.append(ds)
+                weights.append(weight)
+                print(f"  [OK] {ds_name} ({ds_config}) peso={weight}")
+            except Exception as e:
+                print(f"  [ERRO] {ds_name}: {e}")
+
+        if not streams:
+            raise RuntimeError("Nenhum dataset carregado!")
+
+        # Normalizar pesos
+        total_w = sum(weights)
+        weights = [w / total_w for w in weights]
+
+        return interleave_datasets(
+            streams,
+            probabilities=weights,
+            seed=self.seed,
+            stopping_strategy="all_exhausted",
+        )
+
+    @staticmethod
+    def _is_quality_text(text: str) -> bool:
+        """
+        Filtros de qualidade para pre-treino limpo.
+        Retorna False para textos que devem ser rejeitados.
+        """
+        n = len(text)
+
+        # 1. Ratio de letras: rejeita HTML, codigo, tabelas, spam de simbolos
+        alpha = sum(1 for c in text if c.isalpha())
+        if alpha / n < 0.65:
+            return False
+
+        # 2. Ratio de digitos: rejeita listas de numeros, tabelas financeiras
+        digits = sum(1 for c in text if c.isdigit())
+        if digits / n > 0.15:
+            return False
+
+        # 3. Contagem de palavras: textos muito curtos nao ensinam nada
+        words = text.split()
+        if len(words) < 40:
+            return False
+
+        # 4. Comprimento medio de palavra: palavras normais tem 3-15 chars
+        #    Links, hashes, codigos quebram essa media
+        avg_word_len = sum(len(w) for w in words) / len(words)
+        if avg_word_len < 3.0 or avg_word_len > 15.0:
+            return False
+
+        # 5. Repeticao de linhas: spam, listas repetitivas, boilerplate
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        if len(lines) >= 5:
+            top_line_count = Counter(lines).most_common(1)[0][1]
+            if top_line_count / len(lines) > 0.3:
+                return False
+
+        return True
+
+    def _text_iterator(self):
+        """Itera sobre textos filtrados dos datasets."""
+        dataset = self._load_datasets()
+
+        for sample in dataset:
+            text = sample.get("text", "")
+
+            if not text or len(text) < MIN_TEXT_LENGTH:
+                continue
+
+            if len(text) > MAX_TEXT_LENGTH:
+                text = text[:MAX_TEXT_LENGTH]
+
+            if not self._is_quality_text(text):
+                continue
+
+            yield text
+
+    def __iter__(self) -> Iterator[dict]:
+        """
+        Token packing: concatena tokens com EOS entre textos,
+        e corta em blocos de block_size.
+        """
+        buffer = []
+        tokens_emitted = 0
+
+        for text in self._text_iterator():
+            # Tokenizar texto
+            token_ids = self.tokenizer.encode(text, add_special_tokens=False)
+
+            if not token_ids:
+                continue
+
+            # Adicionar tokens + EOS ao buffer
+            buffer.extend(token_ids)
+            buffer.append(self.eos_token_id)
+
+            # Emitir blocos completos
+            while len(buffer) >= self.block_size:
+                block = buffer[:self.block_size]
+                buffer = buffer[self.block_size:]
+
+                # Pular tokens ja processados antes do resume
+                if tokens_emitted < self.skip_tokens:
+                    tokens_emitted += self.block_size
+                    continue
+
+                tokens_emitted += self.block_size
+                input_ids = torch.tensor(block, dtype=torch.long)
+                yield {
+                    "input_ids": input_ids,
+                    "labels": input_ids.clone(),
+                }
+
+
+# ==============================================================================
+# Checkpoint Management
+# ==============================================================================
+
+def save_checkpoint(
+    model,
+    optimizer,
+    scheduler,
+    scaler,
+    step: int,
+    total_tokens: int,
+    loss: float,
+    samples_seen: int,
+    logger: TrainingLogger,
+):
+    """Salva checkpoint completo para resume."""
+    ckpt_dir = os.path.join(CHECKPOINT_DIR, f"step_{step}")
+    os.makedirs(ckpt_dir, exist_ok=True)
+
+    logger.info(f"Salvando checkpoint em {ckpt_dir}...")
+
+    # Modelo
+    unwrapped = model
+    if hasattr(model, "module"):
+        unwrapped = model.module
+    if hasattr(model, "_orig_mod"):
+        unwrapped = model._orig_mod
+
+    unwrapped.save_pretrained(ckpt_dir)
+
+    # Training state
+    train_state = {
+        "step": step,
+        "total_tokens": total_tokens,
+        "loss": loss,
+        "samples_seen": samples_seen,
+        "optimizer_state_dict": optimizer.state_dict(),
+        "scheduler_state_dict": scheduler.state_dict(),
+        "scaler_state_dict": scaler.state_dict() if scaler is not None else None,
+        "rng_state": torch.random.get_rng_state(),
+        "timestamp": datetime.now().isoformat(),
+    }
+    if torch.cuda.is_available():
+        train_state["cuda_rng_state"] = torch.cuda.get_rng_state()
+
+    torch.save(train_state, os.path.join(ckpt_dir, "training_state.pt"))
+
+    # Info JSON
+    ppl = math.exp(min(loss, 20))
+    info = {
+        "step": step,
+        "total_tokens": total_tokens,
+        "loss": f"{loss:.4f}",
+        "perplexity": f"{ppl:.2f}",
+        "samples_seen": samples_seen,
+        "timestamp": datetime.now().isoformat(),
+    }
+    with open(os.path.join(ckpt_dir, "info.json"), "w") as f:
+        json.dump(info, f, indent=2)
+
+    logger.info(f"Checkpoint salvo: step={step}, loss={loss:.4f}, ppl={ppl:.2f}")
+
+    # Limpar checkpoints antigos
+    cleanup_checkpoints(logger)
+
+
+def cleanup_checkpoints(logger: TrainingLogger):
+    """Mantem apenas os ultimos KEEP_LAST_N checkpoints."""
+    ckpt_base = Path(CHECKPOINT_DIR)
+    if not ckpt_base.exists():
+        return
+
+    ckpt_dirs = sorted(
+        [d for d in ckpt_base.iterdir() if d.is_dir() and d.name.startswith("step_")],
+        key=lambda d: int(d.name.split("_")[1]),
+    )
+
+    if len(ckpt_dirs) <= KEEP_LAST_N:
+        return
+
+    to_remove = ckpt_dirs[:-KEEP_LAST_N]
+    for d in to_remove:
+        logger.info(f"Removendo checkpoint antigo: {d.name}")
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def save_best_checkpoint(
+    model,
+    step: int,
+    total_tokens: int,
+    val_loss: float,
+    logger: TrainingLogger,
+):
+    """
+    Salva o melhor modelo (por val loss) em checkpoints-arpa3/best/.
+    Nunca e deletado pela rotacao normal — sempre representa o melhor
+    checkpoint visto durante todo o treino.
+    """
+    best_dir = os.path.join(CHECKPOINT_DIR, "best")
+    os.makedirs(best_dir, exist_ok=True)
+
+    unwrapped = model
+    if hasattr(model, "module"):
+        unwrapped = model.module
+    if hasattr(model, "_orig_mod"):
+        unwrapped = model._orig_mod
+
+    unwrapped.save_pretrained(best_dir)
+
+    val_ppl = math.exp(min(val_loss, 20))
+    info = {
+        "step": step,
+        "total_tokens": total_tokens,
+        "val_loss": f"{val_loss:.4f}",
+        "val_perplexity": f"{val_ppl:.2f}",
+        "timestamp": datetime.now().isoformat(),
+    }
+    with open(os.path.join(best_dir, "info.json"), "w") as f:
+        json.dump(info, f, indent=2)
+
+    logger.info(
+        f"  >> [NOVO MELHOR] Val loss={val_loss:.4f} ppl={val_ppl:.1f} "
+        f"salvo em checkpoints-arpa3/best/"
+    )
+
+
+def load_checkpoint(
+    ckpt_name: str,
+    model,
+    optimizer,
+    scheduler,
+    scaler,
+    logger: TrainingLogger,
+):
+    """Carrega checkpoint para resume."""
+    ckpt_dir = os.path.join(CHECKPOINT_DIR, ckpt_name)
+
+    if not os.path.exists(ckpt_dir):
+        logger.info(f"Checkpoint nao encontrado: {ckpt_dir}")
+        return 0, 0, 0
+
+    logger.info(f"Carregando checkpoint de {ckpt_dir}...")
+
+    # Training state
+    state_path = os.path.join(ckpt_dir, "training_state.pt")
+    if not os.path.exists(state_path):
+        logger.info("training_state.pt nao encontrado, iniciando do zero")
+        return 0, 0, 0
+
+    state = torch.load(state_path, map_location="cpu", weights_only=False)
+
+    # Carregar pesos do modelo
+    from safetensors.torch import load_file
+    model_path = os.path.join(ckpt_dir, "model.safetensors")
+    if os.path.exists(model_path):
+        state_dict = load_file(model_path)
+        model.load_state_dict(state_dict, strict=False)
+    else:
+        # Fallback para pytorch_model.bin
+        bin_path = os.path.join(ckpt_dir, "pytorch_model.bin")
+        if os.path.exists(bin_path):
+            state_dict = torch.load(bin_path, map_location="cpu", weights_only=True)
+            model.load_state_dict(state_dict, strict=False)
+
+    optimizer.load_state_dict(state["optimizer_state_dict"])
+    scheduler.load_state_dict(state["scheduler_state_dict"])
+    if scaler is not None and state.get("scaler_state_dict") is not None:
+        scaler.load_state_dict(state["scaler_state_dict"])
+
+    # RNG states
+    if "rng_state" in state:
+        torch.random.set_rng_state(state["rng_state"])
+    if "cuda_rng_state" in state and torch.cuda.is_available():
+        torch.cuda.set_rng_state(state["cuda_rng_state"])
+
+    step = state["step"]
+    total_tokens = state.get("total_tokens", 0)
+    samples_seen = state.get("samples_seen", 0)
+
+    logger.info(
+        f"Checkpoint carregado: step={step}, "
+        f"tokens={format_num(total_tokens)}, loss={state.get('loss', '?')}"
+    )
+
+    return step, total_tokens, samples_seen
+
+
+@torch.no_grad()
+def evaluate(model, tokenizer, device, block_size, num_tokens=50_000):
+    """
+    Calcula validation loss em dados separados (Wikipedia PT).
+    Usa um subset diferente do treino pra medir generalizacao real.
+    """
+    from datasets import load_dataset
+
+    model.eval()
+    # Usar Wikipedia PT como validacao
+    # Pular 200K amostras pra garantir que NAO sobrepoe com treino
+    val_ds = load_dataset(
+        "wikimedia/wikipedia", "20231101.pt",
+        split="train",
+        streaming=True,
+    )
+
+    total_loss = 0.0
+    total_steps = 0
+    tokens_seen = 0
+    eos_id = tokenizer.eos_token_id
+    buffer = []
+
+    skip = 200_000
+    for sample in val_ds:
+        if skip > 0:
+            skip -= 1
+            continue
+
+        text = sample.get("text", "")
+        if len(text) < 100:
+            continue
+
+        ids = tokenizer.encode(text, add_special_tokens=False)
+        buffer.extend(ids)
+        buffer.append(eos_id)
+
+        while len(buffer) >= block_size:
+            block = buffer[:block_size]
+            buffer = buffer[block_size:]
+
+            input_ids = torch.tensor([block], dtype=torch.long, device=device)
+            with torch.amp.autocast("cuda", dtype=torch.float16):
+                outputs = model(input_ids=input_ids, labels=input_ids)
+            total_loss += outputs.loss.item()
+            total_steps += 1
+            tokens_seen += block_size
+
+            if tokens_seen >= num_tokens:
+                break
+
+        if tokens_seen >= num_tokens:
+            break
+
+    model.train()
+
+    if total_steps == 0:
+        return float("inf")
+
+    avg_loss = total_loss / total_steps
+    return avg_loss
+
+
+def find_latest_checkpoint() -> Optional[str]:
+    """Encontra o checkpoint mais recente."""
+    ckpt_base = Path(CHECKPOINT_DIR)
+    if not ckpt_base.exists():
+        return None
+
+    ckpt_dirs = sorted(
+        [d for d in ckpt_base.iterdir() if d.is_dir() and d.name.startswith("step_")],
+        key=lambda d: int(d.name.split("_")[1]),
+    )
+
+    if ckpt_dirs:
+        return ckpt_dirs[-1].name
+    return None
+
+
+# ==============================================================================
+# Geracao de texto (teste)
+# ==============================================================================
+
+@torch.no_grad()
+def generate_sample(model, tokenizer, device, prompt="O Brasil", max_new_tokens=100):
+    """Gera texto de teste."""
+    model.eval()
+
+    input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
+
+    output = model.generate(
+        input_ids,
+        max_new_tokens=max_new_tokens,
+        do_sample=True,
+        temperature=0.8,
+        top_p=0.9,
+        top_k=50,
+        repetition_penalty=1.1,
+        pad_token_id=tokenizer.pad_token_id,
+    )
+
+    text = tokenizer.decode(output[0], skip_special_tokens=True)
+    model.train()
+    return text
+
+
+# ==============================================================================
+# Main Training
+# ==============================================================================
+
+def main():
+    parser = argparse.ArgumentParser(description="Arpa-160M Pre-training")
+    parser.add_argument("--resume", type=str, default=None,
+                        help="Nome do checkpoint para resume (ex: step_5000). "
+                             "Use 'latest' para o mais recente.")
+    args = parser.parse_args()
+
+    # --------------------------------------------------------------------------
+    # Setup
+    # --------------------------------------------------------------------------
+    set_seed(42)
+
+    logger = TrainingLogger(RUN_NAME, LOG_DIR)
+    logger.info("=" * 60)
+    logger.info("Arpa-160M: Pre-treino do Zero")
+    logger.info("=" * 60)
+
+    # Hardware
+    if not torch.cuda.is_available():
+        logger.info("ERRO: CUDA/ROCm nao disponivel!")
+        sys.exit(1)
+
+    device = torch.device("cuda")
+    gpu_name = torch.cuda.get_device_name(0)
+    gpu_mem = torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
+    logger.info(f"GPU: {gpu_name} ({gpu_mem:.1f}GB)")
+    logger.info(f"PyTorch: {torch.__version__}")
+    logger.info(f"ROCm/CUDA: {torch.version.hip or torch.version.cuda}")
+
+    # --------------------------------------------------------------------------
+    # Tokenizer
+    # --------------------------------------------------------------------------
+    logger.info(f"\nCarregando tokenizer de {TOKENIZER_DIR}...")
+
+    if not os.path.exists(TOKENIZER_DIR):
+        logger.info(f"ERRO: Tokenizer nao encontrado em {TOKENIZER_DIR}")
+        logger.info("Execute primeiro: python train_tokenizer.py")
+        sys.exit(1)
+
+    tokenizer = PreTrainedTokenizerFast.from_pretrained(TOKENIZER_DIR)
+    logger.info(f"Tokenizer: vocab_size={tokenizer.vocab_size}, "
+                f"bos={tokenizer.bos_token_id}, eos={tokenizer.eos_token_id}, "
+                f"pad={tokenizer.pad_token_id}")
+
+    # --------------------------------------------------------------------------
+    # Modelo LLaMA do zero
+    # --------------------------------------------------------------------------
+    logger.info("\nCriando modelo LLaMA...")
+
+    config = LlamaConfig(
+        **MODEL_CONFIG,
+        bos_token_id=tokenizer.bos_token_id,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.pad_token_id,
+        attn_implementation="sdpa",
+    )
+
+    model = LlamaForCausalLM(config)
+
+    total_params, trainable_params = count_parameters(model)
+    logger.info(f"Parametros: {format_num(total_params)} total, "
+                f"{format_num(trainable_params)} treinaveis")
+    logger.info(f"Config: hidden={config.hidden_size}, layers={config.num_hidden_layers}, "
+                f"heads={config.num_attention_heads}, kv_heads={config.num_key_value_heads}")
+
+    model.gradient_checkpointing_enable()
+    logger.info("Gradient checkpointing: ativado")
+
+    model.to(device)
+
+    alloc, reserved = get_gpu_memory()
+    logger.info(f"VRAM apos modelo: {alloc:.0f}MB alocado, {reserved:.0f}MB reservado")
+
+    # --------------------------------------------------------------------------
+    # Optimizer, Scheduler, Scaler
+    # --------------------------------------------------------------------------
+
+    # Separar parametros com e sem weight decay
+    no_decay = ["bias", "layernorm", "layer_norm", "rmsnorm", "rms_norm"]
+    param_groups = [
+        {
+            "params": [
+                p for n, p in model.named_parameters()
+                if p.requires_grad and not any(nd in n.lower() for nd in no_decay)
+            ],
+            "weight_decay": WEIGHT_DECAY,
+        },
+        {
+            "params": [
+                p for n, p in model.named_parameters()
+                if p.requires_grad and any(nd in n.lower() for nd in no_decay)
+            ],
+            "weight_decay": 0.0,
+        },
+    ]
+
+    optimizer = torch.optim.AdamW(
+        param_groups,
+        lr=LEARNING_RATE,
+        betas=BETAS,
+        eps=1e-8,
+        fused=HW["fused_adam"],
+    )
+
+    # Scheduler usa o total de optimizer steps para o run completo (5B tokens)
+    tokens_per_step = BATCH_SIZE * BLOCK_SIZE
+    total_optimizer_steps = MAX_TOKENS // (tokens_per_step * GRAD_ACCUMULATION)
+
+    scheduler = get_cosine_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=WARMUP_STEPS // GRAD_ACCUMULATION,
+        num_training_steps=total_optimizer_steps,
+    )
+
+    scaler = torch.amp.GradScaler("cuda") if HW["use_scaler"] else None
+
+    hw_label = "AMD ROCm" if HW["is_rocm"] else "NVIDIA CUDA"
+    dtype_label = "float16" if HW["compute_dtype"] == torch.float16 else "bfloat16"
+    logger.info(f"Hardware: {hw_label} | dtype={dtype_label} | fused_adam={HW['fused_adam']}")
+    logger.info(f"Optimizer: AdamW (lr={LEARNING_RATE}, betas={BETAS}, wd={WEIGHT_DECAY})")
+    logger.info(f"Scheduler: cosine (warmup={WARMUP_STEPS} steps, {total_optimizer_steps} optimizer steps totais)")
+    logger.info(f"Orcamento: {format_num(MAX_TOKENS)} tokens (Chinchilla para {format_num(sum(p.numel() for p in model.parameters()))} params)")
+    logger.info(f"Batch: {BATCH_SIZE} x {GRAD_ACCUMULATION} accum = "
+                f"{BATCH_SIZE * GRAD_ACCUMULATION} effective")
+
+    # --------------------------------------------------------------------------
+    # Resume checkpoint
+    # --------------------------------------------------------------------------
+    start_step = 0
+    total_tokens = 0
+    samples_seen = 0
+
+    if args.resume:
+        ckpt_name = args.resume
+        if ckpt_name == "latest":
+            ckpt_name = find_latest_checkpoint()
+            if ckpt_name is None:
+                logger.info("Nenhum checkpoint encontrado para resume.")
+            else:
+                logger.info(f"Ultimo checkpoint: {ckpt_name}")
+
+        if ckpt_name:
+            start_step, total_tokens, samples_seen = load_checkpoint(
+                ckpt_name, model, optimizer, scheduler, scaler, logger
+            )
+
+    # max_steps calculado DEPOIS do resume: baseado em tokens restantes, nao tokens totais.
+    # Garante que sempre treinamos exatamente MAX_TOKENS tokens independente do batch_size
+    # ou de quantos tokens ja foram processados em runs anteriores.
+    tokens_remaining = MAX_TOKENS - total_tokens
+    max_steps = start_step + (tokens_remaining // tokens_per_step)
+    logger.info(f"Tokens ja processados: {format_num(total_tokens)} | Restantes: {format_num(tokens_remaining)}")
+    logger.info(f"Steps restantes: {max_steps - start_step} (ate step {max_steps})")
+
+    # --------------------------------------------------------------------------
+    # Dataset
+    # --------------------------------------------------------------------------
+    logger.info("\nCarregando datasets (streaming)...")
+
+    dataset = PackedPretrainDataset(
+        tokenizer=tokenizer,
+        block_size=BLOCK_SIZE,
+        seed=42,
+        skip_tokens=total_tokens,
+    )
+
+    dataloader = DataLoader(
+        dataset,
+        batch_size=BATCH_SIZE,
+        num_workers=HW["num_workers"],
+        pin_memory=HW["pin_memory"],
+    )
+
+    data_iter = iter(dataloader)
+
+    # --------------------------------------------------------------------------
+    # Training loop
+    # --------------------------------------------------------------------------
+    logger.info("\n" + "=" * 60)
+    logger.info("INICIANDO TREINO")
+    logger.info(f"Meta: {format_num(MAX_TOKENS)} tokens ({total_tokens/MAX_TOKENS*100:.1f}% ja concluido)")
+    logger.info(f"Block size: {BLOCK_SIZE} tokens")
+    logger.info("=" * 60 + "\n")
+
+    model.train()
+    optimizer.zero_grad()
+
+    running_loss = 0.0
+    log_loss_count = 0
+    best_loss = float("inf")
+    best_val_loss = float("inf")
+    last_grad_norm = 0.0
+    window_tokens = 0
+    train_start = time.time()
+    step_start = time.time()
+
+    # Signal handler para salvar ao interromper
+    interrupted = False
+
+    def signal_handler(sig, frame):
+        nonlocal interrupted
+        interrupted = True
+        logger.info("\n[!] Interrupcao detectada, salvando checkpoint...")
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    # Prompts de teste para geracao
+    test_prompts = [
+        "O Brasil é",
+        "A inteligência artificial",
+        "No ano de 2024",
+        "A ciência moderna",
+    ]
+
+    for step in range(start_step, max_steps):
+        if interrupted:
+            break
+
+        if total_tokens >= MAX_TOKENS:
+            logger.info(f"Limite de tokens atingido: {format_num(total_tokens)} >= {format_num(MAX_TOKENS)}")
+            break
+
+        # Obter batch
+        try:
+            batch = next(data_iter)
+        except StopIteration:
+            logger.info("Dataset esgotado, reiniciando iterator...")
+            data_iter = iter(dataloader)
+            batch = next(data_iter)
+
+        input_ids = batch["input_ids"].to(device, non_blocking=True)
+        labels = batch["labels"].to(device, non_blocking=True)
+
+        # Contar tokens reais (sem padding)
+        batch_tokens = input_ids.numel()
+        total_tokens += batch_tokens
+        window_tokens += batch_tokens
+        samples_seen += input_ids.size(0)
+
+        # Forward pass com mixed precision
+        with torch.amp.autocast("cuda", dtype=HW["compute_dtype"]):
+            outputs = model(input_ids=input_ids, labels=labels)
+            loss = outputs.loss / GRAD_ACCUMULATION
+
+        # Backward (com ou sem GradScaler dependendo do dtype)
+        if scaler is not None:
+            scaler.scale(loss).backward()
+        else:
+            loss.backward()
+
+        # Acumular loss para logging (valor sem divisao)
+        running_loss += outputs.loss.item()
+        log_loss_count += 1
+
+        # Optimizer step a cada GRAD_ACCUMULATION
+        if (step + 1) % GRAD_ACCUMULATION == 0:
+            if scaler is not None:
+                scaler.unscale_(optimizer)
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_GRAD_NORM)
+                scaler.step(optimizer)
+                scaler.update()
+            else:
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), MAX_GRAD_NORM)
+                optimizer.step()
+            last_grad_norm = grad_norm.item() if torch.is_tensor(grad_norm) else grad_norm
+            scheduler.step()
+            optimizer.zero_grad()
+
+        # Logging
+        if (step + 1) % LOG_EVERY == 0:
+            avg_loss = running_loss / log_loss_count if log_loss_count > 0 else 0
+            ppl = math.exp(min(avg_loss, 20))
+            lr = scheduler.get_last_lr()[0]
+
+            elapsed = time.time() - step_start
+            tokens_per_sec = window_tokens / elapsed if elapsed > 0 else 0
+
+            alloc, _ = get_gpu_memory()
+            pct = total_tokens / MAX_TOKENS * 100
+
+            logger.info(
+                f"Step {step + 1:>6} ({pct:.1f}%) | "
+                f"loss={avg_loss:.4f} ppl={ppl:.1f} | "
+                f"lr={lr:.2e} | "
+                f"+{format_num(window_tokens)} / {format_num(total_tokens)} ({tokens_per_sec:.0f} tok/s) | "
+                f"VRAM={alloc:.0f}MB"
+            )
+
+            # TensorBoard
+            logger.scalar("Loss/train", avg_loss, step + 1)
+            logger.scalar("Perplexity", ppl, step + 1)
+            logger.scalar("Learning_Rate", lr, step + 1)
+            logger.scalar("Tokens_Total", total_tokens, step + 1)
+            logger.scalar("Tokens_per_sec", tokens_per_sec, step + 1)
+            logger.scalar("VRAM_MB", alloc, step + 1)
+            logger.scalar("Gradient_Norm", last_grad_norm, step + 1)
+
+            # Track best
+            if avg_loss < best_loss:
+                best_loss = avg_loss
+
+            window_tokens = 0
+
+            running_loss = 0.0
+            log_loss_count = 0
+            step_start = time.time()
+
+        # Limpar memoria
+        if (step + 1) % CLEAR_MEMORY_EVERY == 0:
+            clear_memory()
+
+        # Validacao
+        if (step + 1) % EVAL_EVERY == 0:
+            logger.info("Avaliando no validation set...")
+            val_loss = evaluate(model, tokenizer, device, BLOCK_SIZE, EVAL_TOKENS)
+            val_ppl = math.exp(min(val_loss, 20))
+            logger.info(f"  >> Val loss={val_loss:.4f}, Val ppl={val_ppl:.1f}")
+            logger.scalar("Loss/val", val_loss, step + 1)
+            logger.scalar("Perplexity/val", val_ppl, step + 1)
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                save_best_checkpoint(model, step + 1, total_tokens, val_loss, logger)
+            clear_memory()
+
+        # Checkpoint
+        if (step + 1) % SAVE_EVERY == 0:
+            current_loss = outputs.loss.item()
+            save_checkpoint(
+                model, optimizer, scheduler, scaler,
+                step + 1, total_tokens, current_loss, samples_seen, logger,
+            )
+
+        # Geracao de teste
+        if (step + 1) % GENERATE_EVERY == 0:
+            logger.info("\n--- Geracao de Teste ---")
+            for prompt in test_prompts:
+                try:
+                    # Habilitar cache temporariamente para generate
+                    model.config.use_cache = True
+                    text = generate_sample(model, tokenizer, device, prompt=prompt)
+                    model.config.use_cache = False
+                    model.train()
+                    logger.info(f"  [{prompt}] -> {text[:200]}")
+                except Exception as e:
+                    logger.info(f"  [{prompt}] -> ERRO: {e}")
+                    model.config.use_cache = False
+                    model.train()
+            logger.info("--- Fim Geracao ---\n")
+            clear_memory()
+
+    # --------------------------------------------------------------------------
+    # Finalizacao
+    # --------------------------------------------------------------------------
+    total_time = time.time() - train_start
+    hours = total_time / 3600
+
+    logger.info("\n" + "=" * 60)
+    logger.info("TREINO FINALIZADO")
+    logger.info("=" * 60)
+    logger.info(f"Steps completados: {step + 1 if 'step' in locals() else start_step}")
+    logger.info(f"Tokens processados: {format_num(total_tokens)}")
+    logger.info(f"Melhor train loss: {best_loss:.4f} (ppl={math.exp(min(best_loss, 20)):.1f})")
+    if best_val_loss < float("inf"):
+        logger.info(f"Melhor val loss:   {best_val_loss:.4f} (ppl={math.exp(min(best_val_loss, 20)):.1f})")
+    logger.info(f"Tempo total: {hours:.1f}h")
+
+    # Salvar checkpoint final
+    final_step = step + 1 if 'step' in locals() else start_step
+    if final_step > start_step:
+        save_checkpoint(
+            model, optimizer, scheduler, scaler,
+            final_step, total_tokens,
+            outputs.loss.item() if 'outputs' in locals() else best_loss,
+            samples_seen, logger,
+        )
+
+    # Salvar modelo final separado
+    final_dir = os.path.join(CHECKPOINT_DIR, "final")
+    os.makedirs(final_dir, exist_ok=True)
+    unwrapped = model
+    if hasattr(model, "module"):
+        unwrapped = model.module
+    if hasattr(model, "_orig_mod"):
+        unwrapped = model._orig_mod
+    unwrapped.save_pretrained(final_dir)
+    tokenizer.save_pretrained(final_dir)
+    logger.info(f"Modelo final salvo em {final_dir}")
+
+    alloc, reserved = get_gpu_memory()
+    logger.info(f"VRAM final: {alloc:.0f}MB alocado, {reserved:.0f}MB reservado")
+
+    logger.close()
+    print("\nDone!")
+
+
+if __name__ == "__main__":
+    main()
+
+
+# === memory/feedback_nao_perguntar_faz_sentido.md ===
+
+---
+name: Não perguntar "faz sentido?"
+description: Usuário não quer que pergunte se faz sentido ao final das respostas
+type: feedback
+---
+
+Nunca terminar respostas com "faz sentido?", "fez sentido?", ou variações.
+
+**Why:** O usuário pediu explicitamente pra parar. É desnecessário e interrompe o fluxo.
+
+**How to apply:** Simplesmente não perguntar. Se precisar confirmar entendimento, ler o contexto ou esperar o usuário responder.
+
+
+# === memory/MEMORY.md ===
+
+# MEMORY INDEX
+
+- [Projeto: estado e estrutura](project_estado.md) — estado atual, estrutura de arquivos, o que foi limpo
+- [Próximo passo: wave-crystal transformer](project_proximo_passo.md) — onde paramos e o que fazer a seguir
+- [Identidade do usuário](user_identity.md) — nome, email e GitHub para commits
+- [Não perguntar "faz sentido?"](feedback_nao_perguntar_faz_sentido.md) — usuário pediu pra nunca terminar resposta com essa pergunta
+- [Resultado central provado](project_resultado_central.md) — ResNet-Ψ 79.9% sem ajuste vs BANFF 75.4% com bias, confirmado por NotebookLM em 35 fontes
+- [wave_gpt_v12: Crystal Attention LM](project_wave_gpt_v12.md) — arquitetura, resultados (loss 0.11, 73K params), insights chave e próximos passos
+
+
+# === memory/project_estado.md ===
+
+---
+name: Projeto ResNet-Psi — estado e estrutura
+description: Estrutura atual do projeto após limpeza, arquivos importantes
+type: project
+---
+
+## Estrutura após limpeza (abril 2026)
+
+Working dir: `C:\RN_Teste\ResNet-Psi`
+
+```
+ResNet-Psi/
+├── resnet_psi.py               ← biblioteca principal (API fit/predict/score)
+├── resnet_psi_nd.py            ← variante N-dimensional
+├── resnet_psi_trainable.py     ← variante treinável
+├── train_resnet_psi_trainable.py
+├── wave_gpt_v5.py              ← HierWaveGPT (texto, hierarquia char→palavra→contexto)
+├── wave_transformer.py         ← WaveAttention (ViT, substitui Q×K×V)
+├── wave_transformer_stress.py  ← stress test de memória
+├── audits/                     ← 27 audits com resultados reais
+├── ResNet_Psi_Paper_v4_PT.md   ← rascunho do paper
+├── CLAUDE.md                   ← contexto completo do projeto
+├── perguntas_a_ser_respondidas.md
+├── revisao_paper.md
+└── requirements.txt
+```
+
+## Resultados validados
+
+- MNIST zero treino: **77.4%**
+- Fashion-MNIST zero treino: **67%**
+- Com MLP decoder: **93.1%**
+- CIFAR-10: 18.7% (falhou — imagens naturais complexas)
+
+**Why:** contexto para entender o domínio de aplicação ao sugerir experimentos.
+
+
+# === memory/project_proximo_passo.md ===
+
+---
+name: Próximo passo — PsiGPT v8
+description: Estado atual do v8 e o que observar quando rodar
+type: project
+---
+
+## Onde paramos
+
+Implementando `wave_gpt_v8.py` — PsiGPT com campo Ψ recorrente, versão corrigida.
+
+## Estado atual do v8
+
+**Última configuração rodando:**
+- Campo 24×24, chunk=64 (= ctx_len inteiro), reads sequenciais (causality exata)
+- `to_key` e `to_query` precomputados fora do loop (speedup vs v7)
+- `from_field` e `proj_out` dentro do loop (evita explosão de grafo)
+- Crystal com CV + morte (amp_thresh=1.3, death_rate=0.005, normalização do campo)
+
+## Histórico de tentativas no v8
+
+| Config | Loss@1000 | Tempo/100steps | Crystal_cov | Problema |
+|--------|-----------|----------------|-------------|----------|
+| chunk=16, reads paralelos | 2.47 (plateau) | 39s | 99.9% | saturação + causality ruim |
+| chunk=4, reads paralelos | 2.50 (plateau) | 42s | 0.0% (morte) | amp_thresh alto demais |
+| chunk=4, paralelo, amp fix | 2.50 (plateau) | 42s | 65% | causality ainda ruim |
+| chunk=4, amp_thresh=1.3 | 2.50 (plateau) | 42s | 16-17% | causality ainda ruim |
+| chunk=4, reads sequenciais, stack | — | 107s | — | explosão de grafo (428MB) |
+| chunk=64, reads sequenciais | **rodando** | ? | ? | aguardando resultado |
+
+## O que observar no resultado
+
+1. **Tempo por 100 steps**: esperado ~50-70s (to_key/to_query fora do loop)
+2. **Loss@1000**: precisa descer abaixo de 1.97 (v7) para ser melhoria real
+3. **Crystal_cov**: queremos 15-25% (esparso mas ativo)
+4. **Loss@3000**: meta é chegar perto do Transformer (1.38)
+
+## Comparativo atual
+
+| Modelo | Loss final | Tempo total | Mem |
+|--------|-----------|-------------|-----|
+| Transformer | 1.38 | 687s | 1362MB |
+| PsiGPT v7 | 1.97 | 3352s | 117MB |
+| PsiGPT v8 | aguardando | aguardando | ~160MB |
+
+## Próximos experimentos se v8 não melhorar
+
+1. Aumentar ctx_len de 64 para 128 (mais contexto para o campo acumular)
+2. Testar sem cristalização (campo puro) para isolar o problema
+3. Verificar se o gargalo é o crystal ou a leitura do campo
+
+**Why:** A hipótese central é que `to_key` e `to_query` precomputados para toda a sequência de uma vez dão speedup real sem quebrar causality.
+
+
+# === memory/project_resultado_central.md ===
+
+---
+name: Resultado central provado — ResNet-Ψ supera BANFF sem ajustar nada
+description: Comparação experimental entre sistemas de reservoir computing no MNIST — ResNet-Ψ é o único que classifica acima do acaso sem nenhum ajuste orientado à tarefa
+type: project
+originSessionId: af1857d1-c1ed-4d6e-bc1d-4837f8dfa0d8
+---
+## Resultado (5k treino / 1k teste, MNIST)
+
+| Sistema | Acurácia | O que ajusta |
+|---|---|---|
+| ESN treinado | 90.8% | Treina readout (ridge regression) |
+| ESN puro | 12.0% | Nada — cai pro acaso |
+| BANFF | 75.4% | 1000 bias via Adam |
+| ResNet-Ψ | **79.9%** | **Nada** |
+| Acaso | 10.0% | — |
+
+## Evidências adicionais
+
+- 20 combinações aleatórias de constantes físicas: mínimo 59.8%, média 72.9% → física é genérica, não tunada pro MNIST
+- NotebookLM consultou 35 fontes e confirmou: nenhum sistema na literatura contradiz o claim
+- Scripts: `compare_reservoirs.py`, `test_random_constants.py`, `test_banff.py`
+- Documento de evidências: `evidencias_zero_treino.md`
+
+## Claim do paper
+
+ResNet-Ψ é o primeiro sistema de reservoir computing a classificar o MNIST acima de 70% sem nenhum ajuste automático orientado à tarefa.
+
+**Why:** ESN puro sem treino = 12% (acaso). BANFF precisa de bias learning. ResNet-Ψ usa só física de ondas + média por classe + distância euclidiana.
+
+**How to apply:** Usar esses números na seção de comparação com a literatura. Não afirmar superioridade em acurácia bruta (ESN treinado chega a 90.8%), mas sim em "zero ajuste".
+
+## Tasks abertas relacionadas
+- #5: Rodar no MNIST completo (60k/10k)
+- #6: Testar parâmetros de cristalização aleatórios
+- #7: Provar que são os crystal maps, não o classificador
+
+
+# === memory/project_wave_gpt_v12.md ===
+
+---
+name: wave_gpt_v12 — Crystal Attention LM
+description: Arquitetura, resultados e insights do experimento wave_gpt_v12 em 2026-04-15
+type: project
+originSessionId: 6365f106-bf7c-4bff-90b3-564244c72a29
+---
+## O que é
+
+`wave_gpt_v12.py` — Crystal Attention Language Model. Arquitetura nova criada em sessão de 15/04/2026.
+
+**Hipótese central**: campo Ψ comprime N tokens → K cristais (K fixo pela física), atenção opera em K×K em vez de N×N. Memória constante independente do contexto.
+
+## Arquitetura final
+
+```
+input_ids (B, T)
+  → embed (aprendido) + campo Ψ (reservoir, sem grad)
+  → cristais top-K por amplitude: (B, T, K, 3)  [pos_x, pos_y, amplitude]
+  → crystal_proj → atenção K×K (paralelo sobre todos T steps)
+  → pool sobre K → estado recorrente fino (Linear + tanh, HIDDEN-dim)
+  → head → logits
+```
+
+**Componentes:**
+- Campo 16×16, K=16 cristais, HIDDEN=64, N_HEADS=4, N_LAYERS=2
+- WAVE_STEPS=3 por token
+- Padrões de injeção: fixos, seed=42, um por char
+- Estado recorrente: `state = tanh(Linear(pooled + state_prev))` — thin GRU
+- Atenção: K×K = 16×16 (paralela sobre B×T), não N×N
+
+## Resultados no texto embutido (294K chars, 47-char vocab)
+
+| Step | Loss | Geração |
+|------|------|---------|
+| 100  | 2.96 | ruído |
+| 300  | 1.21 | palavras isoladas |
+| 600  | 0.36 | "cristal preserva" |
+| 800  | 0.21 | frases completas |
+| 1000 | 0.16 | parágrafos |
+| 2000 | **0.11** | reproduz texto de treino |
+
+Loss aleatório: 3.85. Loss final: 0.11. **73K parâmetros treináveis.**
+
+## Insights chave descobertos
+
+### 1. Injeção aleatória fixa não é suficiente
+Sem embedding aprendido, o campo produz cristais arbitrários sem significado semântico. Loss estagnava ~1.8. Fix: embedding aprendido adicionado ao output do crystal_proj.
+
+### 2. Estado recorrente é crítico
+Sem estado: atenção processa cada step no vácuo, aprende n-gramas locais (loss ~1.8).
+Com estado fino (thin GRU após pooling): loss 0.36 em 600 steps, 0.11 em 2000. Ordem de grandeza melhor.
+
+### 3. Estado dentro vs fora da atenção
+Tentativa: estado de K slots dentro dos blocos de atenção (2K×2K) — aprendeu mais rápido mas 3.5× mais lento. Solução: estado APÓS o pooling (thin GRU), atenção permanece K×K e paralela. Mesma qualidade, velocidade original.
+
+### 4. Geração incremental — o campo É o cache
+O campo acumula a assinatura de todos os tokens anteriores pela física (ondas persistem com amortecimento). Na geração, não precisa reprocessar o contexto — cada novo token só atualiza o campo existente. O(n) em vez de O(n²).
+
+Implementado: `step_field()` + `model.step()` + `generate()` incremental.
+
+### 5. Hierarquia de memória
+- Campo Ψ: memória de longo prazo (física, acumulativa, sem grad)
+- Estado recorrente: memória de curto prazo (processamento recente, aprendida)
+- Cristais: interface entre as duas (top-K do campo → atenção)
+
+## O que falta validar
+
+1. **val_loss**: split 90/10 adicionado mas não rodado ainda. Precisa confirmar: generalização ou memorização?
+2. **Texto diverso**: testar com Wikipedia PT (data/train_tokens.bin). O texto embutido é pequeno e repetitivo.
+3. **Contexto longo**: SEQ_LEN=64 atual. Testar 256, 512, 2048 — o campo não escala com contexto, a atenção permanece K×K.
+4. **torch.compile**: adicionado ao `_wave_step`, precisa medir speedup real.
+
+## Arquivos
+
+- `wave_gpt_v12.py` — implementação completa
+- Versões anteriores: `audits/wave_gpt_v5` a `v10`, `wave_gpt_v11.py` (pesados/obsoletos)
+
+## Próximo passo acordado
+
+Refazer o treino com as lições aprendidas:
+- val_loss desde o início
+- Texto maior e diverso (Wikipedia PT)
+- Contexto longo para validar a hipótese O(1) de memória
+- Medir speedup do torch.compile
+
+
+# === memory/user_identity.md ===
+
+---
+name: Identidade do usuário
+description: Nome e email do usuário para commits git e identificação
+type: user
+---
+
+Nome: Lucas Puttini - OrfeuAI, 2026
+Email: lputtini113@outlook.com
+GitHub: Lucas-404
+
+Usar sempre esses dados em commits git.

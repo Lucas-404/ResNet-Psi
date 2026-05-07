@@ -357,6 +357,10 @@ class PackedPretrainDataset(IterableDataset):
                     split="train",
                     streaming=True,
                 )
+                # Mantém só o campo de texto — evita conflito de schema entre datasets
+                ds = ds.select_columns([text_field])
+                if text_field != "text":
+                    ds = ds.rename_column(text_field, "text")
 
                 streams.append(ds)
                 weights.append(weight)
@@ -828,7 +832,7 @@ def main():
 
     # Tenta FA2; cai para sdpa se flash-attn nao estiver instalado
     try:
-        import flash_attn  # noqa: F401
+        import flash_attn  # noqa: F401  # type: ignore[import]
         attn_impl = "flash_attention_2"
         logger.info("Flash Attention 2: disponivel")
     except ImportError:

@@ -1,0 +1,59 @@
+============================================================
+SETUP COLAB — Arpa 800M Pretrain
+============================================================
+
+ARQUIVOS NECESSARIOS (subir do seu PC):
+  - nano_pt.py
+  - tokenizer-arpa-32k.zip  (zipar a pasta tokenizer-arpa-32k/)
+
+------------------------------------------------------------
+CELULA 1 — Instalar dependencias
+------------------------------------------------------------
+!pip install -q transformers datasets tensorboard accelerate
+
+------------------------------------------------------------
+CELULA 2 — Upload dos arquivos
+------------------------------------------------------------
+from google.colab import files
+
+# Sobe nano_pt.py
+files.upload()
+
+# Sobe tokenizer-arpa-32k.zip
+files.upload()
+
+# Descompacta o tokenizer
+import zipfile
+with zipfile.ZipFile("tokenizer-arpa-32k.zip", "r") as z:
+    z.extractall(".")
+
+print("OK — pronto pra treinar")
+
+------------------------------------------------------------
+CELULA 3 — Rodar o treino
+------------------------------------------------------------
+exec(open("nano_pt.py").read())
+
+------------------------------------------------------------
+CELULA 4 — Resumir de checkpoint (se pausou)
+------------------------------------------------------------
+import sys
+sys.argv = ["nano_pt.py", "--resume", "latest"]
+exec(open("nano_pt.py").read())
+
+------------------------------------------------------------
+MONITORAR (opcional, numa celula separada)
+------------------------------------------------------------
+%load_ext tensorboard
+%tensorboard --logdir logs-arpa800m
+
+------------------------------------------------------------
+SALVAR CHECKPOINT NO GOOGLE DRIVE (recomendado)
+------------------------------------------------------------
+from google.colab import drive
+drive.mount("/content/drive")
+
+import shutil
+shutil.copytree("checkpoints-arpa800m", "/content/drive/MyDrive/checkpoints-arpa800m")
+
+============================================================

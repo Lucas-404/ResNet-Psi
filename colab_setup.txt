@@ -1,11 +1,11 @@
 !pip install -q transformers datasets tensorboard accelerate
 
 from google.colab import files
-files.upload()  # sobe nano_pt.py
-files.upload()  # sobe tokenizer-arpa-32k.zip
+files.upload()  # seleciona nano_pt.py + tokenizer.json + tokenizer_config.json juntos
 
-import zipfile
-with zipfile.ZipFile("tokenizer-arpa-32k.zip", "r") as z:
-    z.extractall(".")
+import os
+os.makedirs("tokenizer-arpa-32k", exist_ok=True)
+os.rename("tokenizer.json", "tokenizer-arpa-32k/tokenizer.json")
+os.rename("tokenizer_config.json", "tokenizer-arpa-32k/tokenizer_config.json")
 
 exec(open("nano_pt.py").read())

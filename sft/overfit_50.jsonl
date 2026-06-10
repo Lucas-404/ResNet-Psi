@@ -1,0 +1,50 @@
+{"text":"<|user|>\nOi.\n<|model|>\nOi! Como posso ajudar?\n<|end|>"}
+{"text":"<|user|>\nOlá, tudo bem?\n<|model|>\nTudo bem. Como posso ajudar você?\n<|end|>"}
+{"text":"<|user|>\nBom dia.\n<|model|>\nBom dia! Em que posso ajudar?\n<|end|>"}
+{"text":"<|user|>\nBoa tarde.\n<|model|>\nBoa tarde! Como posso ajudar?\n<|end|>"}
+{"text":"<|user|>\nBoa noite.\n<|model|>\nBoa noite! Em que posso ajudar?\n<|end|>"}
+{"text":"<|user|>\nQuem é você?\n<|model|>\nSou um assistente de IA simples, treinado para responder em português de forma clara e curta.\n<|end|>"}
+{"text":"<|user|>\nO que você faz?\n<|model|>\nEu respondo perguntas, explico ideias simples e ajudo com pequenos problemas de texto, matemática e código.\n<|end|>"}
+{"text":"<|user|>\nVocê é um humano?\n<|model|>\nNão. Sou um modelo de linguagem, não uma pessoa.\n<|end|>"}
+{"text":"<|user|>\nResponda de forma curta.\n<|model|>\nCerto. Vou responder de forma curta e direta.\n<|end|>"}
+{"text":"<|user|>\nSe não souber, o que você deve fazer?\n<|model|>\nDevo dizer que não sei ou pedir mais informações, sem inventar resposta.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 2 + 2?\n<|model|>\n2 + 2 = 4.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 3 + 5?\n<|model|>\n3 + 5 = 8.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 7 + 6?\n<|model|>\n7 + 6 = 13.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 10 - 4?\n<|model|>\n10 - 4 = 6.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 9 - 3?\n<|model|>\n9 - 3 = 6.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 4 vezes 3?\n<|model|>\n4 vezes 3 = 12.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 5 vezes 5?\n<|model|>\n5 vezes 5 = 25.\n<|end|>"}
+{"text":"<|user|>\nQuanto é 12 dividido por 3?\n<|model|>\n12 dividido por 3 = 4.\n<|end|>"}
+{"text":"<|user|>\nJoão tinha 10 reais, gastou 4 e ganhou 3. Com quanto ficou?\n<|model|>\nJoão ficou com 9 reais.\n<|end|>"}
+{"text":"<|user|>\nAna tinha 8 balas e ganhou 2. Quantas balas tem agora?\n<|model|>\nAna tem 10 balas agora.\n<|end|>"}
+{"text":"<|user|>\nO que é um pronome?\n<|model|>\nPronome é uma palavra que substitui ou acompanha um nome, como eu, você, ele e ela.\n<|end|>"}
+{"text":"<|user|>\nDê um exemplo de pronome.\n<|model|>\nUm exemplo de pronome é ele.\n<|end|>"}
+{"text":"<|user|>\nNa frase \"Ela chegou cedo\", qual é o pronome?\n<|model|>\nO pronome é \"Ela\".\n<|end|>"}
+{"text":"<|user|>\nO que é um substantivo?\n<|model|>\nSubstantivo é uma palavra que dá nome a pessoas, lugares, objetos ou ideias.\n<|end|>"}
+{"text":"<|user|>\nDê um exemplo de substantivo.\n<|model|>\nUm exemplo de substantivo é casa.\n<|end|>"}
+{"text":"<|user|>\nCorrija: Os menino chegaram.\n<|model|>\nForma correta: Os meninos chegaram.\n<|end|>"}
+{"text":"<|user|>\nCorrija: A gente fomos ao mercado.\n<|model|>\nForma correta: A gente foi ao mercado.\n<|end|>"}
+{"text":"<|user|>\nUse porque em uma frase.\n<|model|>\nEu fiquei em casa porque estava chovendo.\n<|end|>"}
+{"text":"<|user|>\nQual é a diferença entre água e gelo?\n<|model|>\nÁgua é líquida; gelo é água em estado sólido.\n<|end|>"}
+{"text":"<|user|>\nCompare água e gelo.\n<|model|>\nÁgua e gelo são a mesma substância, mas a água é líquida e o gelo é sólido.\n<|end|>"}
+{"text":"<|user|>\nO gelo é feito de quê?\n<|model|>\nO gelo é feito de água congelada.\n<|end|>"}
+{"text":"<|user|>\nÁgua e gelo são iguais?\n<|model|>\nEles são a mesma substância, mas em estados físicos diferentes.\n<|end|>"}
+{"text":"<|user|>\nExplique vapor de água de forma simples.\n<|model|>\nVapor de água é água em forma de gás.\n<|end|>"}
+{"text":"<|user|>\nO que acontece quando a água congela?\n<|model|>\nQuando a água congela, ela vira gelo.\n<|end|>"}
+{"text":"<|user|>\nEscreva uma função Python que soma dois números.\n<|model|>\ndef soma(a, b):\n    return a + b\n<|end|>"}
+{"text":"<|user|>\nCrie uma função Python chamada soma.\n<|model|>\ndef soma(a, b):\n    return a + b\n<|end|>"}
+{"text":"<|user|>\nMostre Python para somar 2 e 3.\n<|model|>\nresultado = 2 + 3\nprint(resultado)\n<|end|>"}
+{"text":"<|user|>\nO que é uma variável em Python?\n<|model|>\nVariável é um nome que guarda um valor para ser usado no código.\n<|end|>"}
+{"text":"<|user|>\nO que é uma lista em Python?\n<|model|>\nLista é uma coleção de valores em ordem, escrita com colchetes.\n<|end|>"}
+{"text":"<|user|>\nDê um exemplo de lista em Python.\n<|model|>\nnomes = [\"Ana\", \"João\", \"Lia\"]\n<|end|>"}
+{"text":"<|user|>\nO que é uma função?\n<|model|>\nFunção é um bloco de código que pode ser chamado para executar uma tarefa.\n<|end|>"}
+{"text":"<|user|>\nExplique attention em uma frase simples.\n<|model|>\nAttention ajuda o modelo a escolher quais partes do texto são mais importantes para responder.\n<|end|>"}
+{"text":"<|user|>\nExplique token em uma frase simples.\n<|model|>\nToken é uma pequena parte do texto usada pelo modelo, como uma palavra ou pedaço de palavra.\n<|end|>"}
+{"text":"<|user|>\nExplique checkpoint em uma frase simples.\n<|model|>\nCheckpoint é um arquivo salvo com o estado do modelo em um momento do treino.\n<|end|>"}
+{"text":"<|user|>\nExplique learning rate em uma frase simples.\n<|model|>\nLearning rate é o tamanho do passo que o modelo dá ao aprender.\n<|end|>"}
+{"text":"<|user|>\nNão tenho informação suficiente. O que você deve responder?\n<|model|>\nDevo pedir mais contexto ou dizer que não sei com os dados disponíveis.\n<|end|>"}
+{"text":"<|user|>\nVocê sabe minha senha?\n<|model|>\nNão. Eu não sei sua senha e não devo tentar adivinhar.\n<|end|>"}
+{"text":"<|user|>\nVocê pode inventar uma resposta se não souber?\n<|model|>\nNão. Se eu não souber, devo dizer isso claramente.\n<|end|>"}
+{"text":"<|user|>\nQual é meu endereço?\n<|model|>\nNão sei seu endereço. Você não forneceu essa informação.\n<|end|>"}
+{"text":"<|user|>\nLeia: \"Lucas viu Pedro porque ele estava atrasado.\" Quem estava atrasado?\n<|model|>\nA frase é ambígua. Pode ser Lucas ou Pedro; falta contexto para saber com certeza.\n<|end|>"}

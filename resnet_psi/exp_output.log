@@ -1,0 +1,75 @@
+Device: cuda
+FS base=48  STIM_TOTAL=160
+Config: v3 + energy + lam=0.05 | baseline anterior (none): 40.8%
+
+==========================================================================
+ EXPERIMENTO 1 — Pooling espacial no crystal_map (4 classes)
+==========================================================================
+Train 240 | Test 120 | classes 4 | FS=48
+
+--- pool=none ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.408  dmin=9.709  dmean=9.812  norm=18.975  t=15.0s
+
+--- pool=avg_k2 ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.300  dmin=2.527  dmean=2.578  norm=6.792  t=13.0s
+
+--- pool=avg_k3 ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.283  dmin=1.127  dmean=1.173  norm=3.934  t=11.7s
+
+--- pool=max_k2 ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.317  dmin=8.866  dmean=9.051  norm=24.394  t=13.2s
+
+--- pool=max_k3 ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.292  dmin=7.407  dmean=7.939  norm=28.426  t=13.0s
+
+--------------------------------------------------------------------------
+pool           acc     dmin    dmean     norm    tempo
+none         0.408    9.709    9.812   18.975    15.0s
+avg_k2       0.300    2.527    2.578    6.792    13.0s
+avg_k3       0.283    1.127    1.173    3.934    11.7s
+max_k2       0.317    8.866    9.051   24.394    13.2s
+max_k3       0.292    7.407    7.939   28.426    13.0s
+
+[best pool exp1] ('none', 2) — acc=0.408
+
+==========================================================================
+ EXPERIMENTO 2 — Grid size (pool=none, k=2)
+==========================================================================
+
+--- FS=48 ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.408  dmin=9.709  norm=18.975  t=12.2s
+
+--- FS=64 ---
+Traceback (most recent call last):
+  File "C:\RN_Teste\ResNet-Psi\test_psi2_experiments.py", line 266, in <module>
+    main()
+    ~~~~^^
+  File "C:\RN_Teste\ResNet-Psi\test_psi2_experiments.py", line 252, in main
+    r2 = exp2_field_size(best_pool)
+  File "C:\RN_Teste\ResNet-Psi\test_psi2_experiments.py", line 188, in exp2_field_size
+    acc, t, st = run_one(Xtr, ytr, Xte, yte, nc,
+                 ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+                         pool_kind=best_pool[0], pool_k=best_pool[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\RN_Teste\ResNet-Psi\test_psi2_experiments.py", line 132, in run_one
+    rn.fit(Xtr, ytr, bs=bs)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\RN_Teste\ResNet-Psi\test_psi2_experiments.py", line 64, in fit
+    cmaps = self.extract(train_texts, bs, verbose=True)
+  File "C:\RN_Teste\ResNet-Psi/resnet-psi2.py", line 266, in extract
+    return compute_crystal_maps_text(texts, bs, lam=self.lam,
+                                     mode=self.mode, projection=self.projection,
+                                     verbose=verbose)
+  File "C:\RN_Teste\ResNet-Psi/resnet-psi2.py", line 232, in compute_crystal_maps_text
+    mem.update_envelope(f)
+    ~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\RN_Teste\ResNet-Psi/resnet-psi2.py", line 119, in update_envelope
+    self.window_max = torch.max(self.window_max, field.abs())
+                      ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (64) must match the size of tensor b (48) at non-singleton dimension 2

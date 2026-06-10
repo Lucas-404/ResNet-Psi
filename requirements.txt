@@ -1,4 +1,5 @@
 torch
 numpy
-cma
-matplotlib
+transformers
+datasets
+tokenizers

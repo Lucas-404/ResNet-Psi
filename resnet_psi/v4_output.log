@@ -1,0 +1,57 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+C:\RN_Teste\ResNet-Psi\venv\Lib\site-packages\huggingface_hub\file_download.py:138: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\lputt\.cache\huggingface\hub\models--sentence-transformers--paraphrase-multilingual-MiniLM-L12-v2. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+Device: cuda
+FS=48  STIM_TOTAL=160
+
+==============================================================================
+ V4 SEMÂNTICO — 4 classes distintas (baseline v3 = 40.8%)
+==============================================================================
+Train 240 | Test 120 | classes 4 | random 25.0%
+
+--- v3-energy (baseline) ---
+  [proj=v3 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1871  src.max=2.00  src.mean=0.104
+    acc=0.408  cov=3.8%  cmax=8.52  dmin=9.709  dmean=9.812  t=13.3s
+
+--- v4 K=50 (semântico puro, sem atenção) ---
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|##########| 199/199 [00:00<00:00, 5858.09it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.031
+    acc=0.842  cov=7.7%  cmax=8.03  dmin=16.077  dmean=17.899  t=123.2s
+
+--- v4 K=50 + energy ---
+  [proj=v4 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1867  src.max=2.00  src.mean=0.031
+    acc=0.842  cov=7.7%  cmax=8.12  dmin=16.469  dmean=18.333  t=13.9s
+
+--- v4 K=100 (semântico puro, sem atenção) ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.057
+    acc=0.825  cov=13.2%  cmax=8.14  dmin=22.045  dmean=24.403  t=11.5s
+
+--- v4 K=100 + energy ---
+  [proj=v4 mode=energy lam=0.050] coup.max_global=0.1886  coup.max_mean=0.1868  src.max=2.00  src.mean=0.057
+    acc=0.817  cov=13.2%  cmax=8.26  dmin=22.481  dmean=24.853  t=12.3s
+
+------------------------------------------------------------------------------
+config                                            acc     cov    dmin   dmean
+v3-energy (baseline)                            0.408   3.8%    9.71    9.81
+v4 K=50 (semântico puro, sem atenção)           0.842   7.7%   16.08   17.90
+v4 K=50 + energy                                0.842   7.7%   16.47   18.33
+v4 K=100 (semântico puro, sem atenção)          0.825  13.2%   22.04   24.40
+v4 K=100 + energy                               0.817  13.2%   22.48   24.85
+
+[melhor v4 em 4 classes] v4 K=50 (semântico puro, sem atenção)  acc=0.842
+
+==============================================================================
+ V4 ESCALA — 10 classes (v4 K=50 (semântico puro, sem atenção))
+==============================================================================
+Train 600 | Test 300 | classes 10 | random 10.0%
+
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.031
+    acc=0.603  uplift=+0.503  cov=7.5%  dmin=12.642  dmean=17.520  t=28.5s

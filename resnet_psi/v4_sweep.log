@@ -1,0 +1,77 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Device: cuda  FS=48
+
+==========================================================================
+ FASE 1 — K sweep em 4 classes (v4, sem atenção)
+==========================================================================
+Train 240 | Test 120
+
+--- K=10 ---
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|##########| 199/199 [00:00<00:00, 3974.07it/s]
+[1mBertModel LOAD REPORT[0m from: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+Key                     | Status     |  | 
+------------------------+------------+--+-
+embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.007
+    acc=0.683  dmin=6.67  dmean=7.19  t=24.5s
+--- K=20 ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.014
+    acc=0.725  dmin=10.16  dmean=10.85  t=12.3s
+--- K=30 ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.020
+    acc=0.775  dmin=12.51  dmean=13.63  t=12.6s
+--- K=50 ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.031
+    acc=0.842  dmin=16.08  dmean=17.90  t=12.8s
+--- K=75 ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.044
+    acc=0.808  dmin=19.83  dmean=21.77  t=12.7s
+--- K=100 ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.057
+    acc=0.825  dmin=22.04  dmean=24.40  t=11.3s
+--- K=200 ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.100
+    acc=0.783  dmin=25.65  dmean=27.42  t=12.2s
+
+--------------------------------------------------------------------------
+    K     acc     dmin    dmean   ratio    tempo
+   10   0.683     6.67     7.19   0.928    24.5s
+   20   0.725    10.16    10.85   0.937    12.3s
+   30   0.775    12.51    13.63   0.918    12.6s
+   50   0.842    16.08    17.90   0.898    12.8s
+   75   0.808    19.83    21.77   0.911    12.7s
+  100   0.825    22.04    24.40   0.903    11.3s
+  200   0.783    25.65    27.42   0.935    12.2s
+
+[melhor K] 50
+
+==========================================================================
+ FASE 2 — Escala (K=50, v4 sem atenção)
+==========================================================================
+
+--- 4 classes  (random 25.0%) ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.031
+    acc=0.842  uplift=+0.592  dmin=16.08  dmean=17.90  t=11.5s
+
+--- 10 classes  (random 10.0%) ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.031
+    acc=0.603  uplift=+0.503  dmin=12.64  dmean=17.52  t=20.5s
+
+--- 20 classes  (random 5.0%) ---
+  [proj=v4 mode=none lam=0.000] coup.max_global=0.0000  coup.max_mean=0.0000  src.max=2.00  src.mean=0.032
+    acc=0.418  uplift=+0.368  dmin=12.66  dmean=17.01  t=51.0s
+
+--------------------------------------------------------------------------
+nC       acc    rand   uplift     dmin    dmean    tempo
+4      0.842   0.250   +0.592    16.08    17.90    11.5s
+10     0.603   0.100   +0.503    12.64    17.52    20.5s
+20     0.418   0.050   +0.368    12.66    17.01    51.0s
+
+==========================================================================
+ RESUMO
+==========================================================================
+  Melhor K : 50
+  Escala   : 4c:0.842 | 10c:0.603 | 20c:0.418

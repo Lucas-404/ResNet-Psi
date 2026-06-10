@@ -1,11 +1,30 @@
-!pip install -q transformers datasets tensorboard accelerate
+# Setup Colab A100 — Arpa-150M (pipeline novo: arpa/)
+# Runbook completo em arpa/README.md
 
-from google.colab import files
-files.upload()  # seleciona nano_pt.py + tokenizer.json + tokenizer_config.json juntos
+!pip install -q torch transformers datasets tokenizers
 
-import os
-os.makedirs("tokenizer-arpa-32k", exist_ok=True)
-os.rename("tokenizer.json", "tokenizer-arpa-32k/tokenizer.json")
-os.rename("tokenizer_config.json", "tokenizer-arpa-32k/tokenizer_config.json")
+# Clonar/copiar o repo (so a pasta arpa/ e necessaria + sft/ pro SFT)
+from google.colab import drive
+drive.mount('/content/drive')
 
-exec(open("nano_pt.py").read())
+# --- 1. Tokenizer 64K (UMA VEZ; depois salve no Drive) ---
+!python arpa/train_tokenizer.py
+!cp -r tokenizer-arpa-64k-clean /content/drive/MyDrive/arpa150m/
+
+# (sessoes seguintes: so restaurar)
+# !cp -r /content/drive/MyDrive/arpa150m/tokenizer-arpa-64k-clean .
+
+# --- 2. Bins de pre-treino (UMA VEZ; ~6.6GB; salve no Drive) ---
+!python arpa/prepare_data.py --train-tokens 3.3e9
+!cp -r data/arpa150m /content/drive/MyDrive/arpa150m/data
+
+# --- 3. Pre-treino ---
+!python arpa/pretrain.py --config a100
+# apos desconexao:
+# !python arpa/pretrain.py --config a100 --resume latest
+
+# --- 4. SFT ---
+!python arpa/sft.py --init checkpoints-arpa150m/best.pt --data "sft/*.jsonl"
+
+# --- 5. Chat ---
+!python arpa/sample.py --ckpt checkpoints-sft/best.pt --chat

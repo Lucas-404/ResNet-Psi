@@ -8,10 +8,19 @@ __pycache__/
 *.pyo
 
 # Dados (grandes, não versionados)
-data/
-checkpoints/
-tmp/
-logs/
+/data/
+/data-*/
+/datasets_raw/
+/checkpoints/
+/checkpoints-*/
+/logs/
+/logs-*/
+/models/
+/tokenizer-arpa-*/
+/tmp/
+
+# Codigo antigo aposentado (pre-arpa/)
+/legacy/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -23,3 +32,4 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+/audits

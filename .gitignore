@@ -33,3 +33,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 /audits
+
+# Pasta gerada pro Colab (rode make_colab.py)
+/colab_upload/

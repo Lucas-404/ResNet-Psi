@@ -1,11 +1,20 @@
 # Setup Colab A100 — Arpa-150M (pipeline novo: arpa/)
 # Runbook completo em arpa/README.md
+#
+# Antes de subir: rode `python make_colab.py` na sua maquina e envie a pasta
+# colab_upload/ inteira pro Drive (MyDrive/colab_upload). Ou clone o GitHub.
 
 !pip install -q torch transformers datasets tokenizers
 
-# Clonar/copiar o repo (so a pasta arpa/ e necessaria + sft/ pro SFT)
 from google.colab import drive
 drive.mount('/content/drive')
+
+# Opcao A: pasta enviada pelo make_colab.py
+!cp -r /content/drive/MyDrive/colab_upload /content/arpa-repo
+# Opcao B: clone (se o repo estiver no GitHub)
+# !git clone https://github.com/Lucas-404/ResNet-Psi.git /content/arpa-repo
+
+%cd /content/arpa-repo
 
 # --- 1. Tokenizer 64K (UMA VEZ; depois salve no Drive) ---
 !python arpa/train_tokenizer.py

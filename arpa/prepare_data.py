@@ -24,6 +24,11 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Estabilidade de download da HF: desliga o backend Xet (origem dos 408/timeout
+# vistos no CDN) e aumenta o timeout. setdefault: respeita override do usuario.
+os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
+os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "120")
+
 from arpa.data import BinWriter
 
 # (hf_name, hf_config, peso, campo, kind)
@@ -223,10 +228,6 @@ def main():
         val_w = BinWriter(os.path.join(args.out_dir, "val_tokens.bin"))
 
     print("Carregando streams...")
-    stream = build_stream(args.seed)
-    if skip_docs:
-        print(f"Avancando o stream {skip_docs:,} docs (re-streaming, sem retokenizar)...")
-        stream = stream.skip(skip_docs)
 
     seen = skip_docs
     t0 = time.time()
@@ -238,44 +239,80 @@ def main():
         val_w.sync()
         save_progress(progress_path, seen, kept, train_w.total, val_w.total)
 
-    for sample in stream:
-        text, kind = sample["text"], sample["kind"]
-        seen += 1
-        if not text or len(text) < MIN_TEXT_LENGTH:
-            continue
-        text = clean_text(text[:MAX_TEXT_LENGTH], kind)
-        if len(text) < MIN_TEXT_LENGTH or not is_quality_text(text, kind):
-            continue
-        if kind == "reasoning":
-            text = f"{REASONING_TOKEN}\n{text}"
-        elif kind == "conversation":
-            text = f"{CONVERSATION_TOKEN}\n{text}"
+    # Loop externo auto-curavel: a HF deixa cair conexao de vez em quando
+    # (408/timeout no CDN). Em vez de morrer, faz checkpoint, reconstroi o
+    # stream e retoma de onde parou. So aborta apos muitas falhas seguidas.
+    finished = False
+    fails = 0
+    while not finished:
+        try:
+            stream = build_stream(args.seed)
+            if seen:
+                print(f"Avancando o stream {seen:,} docs (re-streaming, sem retokenizar)...",
+                      flush=True)
+                stream = stream.skip(seen)
 
-        ids = tokenizer.encode(text, add_special_tokens=False)
-        ids.append(eos_id)
-        kept += 1
+            for sample in stream:
+                text, kind = sample["text"], sample["kind"]
+                seen += 1
+                if not text or len(text) < MIN_TEXT_LENGTH:
+                    continue
+                text = clean_text(text[:MAX_TEXT_LENGTH], kind)
+                if len(text) < MIN_TEXT_LENGTH or not is_quality_text(text, kind):
+                    continue
+                if kind == "reasoning":
+                    text = f"{REASONING_TOKEN}\n{text}"
+                elif kind == "conversation":
+                    text = f"{CONVERSATION_TOKEN}\n{text}"
 
-        # 1 a cada 500 docs vai pro val ate fechar o alvo
-        if val_w.total < target_val and kept % 500 == 0:
-            val_w.write(ids)
-        else:
-            train_w.write(ids)
+                ids = tokenizer.encode(text, add_special_tokens=False)
+                ids.append(eos_id)
+                kept += 1
 
-        if train_w.total >= next_report:
-            rate = (train_w.total - tokens_at_start) / (time.time() - t0)
-            eta_h = (target_train - train_w.total) / max(rate, 1) / 3600
-            print(f"  {train_w.total / 1e9:.2f}B tokens | {kept:,}/{seen:,} docs "
-                  f"| {rate / 1e6:.1f}M tok/s | ETA {eta_h:.1f}h", flush=True)
-            checkpoint()  # progresso no disco: resume perde no maximo 50M tokens
-            next_report += 50_000_000
+                # 1 a cada 500 docs vai pro val ate fechar o alvo
+                if val_w.total < target_val and kept % 500 == 0:
+                    val_w.write(ids)
+                else:
+                    train_w.write(ids)
 
-        if train_w.total >= target_train and val_w.total >= target_val:
-            break
+                if train_w.total >= next_report:
+                    rate = (train_w.total - tokens_at_start) / (time.time() - t0)
+                    eta_h = (target_train - train_w.total) / max(rate, 1) / 3600
+                    print(f"  {train_w.total / 1e9:.2f}B tokens | {kept:,}/{seen:,} docs "
+                          f"| {rate / 1e6:.1f}M tok/s | ETA {eta_h:.1f}h", flush=True)
+                    checkpoint()  # resume perde no maximo 50M tokens
+                    next_report += 50_000_000
+                    fails = 0     # progresso real zera o contador de falhas
+
+                if train_w.total >= target_train and val_w.total >= target_val:
+                    finished = True
+                    break
+            else:
+                finished = True  # stream esgotou antes do alvo
+
+        except KeyboardInterrupt:
+            checkpoint()
+            train_w.close(); val_w.close()
+            print("\nInterrompido — progresso salvo. Rode de novo para retomar.")
+            return
+        except Exception as e:
+            fails += 1
+            checkpoint()
+            wait = min(120, 10 * fails)
+            print(f"  [rede] {type(e).__name__}: {str(e)[:160]}")
+            print(f"  Checkpoint em {train_w.total / 1e9:.2f}B tokens. "
+                  f"Retomando em {wait}s (falha {fails}/30)...", flush=True)
+            if fails > 30:
+                train_w.close(); val_w.close()
+                sys.exit("Muitas falhas seguidas. Rode de novo mais tarde (retoma sozinho).")
+            time.sleep(wait)
 
     train_w.close()
     val_w.close()
     if os.path.exists(progress_path):
         os.remove(progress_path)  # concluido: nao ha mais o que retomar
+    with open(os.path.join(args.out_dir, "DONE"), "w", encoding="utf-8") as f:
+        f.write(f"train={train_w.total} val={val_w.total}\n")  # marcador p/ o notebook
     print(f"\nPronto: train={train_w.total:,} tokens | val={val_w.total:,} tokens "
           f"| aproveitamento {kept}/{seen} docs")
     print(f"Arquivos em {args.out_dir}/")

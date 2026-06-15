@@ -16,6 +16,7 @@ Uso:
 """
 
 import argparse
+import json
 import os
 import re
 import sys
@@ -169,6 +170,21 @@ def build_stream(seed: int):
     )
 
 
+def load_progress(path):
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    return None
+
+
+def save_progress(path, seen, kept, train_total, val_total):
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump({"seen": seen, "kept": kept,
+                   "train_total": train_total, "val_total": val_total}, f)
+    os.replace(tmp, path)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train-tokens", type=float, default=3.3e9)
@@ -176,6 +192,8 @@ def main():
     parser.add_argument("--out-dir", default="data/arpa150m")
     parser.add_argument("--tokenizer-dir", default="tokenizer-arpa-64k-clean")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--force", action="store_true",
+                        help="ignora progresso salvo e recomeca do zero")
     args = parser.parse_args()
 
     from transformers import AutoTokenizer
@@ -183,18 +201,42 @@ def main():
     eos_id = tokenizer.convert_tokens_to_ids("<|end_of_text|>")
     assert eos_id is not None and eos_id >= 0
 
-    train_w = BinWriter(os.path.join(args.out_dir, "train_tokens.bin"))
-    val_w = BinWriter(os.path.join(args.out_dir, "val_tokens.bin"))
-
     target_train = int(args.train_tokens)
     target_val = int(args.val_tokens)
+    progress_path = os.path.join(args.out_dir, "progress.json")
+
+    # Auto-resume: se ha progresso salvo e os bins existem, retoma de onde parou
+    prog = None if args.force else load_progress(progress_path)
+    if prog:
+        skip_docs = prog["seen"]
+        kept = prog["kept"]
+        train_w = BinWriter(os.path.join(args.out_dir, "train_tokens.bin"),
+                            resume_tokens=prog["train_total"])
+        val_w = BinWriter(os.path.join(args.out_dir, "val_tokens.bin"),
+                          resume_tokens=prog["val_total"])
+        print(f"Retomando: {skip_docs:,} docs ja vistos | "
+              f"train={train_w.total:,} val={val_w.total:,} tokens")
+    else:
+        skip_docs = 0
+        kept = 0
+        train_w = BinWriter(os.path.join(args.out_dir, "train_tokens.bin"))
+        val_w = BinWriter(os.path.join(args.out_dir, "val_tokens.bin"))
 
     print("Carregando streams...")
     stream = build_stream(args.seed)
+    if skip_docs:
+        print(f"Avancando o stream {skip_docs:,} docs (re-streaming, sem retokenizar)...")
+        stream = stream.skip(skip_docs)
 
-    seen = kept = 0
+    seen = skip_docs
     t0 = time.time()
-    next_report = 50_000_000
+    tokens_at_start = train_w.total
+    next_report = ((train_w.total // 50_000_000) + 1) * 50_000_000
+
+    def checkpoint():
+        train_w.sync()
+        val_w.sync()
+        save_progress(progress_path, seen, kept, train_w.total, val_w.total)
 
     for sample in stream:
         text, kind = sample["text"], sample["kind"]
@@ -220,10 +262,11 @@ def main():
             train_w.write(ids)
 
         if train_w.total >= next_report:
-            rate = train_w.total / (time.time() - t0)
-            eta_h = (target_train - train_w.total) / rate / 3600
+            rate = (train_w.total - tokens_at_start) / (time.time() - t0)
+            eta_h = (target_train - train_w.total) / max(rate, 1) / 3600
             print(f"  {train_w.total / 1e9:.2f}B tokens | {kept:,}/{seen:,} docs "
                   f"| {rate / 1e6:.1f}M tok/s | ETA {eta_h:.1f}h", flush=True)
+            checkpoint()  # progresso no disco: resume perde no maximo 50M tokens
             next_report += 50_000_000
 
         if train_w.total >= target_train and val_w.total >= target_val:
@@ -231,6 +274,8 @@ def main():
 
     train_w.close()
     val_w.close()
+    if os.path.exists(progress_path):
+        os.remove(progress_path)  # concluido: nao ha mais o que retomar
     print(f"\nPronto: train={train_w.total:,} tokens | val={val_w.total:,} tokens "
           f"| aproveitamento {kept}/{seen} docs")
     print(f"Arquivos em {args.out_dir}/")

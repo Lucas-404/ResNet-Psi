@@ -45,15 +45,26 @@ class TokenBin:
 
 
 class BinWriter:
-    """Escreve tokens uint16 em streaming, com flush por buffer."""
+    """Escreve tokens uint16 em streaming, com flush por buffer.
 
-    def __init__(self, path: str, buffer_tokens: int = 8_000_000):
+    resume_tokens > 0 retoma um bin existente: trunca para o ultimo
+    checkpoint (descarta qualquer cauda parcial) e abre em append.
+    """
+
+    def __init__(self, path: str, buffer_tokens: int = 8_000_000,
+                 resume_tokens: int = 0):
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
         self.path = path
-        self.f = open(path, "wb")
+        if resume_tokens > 0 and os.path.exists(path):
+            with open(path, "r+b") as fp:
+                fp.truncate(resume_tokens * 2)  # uint16 = 2 bytes/token
+            self.f = open(path, "ab")
+            self.total = resume_tokens
+        else:
+            self.f = open(path, "wb")
+            self.total = 0
         self.buffer = np.empty(buffer_tokens, dtype=np.uint16)
         self.fill = 0
-        self.total = 0
 
     def write(self, token_ids):
         n = len(token_ids)
@@ -70,6 +81,12 @@ class BinWriter:
         if self.fill:
             self.buffer[:self.fill].tofile(self.f)
             self.fill = 0
+
+    def sync(self):
+        """Garante que tudo esta no disco (apos flush). self.total == bytes/2."""
+        self.flush()
+        self.f.flush()
+        os.fsync(self.f.fileno())
 
     def close(self):
         self.flush()

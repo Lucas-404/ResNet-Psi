@@ -16,13 +16,68 @@ Uso (annealing = ultimos ~15% do treino):
 
 import argparse
 import os
+import re
 import sys
 import time
+from collections import Counter
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from arpa.data import BinWriter
-from arpa.prepare_data import clean_text, is_quality_text, MIN_TEXT_LENGTH, MAX_TEXT_LENGTH
+from arpa.prepare_data import MIN_TEXT_LENGTH, MAX_TEXT_LENGTH
+
+
+# ------------------------------------------------------------------ limpeza juridica
+# Texto de acordao/legislacao tem ruido diferente da Wikipedia: marcadores de
+# paginacao ("Fls. 123"), cabecalho/rodape repetido por pagina, linhas soltas
+# so com numero. NAO aplicar o filtro wiki aqui: ele rejeita >10% de digitos,
+# e justamente os melhores docs fiscais sao cheios de numero (aliquotas, valores).
+RE_LEGAL_PAGE = re.compile(r"(?im)^\s*(fls?\.?|folha|p[áa]g(?:ina)?\.?)\s*:?\s*\d+\s*$")
+RE_NUM_ONLY = re.compile(r"^[\s\d.\-/º°ª()]{1,10}$")
+RE_SPACES = re.compile(r"[ \t]{2,}")
+RE_NL3 = re.compile(r"\n{3,}")
+
+
+def clean_legal(text: str) -> str:
+    text = RE_LEGAL_PAGE.sub("", text)
+    raw = text.splitlines()
+    # cabecalho/rodape = linha curta que se repete (1x por pagina) -> remove global
+    counts = Counter(l.strip() for l in raw if l.strip())
+    boiler = {s for s, c in counts.items() if c >= 3 and len(s) <= 60}
+    out, prev = [], None
+    for line in raw:
+        s = line.strip()
+        if s and (s in boiler or s == prev):  # boilerplate ou repeticao consecutiva
+            continue
+        if RE_NUM_ONLY.match(line):            # linha curta so com numero/pontuacao
+            continue
+        out.append(line)
+        prev = s
+    text = "\n".join(out)
+    text = RE_SPACES.sub(" ", text)
+    text = RE_NL3.sub("\n\n", text)
+    return text.strip()
+
+
+def is_quality_legal(text: str) -> bool:
+    n = len(text)
+    if n == 0:
+        return False
+    words = text.split()
+    if len(words) < 50:
+        return False
+    alpha = sum(1 for c in text if c.isalpha())
+    if alpha / n < 0.55:                 # predominantemente texto (relaxado vs wiki 0.70)
+        return False                      # SEM limite de digitos: fiscal e numerico
+    avg_w = sum(len(w) for w in words) / len(words)
+    if avg_w < 3.0 or avg_w > 18.0:
+        return False
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    if len(lines) >= 10:                   # so penaliza repeticao em docs longos
+        top = Counter(lines).most_common(1)[0][1]
+        if top / len(lines) > 0.35:        # muita linha repetida = cabecalho/rodape
+            return False
+    return True
 
 # Vocabulario de dominio: um doc precisa de >= MIN_HITS termos DISTINTOS
 DOMAIN_TERMS = [
@@ -88,8 +143,8 @@ def main():
         text = text[:MAX_TEXT_LENGTH]
         if domain_score(text.lower()) < MIN_HITS:
             continue
-        text = clean_text(text, "text")
-        if len(text) < MIN_TEXT_LENGTH or not is_quality_text(text, "text"):
+        text = clean_legal(text)
+        if len(text) < MIN_TEXT_LENGTH or not is_quality_legal(text):
             continue
         ids = tokenizer.encode(text, add_special_tokens=False)
         ids.append(eos_id)

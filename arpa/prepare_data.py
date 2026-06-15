@@ -69,7 +69,11 @@ def clean_text(text: str, kind: str) -> str:
             text = text[:pos]
     text = RE_MD_LINK.sub(r"\1", text)
     text = RE_WIKI_LINK.sub(r"\1", text)
-    text = RE_WIKI_TEMPLATE.sub(" ", text)
+    for _ in range(3):  # templates aninhados {{...{{...}}...}}: ate 3 niveis
+        new = RE_WIKI_TEMPLATE.sub(" ", text)
+        if new == text:
+            break
+        text = new
     text = RE_HTML_TAG.sub(" ", text)
     text = RE_URL.sub(" ", text)
     text = RE_MULTI_SPACE.sub(" ", text)
@@ -113,7 +117,8 @@ def is_quality_text(text: str, kind: str) -> bool:
         if alpha / n < 0.45:
             return False
     else:  # texto generico (wiki)
-        if "{{" in text or "[[" in text or "<ref" in text:
+        # markup residual (inclusive marcadores de fechamento orfaos) = descarta
+        if any(m in text for m in ("{{", "}}", "[[", "]]", "<ref")):
             return False
         alpha = sum(1 for c in text if c.isalpha())
         if alpha / n < 0.70:

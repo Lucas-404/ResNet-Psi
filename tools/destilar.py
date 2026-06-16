@@ -172,8 +172,10 @@ def main():
     ap.add_argument("--reasoning", action="store_true", help="inclui raciocinio (think)")
     ap.add_argument("--student", default=None, help="ckpt do teu modelo (so p/ comparar no revisar)")
     ap.add_argument("--out", default="sft/contabilidade_distill.jsonl")
-    ap.add_argument("--revisar", default="sft/_revisar.jsonl")
+    # revisar FORA de sft/ — senao o glob sft/*.jsonl do treino pegaria os reprovados
+    ap.add_argument("--revisar", default="distill_revisar.jsonl")
     ap.add_argument("--min-nota", type=int, default=4, help="nota minima do juiz p/ aprovar")
+    ap.add_argument("--max-temas", type=int, default=0, help="limita N temas (0 = todos; p/ teste)")
     ap.add_argument("--audicao", action="store_true")
     args = ap.parse_args()
 
@@ -200,7 +202,8 @@ def main():
     f_out = open(args.out, "w", encoding="utf-8")
     f_rev = open(args.revisar, "w", encoding="utf-8")
     try:
-        for i, tema in enumerate(TEMAS, 1):
+        temas = TEMAS[:args.max_temas] if args.max_temas else TEMAS
+        for i, tema in enumerate(temas, 1):
             cand = []
             for model in models:
                 try:
@@ -232,7 +235,7 @@ def main():
                         rev["resposta_do_teu_modelo"] = aluno(c["q"])
                     f_rev.write(json.dumps(rev, ensure_ascii=False) + "\n")
                     n_rev += 1
-            print(f"[{i}/{len(TEMAS)}] {tema[:36]:36} | aprovados {n_ok} | revisar {n_rev}",
+            print(f"[{i}/{len(temas)}] {tema[:36]:36} | aprovados {n_ok} | revisar {n_rev}",
                   flush=True)
     finally:
         f_out.close()
